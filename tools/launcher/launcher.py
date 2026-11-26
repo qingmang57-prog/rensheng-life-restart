@@ -596,6 +596,7 @@ def splash_html(cfg):
 <div id="fail">
   <h2>{title} 启动失败</h2>
   <p id="failmsg">服务没有在预期时间内就绪。</p>
+  <p id="faildetail" style="white-space:pre-line;color:#d9d2c4;font-size:12px;margin:8px 0"></p>
   <p>日志在这个位置（可复制发给技术支持）：</p>
   <div class="path" id="faillog"></div>
   <button class="primary" onclick="retry()">重新启动</button>
@@ -616,7 +617,9 @@ function showFail(s){{
   document.getElementById('boot').style.display = 'none';
   document.getElementById('fail').style.display = 'block';
   if(s && s.message) document.getElementById('failmsg').textContent = s.message;
-  document.getElementById('faillog').textContent = (s && (s.log || s.detail)) || '';
+  var fd = document.getElementById('faildetail');
+  if(fd) fd.textContent = (s && s.detail) || '';
+  document.getElementById('faillog').textContent = (s && s.log) || '';
 }}
 async function tick(){{
   if(!window.pywebview || !window.pywebview.api){{ setTimeout(tick, 300); return; }}
@@ -1163,12 +1166,31 @@ class Launcher:
     def port_owner_pid(self, port):
         """找监听指定端口的 PID（netstat -ano，隐藏子进程）；找不到返回 None。"""
         try:
-            out = subprocess.run(["netstat", "-ano", "-p", "tcp"],
-                                 capture_output=True, text=True, timeout=10,
-                                 creationflags=CREATE_NO_WINDOW).stdout
+            # 2026-11-26（t20）：不开启 subprocess 文本模式——中文 Windows 系统命令输出
+            # 是 GBK，文本模式按系统首选编码 strict 解码（客户机开「UTF-8 全局」模式时
+            # 抛 UnicodeDecodeError 被裸 except 吞掉，恒返回 None → 端口误判被占 →
+            # 启动重试耗尽）。改按 port_doctor.run_cmd 同款字节捕获 + GBK 优先解码链。
+            proc = subprocess.run(["netstat", "-ano", "-p", "tcp"],
+                                  capture_output=True, timeout=10,
+                                  creationflags=CREATE_NO_WINDOW)
         except Exception:
             return None
-        for line in out.splitlines():
+        raw = proc.stdout or b""
+        text = None
+        if isinstance(raw, str):
+            text = raw
+        else:
+            for enc in ("gbk", "utf-8", "latin-1"):
+                try:
+                    text = raw.decode(enc)
+                    break
+                except UnicodeDecodeError:
+                    continue
+        if text is None:
+            log.warning("netstat 输出无法解码（GBK/UTF-8/Latin-1 全失败，%d 字节），端口 %s 占用者按未知处理",
+                        len(raw), port)
+            return None
+        for line in text.splitlines():
             parts = line.split()
             if len(parts) >= 5 and parts[0].upper() == "TCP" and parts[3].upper() == "LISTENING":
                 if parts[1].rsplit(":", 1)[-1] == str(port):
@@ -1180,12 +1202,29 @@ class Launcher:
 
     def _image_name(self, pid):
         try:
-            out = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/FO", "CSV", "/NH"],
-                                 capture_output=True, text=True, timeout=10,
-                                 creationflags=CREATE_NO_WINDOW).stdout
-            return out.strip().split('","')[0].strip('"').lower()
+            # 2026-11-26（t20）：同 port_owner_pid，字节捕获 + GBK 优先解码链，
+            # 不开启 subprocess 文本模式（中文 Windows 下输出为 GBK）。
+            proc = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/FO", "CSV", "/NH"],
+                                  capture_output=True, timeout=10,
+                                  creationflags=CREATE_NO_WINDOW)
         except Exception:
             return ""
+        raw = proc.stdout or b""
+        text = None
+        if isinstance(raw, str):
+            text = raw
+        else:
+            for enc in ("gbk", "utf-8", "latin-1"):
+                try:
+                    text = raw.decode(enc)
+                    break
+                except UnicodeDecodeError:
+                    continue
+        if text is None:
+            log.warning("tasklist 输出无法解码（GBK/UTF-8/Latin-1 全失败，%d 字节），pid=%s 映像名按未知处理",
+                        len(raw), pid)
+            return ""
+        return text.strip().split('","')[0].strip('"').lower()
 
     def wait_port_release(self, port, timeout):
         """重启路径专用：端口被占时杀掉旧后端（含不是本外壳起的进程）并等释放。

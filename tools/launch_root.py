@@ -299,6 +299,36 @@ def default_data_dir():
     return Path.home().resolve() / DATA_HOME_NAME, 'home'
 
 
+def _low_integrity():
+    """当前进程是否被压到 Low 完整性（exe 继承了 Low 标签时会封顶进程级别）。"""
+    try:
+        import ctypes
+        import ctypes.wintypes as wt
+        k = ctypes.windll.kernel32
+        a = ctypes.windll.advapi32
+        k.GetCurrentProcess.restype = wt.HANDLE
+        k.OpenProcessToken.argtypes = [wt.HANDLE, wt.DWORD, ctypes.POINTER(wt.HANDLE)]
+        k.OpenProcessToken.restype = wt.BOOL
+        a.GetTokenInformation.argtypes = [wt.HANDLE, ctypes.c_int, ctypes.c_void_p, wt.DWORD,
+                                          ctypes.POINTER(wt.DWORD)]
+        a.GetTokenInformation.restype = wt.BOOL
+        handle = wt.HANDLE()
+        if not k.OpenProcessToken(k.GetCurrentProcess(), 0x0008, ctypes.byref(handle)):
+            return False
+        buf = ctypes.create_string_buffer(256)
+        ret = wt.DWORD()
+        ok = a.GetTokenInformation(handle, 25, buf, 256, ctypes.byref(ret))
+        k.CloseHandle(handle)
+        if not ok:
+            return False
+        sid = ctypes.cast(buf, ctypes.POINTER(ctypes.c_void_p))[0]
+        count = ctypes.cast(sid, ctypes.POINTER(ctypes.c_ubyte))[1]
+        rid = ctypes.cast(sid + 8 + 4 * (count - 1), ctypes.POINTER(wt.DWORD))[0]
+        return rid == 0x1000
+    except Exception:
+        return False
+
+
 def _writable(folder):
     """以「真的写一个探测文件成功」为准，不以存在性为准。"""
     try:
@@ -469,32 +499,51 @@ def prepare(root, product=PRODUCT, progress=None):
     if target == pkg:
         return result   # 开发机标记（data-home.lock）：维持包内，不搬、不写指针
 
+    pkg_has_data = bool(user_data_entries(pkg))
+
+    def fallback_in_package(reason):
+        # 外部资料夹不可用、但包内还有客户资料：回包内继续启动，绝不硬停、绝不悄悄开空库。
+        # 写进进程环境，让随后 spawn 的后端也用包内这份（后端独立解析会再次撞到写保护）。
+        os.environ['IP_DATA_DIR'] = str(pkg)
+        result.update(path=str(pkg), in_package=True,
+                      note='外部资料夹暂时不可用，本次先用软件文件夹内的资料；你的资料没有丢，外部那份原样还在。\n' + reason)
+        return result
+
+    external_reason = ''
     if status['source'] in ('pointer', 'migrated'):
         if status.get('configured_missing') or not target.is_dir():
+            external_reason = '本机记录的资料文件夹不在了：%s' % target
+        elif not _writable(target):
+            external_reason = '资料文件夹现在写不进去：%s（可能是权限、杀软拦截或写保护）' % target
+    elif not _writable(target):
+        external_reason = '默认资料夹写不进去：%s' % target
+
+    if external_reason and _low_integrity():
+        external_reason += ('\n技术线索：当前进程完整性级别=Low（软件目录继承了 Low 完整性标签，'
+                            '写不进普通目录）。解除：对软件目录执行 icacls "目录" /setintegritylevel M 后重试。')
+
+    if external_reason:
+        if pkg_has_data:
+            return fallback_in_package(external_reason)
+        if status['source'] in ('pointer', 'migrated'):
+            # 记录的资料夹丢了、包内也没资料：不能悄悄开空库，停下并给出路（失败卡会显示这段）。
             result.update(ok=False, error=(
-                '本机记录的资料文件夹不在了：%s\n'
-                '为了不让你误以为资料丢了，程序先不打开（否则会看到一个空的资料库）。\n'
-                '出路：① 把这个文件夹放回原位（或把放它的U盘/移动硬盘插回来）再启动；\n'
-                '② 确实不要这份资料了：删除文件 %s 后再启动，会在「文档」里新建一份。'
-                % (target, pointer_path())))
+                external_reason + '\n为了不让你误以为资料丢了，程序先不打开一个空库。\n'
+                '出路：① 把这个文件夹放回原位（或插回U盘/移动硬盘）再启动；\n'
+                '② 确实不要这份资料了：删除文件 %s 后再启动，会在「文档」里新建一份。' % pointer_path()))
             return result
-        if not _writable(target):
+        spare = stable_data_dir(product)
+        if not _writable(spare):
             result.update(ok=False, error=(
-                '资料文件夹现在写不进去：%s\n可能是权限、U盘写保护或磁盘故障。请检查后重试；资料没有被动过。' % target))
+                external_reason + '\n备用位置也写不进：%s\n请检查权限、杀软或磁盘空间后重试；资料没有被动过。' % spare))
             return result
-    else:  # 没有指针 → 用默认资料夹；建不出来就退到 %LOCALAPPDATA%
-        if not _writable(target):
-            spare = stable_data_dir(product)
-            if not _writable(spare):
-                result.update(ok=False, error=(
-                    '找不到能保存资料的位置：\n  %s\n  %s\n请检查磁盘空间和权限后重试。' % (target, spare)))
-                return result
-            target = spare
-        target.mkdir(parents=True, exist_ok=True)
-        if not (target / README_NAME).is_file():
-            (target / README_NAME).write_text(README_TEXT, encoding='utf-8')
-            result['created'] = True
-        write_pointer(target, product)
+        target = spare
+
+    target.mkdir(parents=True, exist_ok=True)
+    if not (target / README_NAME).is_file():
+        (target / README_NAME).write_text(README_TEXT, encoding='utf-8')
+        result['created'] = True
+    write_pointer(target, product)
 
     def use_external(migrated=False, note=''):
         result.update(path=str(target), in_package=False, migrated=migrated, note=note)

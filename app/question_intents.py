@@ -121,8 +121,18 @@ _DIAGNOSIS_INDEX = _index(DIAGNOSIS_GROUPS)
 
 
 def growth_group_of(question_id):
-    """成长题库某题所属 intent 组（没有则 None）。"""
-    return _GROWTH_INDEX.get(str(question_id or ''))
+    """成长题库某题所属 intent 组（没有则 None）。
+
+    2026-11-26：问问自己改用随包 240 问（ID 形如 D078），同义对
+    78/196、114/230 的去重直接复用 DIAGNOSIS_GROUPS，跨入口同一规则。
+    """
+    qid = str(question_id or '')
+    group = _GROWTH_INDEX.get(qid)
+    if group:
+        return group
+    if qid.startswith('D') and qid[1:].isdigit():
+        return _DIAGNOSIS_INDEX.get(int(qid[1:]))
+    return None
 
 
 def diagnosis_group_of(question_no):
@@ -137,6 +147,9 @@ def growth_members(group_id):
     for group in GROWTH_GROUPS:
         if group['id'] == group_id:
             return list(group['members'])
+    for group in DIAGNOSIS_GROUPS:
+        if group['id'] == group_id:
+            return ['D%03d' % no for no in group['members']]
     return []
 
 

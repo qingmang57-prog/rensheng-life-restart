@@ -4,48 +4,82 @@ Answers are the source of truth; growth fragments are projections.
 No AI, no cloud calls, no second goal tree.
 """
 import hashlib
-import json
 import re
-from pathlib import Path
 
 from db import Conflict, now, uid
 from growth_service import Growth, LOCK, PILLARS, text as clean_text
+import diagnosis
 import question_intents
 
-ASSETS = Path(__file__).resolve().parent / 'assets'
-QUESTION_FILE = ASSETS / 'growth_questions_v1.json'
 PILLAR_NAMES = [name for name, _color in PILLARS]
 MAX_ROUND = 5
 STATUSES = ('answered', 'skipped', 'empty')
 
-
-def _cloud_questions():
-    """2026-11-17（t42）：74 题成长题库只会从云端下发；本地文件已是空壳。"""
-    try:
-        import asset_store
-        value = asset_store.get('growth.questions')
-    except Exception:
-        value = None
-    return value if isinstance(value, dict) else None
+# 2026-11-26：问问自己改用随包 240 问 v2 题库（与诊断链同一份
+# assets/diagnosis_questions_240.md，单一真源、不改一字节）。
+# v1 74 题是采访卯叔本人的问法，含个人经历预设，不适合问终端用户；
+# v2 已按「称呼中性化 / 抹掉具体经历 / 场景通用」三原则重写。
+# 族 → (支柱, 层级, 敏感)：L1 事实现状 / L2 经历反思 / L3 模式深层；
+# 财务与债务两族标敏感，不进默认首轮（onboarding 政策见 POLICY）。
+FAMILY_META = {
+    1: ('价值', 'L1', True),     # 财务现状
+    2: ('价值', 'L1', True),     # 债务结构与还款
+    3: ('价值', 'L2', False),    # 过往赚钱能力
+    4: ('认知', 'L2', False),    # 跌下来的原因
+    5: ('意义', 'L2', False),    # 失败与代价
+    6: ('认知', 'L3', False),    # 决策与止损
+    7: ('能量', 'L3', False),    # 性格与行为模式
+    8: ('关系', 'L2', False),    # 身边人关系
+    9: ('价值', 'L1', False),    # 资源盘点
+    10: ('能量', 'L1', False),   # 当前状态与心气
+    11: ('意义', 'L2', False),   # 目标与约束
+    12: ('认知', 'L3', False),   # 自我认知盲区
+}
+# 默认首轮候选：中性、不预设负债/伴侣/孩子、任何人答得上。
+ONBOARDING_NOS = {161, 181, 182, 201}
+POLICY = {
+    'onboarding': 'sensitive为false且level不是L3才可进默认首轮',
+    'skip': '跳过进入待补池，可之后补答',
+    'empty': '没有/不知道是信息，不生成碎片',
+    'probe': '最多一层，仅使用题库probe',
+}
+_STAGE_OF_FAMILY = {}
+for _s in diagnosis.STAGES:
+    for _f in _s['families']:
+        _STAGE_OF_FAMILY[_f] = _s['code']
 
 
 def load_questions():
-    cloud = _cloud_questions()
-    if cloud and cloud.get('questions'):
-        data = cloud
-    else:
-        data = json.loads(QUESTION_FILE.read_text(encoding='utf-8'))
-    questions = data.get('questions') or []
-    if questions and data.get('total') not in (None, len(questions)):
+    bank = diagnosis.load_bank()
+    questions = []
+    for fam in bank['families']:
+        meta = FAMILY_META.get(fam['no'])
+        if meta is None:
+            raise ValueError('题库族没有支柱映射：%s' % fam['no'])
+        pillar, level, sensitive = meta
+        for q in fam['questions']:
+            questions.append({
+                'id': 'D%03d' % q['no'],
+                'text': q['text'],
+                'level': level,
+                'pillar': pillar,
+                'stage': _STAGE_OF_FAMILY.get(fam['no'], ''),
+                'tags': [fam['name']],
+                'sensitive': sensitive,
+                'onboarding': q['no'] in ONBOARDING_NOS,
+            })
+    data = {'version': 'v2', 'source': 'bundled-240', 'total': len(questions),
+            'policy': POLICY, 'questions': questions}
+    if data['total'] != 240:
         raise ValueError('题库总数与题目数量不一致。')
-    if not questions:
-        return data
-    ids = [q.get('id') for q in questions]
+    ids = [q['id'] for q in questions]
     if len(ids) != len(set(ids)) or any(not i for i in ids):
         raise ValueError('题库存在空 ID 或重复 ID。')
     for q in questions:
-        if q.get('pillar') not in PILLAR_NAMES or q.get('level') not in ('L1', 'L2', 'L3'):
-            raise ValueError('题库层级或支柱不合法：' + str(q.get('id')))
+        if q['pillar'] not in PILLAR_NAMES or q['level'] not in ('L1', 'L2', 'L3'):
+            raise ValueError('题库层级或支柱不合法：' + q['id'])
+        if q['onboarding'] and (q['sensitive'] or q['level'] == 'L3'):
+            raise ValueError('onboarding 题违反政策：' + q['id'])
     return data
 
 
@@ -254,7 +288,7 @@ def save_answer(store, question_id, status, body_text, session_id=None, expected
                         'saved_at': old.get('updated_at', '')})
     value = {
         'question_id': question_id,
-        'question_version': 'v1',
+        'question_version': 'v2',
         'question_snapshot': snapshot,
         'session_id': session_id or old.get('session_id', ''),
         'status': status,

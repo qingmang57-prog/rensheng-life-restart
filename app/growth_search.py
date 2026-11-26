@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 from growth_service import Growth
-from growth_ask import PILLAR_NAMES, active_pillars
+from growth_ask import PILLAR_NAMES, active_pillars, questions as growth_questions
 
 ASSETS = Path(__file__).resolve().parent / 'assets'
 ALIAS_FILE = ASSETS / 'growth_search_aliases.json'
@@ -189,9 +189,7 @@ def search(store, raw, include_archived=False):
 
     questions = []
     existing = answers
-    question_items = (__import__('asset_store').get('growth.questions') or {}).get('questions') \
-        or json.loads((Path(__file__).parent / 'assets' / 'growth_questions_v1.json')
-                      .read_text(encoding='utf-8')).get('questions', [])
+    question_items = growth_questions()
     ids = []
     if topic:
         ids = list(topic.get('question_ids') or [])

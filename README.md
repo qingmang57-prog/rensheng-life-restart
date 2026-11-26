@@ -46,6 +46,12 @@ python tools/setup_full.py
 - **便携包覆盖解压**：第一次打开新版本时自动把包内资料搬到「文档 \ 人生重启系统数据」（只复制不删除）。
 - 两边都有资料时程序不覆盖任何一边，会提示用「资产与备份」导出导入合并。
 
+## 出问题怎么办（装好之后）
+
+- **启动器、`tools\chromium` 等被杀毒软件拦截**（窗口不出、后端一启动就退出、界面提示「缺少程序文件」）：到杀毒软件隔离区恢复，只给本软件文件夹加信任，再重跑一次安装命令。步骤见 INSTALL.md「6.1」。
+- **想自己体检**：装得齐不齐 → `python tools/setup_full.py --check`；运行问题 → 应用内「导出诊断包」，把生成的 zip 原样发给客服；启动不了、怀疑端口 → `tools\python\python.exe tools\launcher\port_doctor.py`。见 INSTALL.md「6.2」。
+- **试用还剩多久、第二次双击没反应、实际端口**：试用剩余看应用内右上角「会员中心」；同一台电脑只能开一个，再双击只是把已开的窗口叫到前台；默认端口 8791，被占会自动往后换，以启动输出为准。见 INSTALL.md「6.3」。
+
 ## 组件清单（安装器自动补齐）
 
 | 组件包 | 用途 | 缺少时 |
@@ -53,7 +59,7 @@ python tools/setup_full.py
 | tools/ffmpeg | 视频导出、净剪出片 | 文稿功能照常，出片按钮提示缺组件 |
 | tools/node + tools/smart-packaging | 模板包装渲染 | 包装页提示缺组件 |
 | tools/chromium + app/.runtime/browser-env | 抖音采集与发布执行器 | 发布页显示「执行器未安装」 |
-| app/.runtime/ai-env | 离线转写（torch 由安装器走阿里云 PyTorch 镜像补，唯一 pip 步骤；--from-package 旧包时零下载） | 自动改用云端转写 |
+| app/.runtime/ai-env | 离线转写（依赖怎么补以 INSTALL.md 第 2 节为准，不要自己跑 pip；--from-package 旧包时零下载） | 自动改用云端转写 |
 | tools/motion-template / motion-template-244 / jd-motion-kit / jd-spatial / eva | 包装与动效模板 | 对应模板不可选 |
 | tools/avatar-model | 照片抠图（克隆分身） | 抠图按钮提示缺模型 |
 | tools/bgm | 配乐 / 音效（CC BY 4.0，署名见 tools/bgm/CREDITS.md） | 成片不带配乐 |

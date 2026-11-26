@@ -1,0 +1,13 @@
+字体合规说明（v5 打包，2026-11-17）
+================================================
+本包不再随附以下商业/系统字体（均已按清单替换为 SIL Open Font License 1.1 字体）：
+- DINNextLTPro-Bold.ttf / DINNextLTPro-Medium.ttf（Monotype）→ Anton-Regular / ArchivoBlack-Regular
+- georgiab.ttf（Microsoft 系统字体）→ PlayfairDisplay
+- impact.ttf（Microsoft 系统字体）→ Anton-Regular
+- HarmonyOS_Sans_SC_Bold.ttf（华为 HarmonyOS Sans）→ NotoSansSC-Bold（Noto Sans SC）
+替换后文件名保持不变以兼容模板引用；字节均为上述 OFL 字体。
+OFL 1.1 许可证原文见 tools/eva/模板-像素游戏-MS/content/template/engine/fonts/licenses/
+（Anton-OFL.txt / ArchivoBlack-OFL.txt / PlayfairDisplay-OFL.txt / SpaceMono-OFL.txt）；
+Noto Sans SC 为 SIL OFL 1.1（github.com/googlefonts/noto-cjk）。
+Eva 引擎许可：tools/eva/LICENSE-EVA.txt（MIT，RoverEva；本包对 Eva 模板为二创/批量产物，非自研）。
+不随包任何版权 BGM；配乐只读取用户自备目录或随包已核验曲目（署名见 tools/bgm/CREDITS.md）。

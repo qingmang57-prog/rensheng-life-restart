@@ -13,7 +13,7 @@ BASE = ROOT.parent
 # 所以 BASE = 包根（不是「往上第 N 层目录」）。包根之外要再往上一级找 .secrets 时，
 # 必须判断是否已经到盘符根（包解在盘根下一层时，再往上就是那个盘的根），
 # 不能写死 parents[1]：那种布局下 BASE.parents 只有 1 项，直接取 [1] 会抛 IndexError: 1，
-# 进而让 /api/asr/status、/api/settings/key 这类只读接口 500。
+# 进而让 /api/asr/status 这类只读接口 500。
 # 进程环境变量快照：本模块在 app.py 读取配置文件之前被导入，
 # 因此这里的键就是「真正的环境变量」，可与 .env.local 写入的值区分开。
 _REAL_ENV = set(os.environ)

@@ -70,15 +70,13 @@ def configured():
 
 
 def setup_help():
-    """给界面和报错用的一步指引：去哪申请、填在哪。"""
-    return {'console': 'https://console.volcengine.com/speech/app',
-            'env_file': '本机数据目录 app/.runtime/.env.local（不进包、不随包分发）',
+    """给界面和报错用的指引：客户走官方云端网关，本机直连仅供运维回滚。"""
+    return {'console': '',
+            'env_file': '包外 .secrets\\volc_asr.key（仅运维回滚模式 IP_KEY_SOURCE=local 使用）',
             'fields': ['IP_ASR_MODE=cloud',
-                       'IP_VOLC_ASR_KEY=（语音技术控制台「API Key」，必填）',
-                       'IP_VOLC_APP_ID=（只有旧版控制台双头鉴权才填 AppID）',
-                       'IP_VOLC_RESOURCE_ID=（默认 volc.seedasr.auc，一般不用改）'],
-            'service': '火山引擎 · 豆包语音 录音文件识别（大模型）',
-            'endpoint': 'POST /api/v3/auc/bigmodel/submit → /query',
+                       'IP_VOLC_ASR_KEY=（仅运维回滚模式需要，客户无需配置）'],
+            'service': '云端转写（官方云端网关统一提供）',
+            'endpoint': '',
             'limits': 'wav/mp3/ogg；单文件≤512MB、时长≤5小时（本包适配器上限 8MB，60 秒口播远低于此）'}
 
 
@@ -216,7 +214,7 @@ def _query(req_id, headers):
 def transcribe(audio_path):
     """转写为个人IP工作台契约：{text, words:[{text,start_ms,end_ms}], cues, method}。"""
     if not key_present():
-        raise VolcAsrError('火山 ASR 未配置：请在「设置 → 云端 Key」填写，或写到包外 .secrets\\volc_asr.key（你自己的 API Key）。')
+        raise VolcAsrError('云端转写暂不可用：请改用本地转写，或联系客服处理。')
     raw = Path(audio_path).read_bytes()
     if not raw:
         raise VolcEmptyAudio('音频文件为空。')

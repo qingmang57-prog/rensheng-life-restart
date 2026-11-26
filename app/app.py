@@ -928,57 +928,7 @@ def set_asr_mode(mode):
     return asr_status()
 
 
-# 界面填 Key：默认写包外 .secrets，不写数据目录；只有包外位置不可写才降级，并当场给这句警示。
-KEY_SAVE_WARNING='这台机器无法写包外目录，Key 存在包内数据目录，整包拷给别人会泄露'
-KEY_FIELDS={
-    'llm':{'label':'大模型','envs':('IP_DEEPSEEK_KEY','IP_LLM_KEY'),'file':'deepseek.key'},
-    'asr':{'label':'火山转写','envs':('IP_VOLC_ASR_KEY',),'file':'volc_asr.key'},
-}
 
-
-def provider_key_status():
-    """只报「是否已配置 + 来源」，绝不返回值本身。代理模式不读本机 Key 文件。"""
-    if (os.getenv('IP_KEY_SOURCE') or 'proxy').strip().lower() not in ('local','direct','file','byok'):
-        return {field:{'label':meta['label'],'set':True,'source':'云端代理'} for field,meta in KEY_FIELDS.items()}
-    out={}
-    for field,meta in KEY_FIELDS.items():
-        value,source=secret_store.read(meta['envs'],meta['file'])
-        out[field]={'label':meta['label'],'set':bool(value),'source':source or '未配置'}
-        del value
-    return out
-
-
-def save_provider_key(payload):
-    """保存界面填写的 Key：优先写包外 .secrets；不可写时降级写数据目录并返回固定警示。
-
-    值只写文件与本进程环境变量，不落日志、不回显、不写任何会进包的文件。
-    """
-    data=payload if isinstance(payload,dict) else {}
-    if (os.getenv('IP_KEY_SOURCE') or 'proxy').strip().lower() not in ('local','direct','file','byok'):
-        raise ValueError('当前是云端代理模式，Key 由云端中控统一管理，本机不再保存；如需本地直连，请把 IP_KEY_SOURCE 设为 local 后重启。')
-    field=str(data.get('field') or '').strip().lower()
-    meta=KEY_FIELDS.get(field)
-    if not meta:
-        raise ValueError('只能保存大模型 Key 或火山转写 Key。')
-    value=str(data.get('key') or '').strip()
-    if not value:
-        raise ValueError('Key 不能为空。')
-    if any(c.isspace() for c in value) or value[0] in '\'"':
-        raise ValueError('Key 必须是单行、不含空格和引号的一串字符，请重新复制。')
-    warning=''
-    try:
-        target=secret_store.write(meta['file'],value)
-        location='secrets'
-    except OSError as exc:
-        # 包外目录不可写（U 盘只读、盘符不存在等）：降级写数据目录，并当场警示。
-        target=_upsert_env_local({meta['envs'][0]:value})
-        location='data'
-        warning=KEY_SAVE_WARNING
-        applog.info('settings.key.fallback','包外密钥目录不可写，已降级写数据目录',
-                    field=field,error=str(exc)[:200])
-    os.environ[meta['envs'][0]]=value
-    applog.info('settings.key','已保存密钥',field=field,saved_to=location)
-    return {'ok':True,'field':field,'saved_to':location,'path':str(target),'warning':warning}
 
 
 def set_asr_diarize(enabled):
@@ -1132,12 +1082,14 @@ CUSTOMER_ERRORS=(
   '自动写作还没连上，这次没法帮你生成。你写的内容都还在。','去设置页查看','settings',False),
  ('asr_failed',(),r'转写失败|语音识别失败|识别失败',
   '把声音转成文字这一步没成功。','再试一次','retry',True),
+ # 2026-11-26 H8：timeout 前移到 asr_missing 之前——「转写超时」先命中 timeout（可重试），
+ # 不再被 asr_missing 的「转写」正则误判成功能不可用。
+ ('timeout',('TimeoutError',),r'超时|timed out|timeout|等太久|未响应|没有响应',
+  '这次等得太久，先停下来了。你发的内容还在，可以再试一次。','再试一次','retry',True),
  ('asr_missing',('ProviderMissing',),r'语音识别|转写|ASR|火山|allow_cloud_asr|IP_ASR_MODE',
   '这台电脑上「听声音转文字」的功能暂时用不了，录音和视频转不了。','去设置页查看','settings',False),
  ('bad_draft',(),r'缺少开头|开头、主体|开头，主体',
   '这次自动生成的稿子不完整，没有采用。你原来的稿子没动。','再试一次','retry',True),
- ('timeout',('TimeoutError',),r'超时|timed out|timeout|等太久|未响应|没有响应',
-  '这次等得太久，先停下来了。你发的内容还在，可以再试一次。','再试一次','retry',True),
  ('file_missing',('FileNotFoundError',),r'找不到这个文件|No such file|已经不在原来的位置|资料文件夹不在原来的位置|被移动、改名或删除',
   '要用到的文件找不到了，可能被移动、改名或删除了。','重新选择文件','rechoose',True),
  ('module_missing',('ModuleNotFoundError','ImportError'),r'No module named|cannot import name|DLL load failed',
@@ -1146,6 +1098,11 @@ CUSTOMER_ERRORS=(
   '这个文件或内容太大了，一次处理不了。','换小一点的','rechoose',False),
  ('download_failed',(),r'下载失败|获取视频失败|抽音频失败',
   '视频没取下来，可能链接失效、需要登录或网络不稳。','再试一次','retry',True),
+ # 2026-11-26 H8：拆 network 行——云端不可达与模型服务连不上各自成类（正则保持宽松，顺序在 network 之前）。
+ ('cloud_unreachable',('CloudUnreachable','ProxyError'),r'连不上云端服务|连不上账号服务器|连不上服务器|连不上云端',
+  '连不上账号服务器。请检查是否断网或开了加速/代理；本地记录照常可用，登录和云端生成稍后再试。','再试一次','retry',True),
+ ('provider_unreachable',(),r'无法连接已配置的服务|服务返回 HTTP',
+  '你配置的模型/识别服务连不上或拒绝了请求（原因见详情）。到「设置 → 服务连接」检查地址和密钥。','去设置页查看','settings',False),
  ('network',('ConnectionError',),r'连不上|网络|Connection (refused|reset|aborted)|getaddrinfo|Name or service not known|WinError 100(54|60|61)|ProxyError|RemoteDisconnected|Remote end closed|URLError|服务未响应',
   '连不上网络或服务，这一步没做完。你发的内容还在。','再试一次','retry',True),
  ('record_missing',('KeyError',),r'记录不存在或不属于当前项目|已经不在了',
@@ -1157,27 +1114,29 @@ CUSTOMER_BY_CODE={'trial_readonly':('免费体验已经结束，新增内容暂�
                   'login_required':('这条内容要先登录抖音才能读取。','去登录抖音','douyin_login',False)}
 _CJK_RE=re.compile(r'[\u4e00-\u9fff]')
 
-def _customer_view(title,detail,label,action,retry,code):
+def _customer_view(title,detail,label,action,retry,code,kind='unknown'):
+    # 2026-11-26 H8：额外回传 error_kind＝登记表匹配到的类别 key（trial_readonly 等业务码类别沿用该码），
+    # 前端据此显示定位码（E-XXX）；error_code 业务语义原样不动。
     return {'title':title,'detail':str(detail or '')[:1500],'next':{'label':label,'action':action},
-            'retry':bool(retry),'error_code':str(code or '')}
+            'retry':bool(retry),'error_code':str(code or ''),'error_kind':str(kind or 'unknown')}
 
 def customer_error_text(text,code='',type_names=()):
     """原话 → 人话。先按正文匹配，再按异常类型兜底；都没中：有中文就原样给（本仓库的手写提示），英文给通用句。"""
     raw=str(text or '').strip();kind=str(code or '')
     if kind in CUSTOMER_BY_CODE:
-        t=CUSTOMER_BY_CODE[kind];return _customer_view(t[0],raw,t[1],t[2],t[3],kind)
+        t=CUSTOMER_BY_CODE[kind];return _customer_view(t[0],raw,t[1],t[2],t[3],kind,kind)
     hit=None
     for row in CUSTOMER_ERRORS:
         if row[2] and re.search(row[2],raw,re.I):hit=row;break
     if hit is None:
         for row in CUSTOMER_ERRORS:
             if row[1] and set(row[1])&set(type_names or ()):hit=row;break
-    if hit is not None:return _customer_view(hit[3],raw,hit[4],hit[5],hit[6],kind)
+    if hit is not None:return _customer_view(hit[3],raw,hit[4],hit[5],hit[6],kind,hit[0])
     if _CJK_RE.search(raw):
         # 400/404/409 多半是输入或状态问题，重发同一个请求没用，给「返回修改」。
         ok=kind in ('','operation_failed')
-        return _customer_view(raw[:200],raw,'再试一次' if ok else '返回修改','retry' if ok else 'back',ok,kind)
-    return _customer_view(CUSTOMER_GENERIC[3],raw,CUSTOMER_GENERIC[4],CUSTOMER_GENERIC[5],CUSTOMER_GENERIC[6],kind)
+        return _customer_view(raw[:200],raw,'再试一次' if ok else '返回修改','retry' if ok else 'back',ok,kind,'unknown')
+    return _customer_view(CUSTOMER_GENERIC[3],raw,CUSTOMER_GENERIC[4],CUSTOMER_GENERIC[5],CUSTOMER_GENERIC[6],kind,'unknown')
 
 def customer_error(exc,code=''):
     """异常 → {title, detail, next:{label,action}, retry}。KeyError 只取 args[0]（str(exc) 会带一对引号）。"""
@@ -3135,13 +3094,6 @@ class Handler(BaseHTTPRequestHandler):
             return self.json(set_asr_mode(self.body().get('mode','')))
         if path=='/api/asr/diarize' and method=='POST':
             return self.json(set_asr_diarize(bool(self.body().get('enabled'))))
-        if path=='/api/settings/key' and method=='GET':
-            return self.json(provider_key_status())
-        if path=='/api/settings/key' and method=='POST':
-            result=save_provider_key(self.body())
-            # Key 刚变：能力缓存立即作废并后台重探，设置页下一次请求就能拿到真实状态。
-            _cap_invalidate()
-            return self.json(result)
         if path=='/api/douyin/login' and method=='GET':
             return self.json(douyin_login_state())
         if path=='/api/platform/session' and method=='GET':

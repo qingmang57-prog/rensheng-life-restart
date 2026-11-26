@@ -3,7 +3,7 @@
 
 背景：包按《首次运行说明》解到 `D:\\人生重启系统` 这种只有一层父目录的位置时，
 旧实现写死 `BASE.parents[1]`；`D:\\X` 的 `parents` 只有 1 项，取 [1] 直接抛
-`IndexError: 1`，导致 `GET /api/asr/status`、`GET /api/settings/key` 返回 500。
+`IndexError: 1`，导致 `GET /api/asr/status` 返回 500。
 设置页因此读不到转写状态（本地转写与出片主链不受影响）。
 
 覆盖：

@@ -1,6 +1,31 @@
 'use strict';
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* 2026-11-26 H8：后端 error_kind（app.py 登记表 CUSTOMER_ERRORS/CUSTOMER_BY_CODE 类别 key）
+   → 定位码 E-XXX + 一句人话。键与后端类别一一对应；后端给了 title 时人话仍以后端为准。 */
+const ERROR_KIND_VIEW={
+  unsupported:{code:'E-UNSUPPORTED',text:'这个链接或文件类型目前还处理不了，可以直接粘贴文字。'},
+  ffmpeg_missing:{code:'E-FFMPEG-MISSING',text:'处理这个音视频要用的组件不在软件包里，这一步做不了。'},
+  cloud_login:{code:'E-CLOUD-LOGIN',text:'这项功能要先登录账号才能用，已经保存的内容不受影响。'},
+  memory:{code:'E-MEMORY',text:'电脑内存不够，这一步没做完。关掉一些占内存的程序再试。'},
+  model_missing:{code:'E-MODEL-MISSING',text:'自动写作还没连上，这次没法帮你生成；你写的内容都还在。'},
+  asr_failed:{code:'E-ASR-FAILED',text:'把声音转成文字这一步没成功，可以再试一次。'},
+  asr_missing:{code:'E-ASR-MISSING',text:'「听声音转文字」的功能暂时用不了，到设置页查看。'},
+  timeout:{code:'E-TIMEOUT',text:'等了太久没有回应，已先停下。你发的内容还在，可以再试一次。'},
+  file_missing:{code:'E-FILE-MISSING',text:'要用到的文件找不到了，可能被移动、改名或删除。'},
+  module_missing:{code:'E-MODULE-MISSING',text:'缺少程序文件（可能被杀毒软件隔离）。恢复并加信任，或重新解压完整包。'},
+  too_large:{code:'E-TOO-LARGE',text:'这个文件或内容太大了，一次处理不了。'},
+  download_failed:{code:'E-DOWNLOAD-FAILED',text:'视频没取下来，可能链接失效、需要登录或网络不稳。'},
+  cloud_unreachable:{code:'E-CLOUD-UNREACHABLE',text:'连不上账号服务器。检查是否断网或开了加速/代理；本地记录照常可用。'},
+  provider_unreachable:{code:'E-PROVIDER-UNREACHABLE',text:'模型或识别服务暂时连不上。请检查网络后重试；持续失败请联系客服。'},
+  network:{code:'E-NETWORK',text:'连不上网络或服务，这一步没做完，你发的内容还在。'},
+  record_missing:{code:'E-RECORD-MISSING',text:'这条记录已经不在了，重新来一次。'},
+  trial_readonly:{code:'E-TRIAL-READONLY',text:'免费体验已经结束，新增内容暂时做不了；已保存的内容还能查看和导出。'},
+  login_required:{code:'E-LOGIN-REQUIRED',text:'这条内容要先登录抖音才能读取。'},
+  bad_response:{code:'E-BAD-RESPONSE',text:'服务没有正常应答。请确认程序已启动，请稍后重试。'},
+  bad_draft:{code:'E-BAD-DRAFT',text:'这次自动生成的稿子不完整，没有采用。你原来的稿子没动。'},
+  unknown:{code:'E-GENERIC',text:'这一步没做完，是我们这边出了问题。你的内容还在。'}
+};
 /* 2026-11-16（CSP）：style-src 'self' 会拦掉 HTML 里的内联 style。
    需要少量一次性布局样式时，往同源样式表里插规则，避免再加 <style> 或 style 属性。 */
 function ipAddCssRules(rules){
@@ -65,9 +90,13 @@ function ipRetryable(e){if(e&&typeof e.retry==='boolean')return e.retry;return !
 /* 2026-11-25（开始创作嫁接 A）：失败卡 = 一句人话 + 一个能点的「下一步」+ 原话收进「查看详情」。
    人话 / 下一步 / 能否重试来自后端登记表（app.py customer_error）：api() 把它们挂在错误对象上
    （e.message 人话、e.raw 原话、e.next、e.retry）。后端没给时退回原来的提示。 */
-function errView(e){const d=(e&&e.data)||{};const broken=/is not defined|Cannot read|is not a function/.test((e&&e.message)||'');return {title:d.title||(broken?'页面有一块没加载出来，刷新一下通常就好。':(e&&e.message)||'操作失败。'),detail:(e&&e.raw)||(e&&e.message)||'',next:(e&&e.next)||d.next||null,retry:e&&typeof e.retry==='boolean'?e.retry:ipRetryable(e)};}
+function errView(e){const d=(e&&e.data)||{};const broken=/is not defined|Cannot read|is not a function/.test((e&&e.message)||'');
+  /* 2026-11-26 H8：定位码。优先级：本错误对象自带 locator > 后端 error_kind 映射 > 后端 error_code 已是 E- 开头。 */
+  const kv=ERROR_KIND_VIEW[(d&&d.error_kind)||(e&&e.errorKind)]||null;
+  const locator=(e&&e.locator)||(kv&&kv.code)||((d&&d.error_code&&/^E-/.test(String(d.error_code)))?d.error_code:'')||'';
+  return {title:d.title||(broken?'页面有一块没加载出来，刷新一下通常就好。':(e&&e.message)||(kv&&kv.text)||'操作失败。'),detail:(e&&e.raw)||(e&&e.message)||'',next:(e&&e.next)||d.next||null,retry:e&&typeof e.retry==='boolean'?e.retry:ipRetryable(e),locator};}
 function nextButtonHtml(next){if(!next)return '';const a=next.action,label=esc(next.label||'下一步');if(a==='settings')return `<a class="small-button" href="#/settings">${label}</a>`;return `<button type="button" class="small-button" data-fail-next="${esc(a)}">${label}</button>`;}
-function failCard(e){const v=errView(e);return `<div class="error-box" role="alert"><strong>${esc(v.title)}</strong><div class="row space">${nextButtonHtml(v.next)}${v.retry?`<button type="button" class="small-button" data-fail-next="retry">重试</button>`:''}<details><summary class="small muted">查看详情</summary><pre class="raw-markdown">${esc(v.detail)}</pre></details></div><a class="link small" href="#/create">返回工作台</a></div>`;}
+function failCard(e){const v=errView(e);return `<div class="error-box" role="alert"><strong>${esc(v.title)}</strong>${v.locator?`<div class="small muted">错误码：${esc(v.locator)}</div>`:''}<div class="row space">${nextButtonHtml(v.next)}${v.retry?`<button type="button" class="small-button" data-fail-next="retry">重试</button>`:''}<details><summary class="small muted">查看详情</summary><pre class="raw-markdown">${esc(v.detail)}</pre></details></div><a class="link small" href="#/create">返回工作台</a></div>`;}
 /* 2026-11-25：诊断包一键导出（含启动器日志尾/端口判定/核心文件在不在）。
    失败卡「下一步」与设置页共用这一个出口：生成 zip 并报完整路径，客户原样发客服即可定位。 */
 async function exportDiagnostics(){
@@ -88,7 +117,9 @@ document.addEventListener('click',event=>{
   else if(a!=='settings')location.hash='#/create';
 });
 function ipFail(e,retry){
-  const message=(e&&e.message)||'操作失败。';
+  const v=errView(e);
+  /* 2026-11-26 H8：toast 也带定位码，客户截图就能给客服定位。 */
+  const message=((e&&e.message)||'操作失败。')+(v&&v.locator?'（'+v.locator+'）':'');
   if(!ipRetryable(e)||typeof retry!=='function'){toast(message);return;}
   const el=ipBusyEl();el.dataset.retry='1';el.hidden=false;
   el.innerHTML='<span>'+esc(message)+'</span><button type="button" class="net-status-retry">重试</button>';
@@ -141,11 +172,24 @@ function accessCodeDialog(tryCode){
 }
 async function ensureAccess(){const token=localStorage.getItem('ip-access-token')||'';if(token){try{const r=await fetch('/api/access',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token})});if(r.ok){accessGranted=true;return;}}catch{}}const ok=await accessCodeDialog(async value=>{const r=await fetch('/api/access',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:value})});if(!r.ok)return false;accessGranted=true;localStorage.setItem('ip-access-token',value);return true;});if(!ok)throw new Error('未输入访问码，无法访问工作台。');}
 function lanHost(){const h=location.hostname;return h!=='127.0.0.1'&&h!=='localhost'&&h!=='::1'&&h!=='[::1]';}
-async function readJson(r){try{return await r.json();}catch{const e=new Error(r.ok?'服务返回了无法解析的内容，请重试。':'服务未响应（'+r.status+'），请稍后重试。');e.code='bad_response';e.status=r.status;throw e;}}
+async function readJson(r){try{return await r.json();}catch{
+  /* 2026-11-26 H8：非 JSON 应答按 HTTP 状态码分三类说人话（5xx 服务内部错误 / 未正常应答请确认程序已启动 / 其它）。
+     原兜底语义保留（r.ok 仍是「无法解析」一句），只加不改。 */
+  const st=Number(r.status)||0;let text;
+  if(st>=500)text='服务内部错误（HTTP '+st+'），请稍后重试；反复出现请导出诊断包。';
+  else if(!r.ok)text='服务没有正常应答（HTTP '+st+'）。请确认工作台程序已启动，请稍后重试。';
+  else text='服务返回了无法解析的内容，请重试。';
+  const e=new Error(text);e.code='bad_response';e.status=r.status;e.locator=st>=500?'E-INTERNAL-ERROR':'E-BAD-RESPONSE';throw e;}}
 async function api(path,method='GET',body,opts){
   const options={method,headers:{}};
   if(body!==undefined){options.headers['Content-Type']='application/json';options.body=JSON.stringify(body);}
   if(method==='GET'&&window.__apiPrefetch){const pre=window.__apiPrefetch.take('/api'+path);if(pre){const hit=await pre;if(hit)return hit;}}
+  /* 2026-11-26 H8：客户端超时，默认 60 秒，调用方可用 opts.timeout 覆盖（长任务接口自行放宽）。
+     超时不再无限转圈：AbortController 中断请求，报「等太久」并带定位码 E-TIMEOUT。 */
+  const timeoutMs=opts&&Number(opts.timeout)>0?Number(opts.timeout):60000;
+  const abort=new AbortController();
+  const abortTimer=setTimeout(()=>abort.abort(),timeoutMs);
+  options.signal=abort.signal;
   // 2026-11-25：后台往返静默。GET（导航/轮询/缓存刷新）不弹挂起条，只有用户主动的写操作才显示；
   // 静默不等于吞错误：失败仍走 ipFail/failCard。确需可见等待的 GET 传 {busy:true}。
   const silent=opts&&typeof opts.silent==='boolean'?opts.silent:(method==='GET'&&!(opts&&opts.busy));
@@ -153,17 +197,17 @@ async function api(path,method='GET',body,opts){
   try{
     let r;
     try{r=await fetch('/api'+path,options);}
-    catch{const e=new Error('连不上工作台服务，请确认程序还在运行。');e.code='network';throw e;}
+    catch(err){if(abort&&abort.signal.aborted){const e=new Error('等了太久没有回应，已先停下。你发的内容还在，可以再试一次。');e.code='timeout';e.errorKind='timeout';e.locator='E-TIMEOUT';throw e;}const e=new Error('连不上工作台服务，请确认程序还在运行。');e.code='network';throw e;}
     let d=await readJson(r);
     if(!r.ok&&!accessGranted&&(d.code==='token_required'||(d.code==='forbidden'&&lanHost()))){
       await ensureAccess();
       try{r=await fetch('/api'+path,options);}
-      catch{const e=new Error('连不上工作台服务，请确认程序还在运行。');e.code='network';throw e;}
+      catch(err){if(abort&&abort.signal.aborted){const e=new Error('等了太久没有回应，已先停下。你发的内容还在，可以再试一次。');e.code='timeout';e.errorKind='timeout';e.locator='E-TIMEOUT';throw e;}const e=new Error('连不上工作台服务，请确认程序还在运行。');e.code='network';throw e;}
       d=await readJson(r);
     }
     if(!r.ok){const e=new Error(d.error||'操作失败。');e.code=d.code;e.status=r.status;e.data=d;e.raw=d.detail||'';if(typeof d.retry==='boolean')e.retry=d.retry;e.next=d.next||null;throw e;}
     return d;
-  }finally{if(!silent)ipBusyEnd();}
+  }finally{clearTimeout(abortTimer);if(!silent)ipBusyEnd();}
 }
 function media(path){const t=state.lanToken||'';if(!t)return path;return path+(path.includes('?')?'&':'?')+'token='+encodeURIComponent(t);}
 function toast(text){clearTimeout(toastTimer);$('#toast').textContent=text;$('#toast').hidden=false;toastTimer=setTimeout(()=>$('#toast').hidden=true,6500);}
@@ -2069,7 +2113,7 @@ function asrSettingsPanel(c,asr){
 }
 async function settings(){const p=state.boot.profile;let c=state.boot.capabilities;
   // 2026-11-16（性能 E-2）：能力探测过期时后端最多等 2 秒重探，设置页不显示旧状态。
-  try{const fresh=await api('/capabilities');if(fresh&&fresh.capabilities){c=fresh.capabilities;state.boot.capabilities=c;}}catch{}$('#breadcrumb').textContent='个人档案与服务连接';let bk=null;try{bk=await api('/backup/status');}catch{}let dh=null;try{dh=await api('/data-home');}catch{}let asr=null;try{asr=await api('/asr/status');}catch{}return `<div class="eyebrow">YOUR IP PROFILE</div><h1>先认识你，再学会你的表达。</h1><p class="lead">密钥只由本页提交、保存到包外 .secrets 目录（默认与包同级，可用 IP_SECRETS_DIR 指定），不进包、不随包分发；网页不回显已保存的 Key。</p><nav class="row space" aria-label="设置分区"><button type="button" class="small-button" data-action="settings-jump" data-target="settings-account">账号与档案</button><button type="button" class="small-button" data-action="settings-jump" data-target="asset-backup">资产与备份</button><button type="button" class="small-button" data-action="settings-jump" data-target="settings-legal">法律与协议</button><button type="button" class="small-button" data-action="settings-jump" data-target="about-product">关于</button><button type="button" class="small-button" data-action="settings-jump" data-target="settings-pref">偏好与连接</button></nav><div class="grid2"><div class="panel" id="settings-account"><form id="profile-form"><input type="hidden" name="revision" value="${p.revision||0}">${[['name','怎么称呼你'],['account','账号名称'],['audience','主要对谁说话']].map(([k,l])=>`<label class="field"><span>${l}</span><input name="${k}" type="text" ${k==='name'?'maxlength="30"':''} value="${esc(p[k])}"></label>`).join('')}<details class="creation-profile-fields"><summary>行业与业务资料 <span class="small muted">用于选题与痛点探索</span></summary>${[['industry','行业背景','例如：宠物医疗，经营一家宠物医院'],['experience','真实经历与专业积累','例如：从业7年；只填写能核实的经历'],['product','产品或服务','提供什么、适合谁、有什么实际区别']].map(([k,l,ph])=>`<label class="field space"><span>${l}</span><textarea name="${k}" rows="2" maxlength="5000" placeholder="${ph}">${esc(p[k]||'')}</textarea></label>`).join('')}</details><label class="field"><span>说话风格</span><textarea name="style">${esc(p.style)}</textarea></label><label class="field"><span>表达红线</span><textarea name="redlines">${esc(p.redlines)}</textarea></label>${profileHabitFields(p)}<button class="primary" type="submit">保存个人档案</button></form></div><div class="panel" id="settings-pref"><h2>执行能力</h2><div class="caps">${[['本机FFmpeg',c.ffmpeg],['生成模型 '+(c.llm_model||''),c.llm],['本地分段工坊转写',c.asr],['链接解析',c.resolver],['本地MotionGit',c.motion_installed],['平台发布',c.publishing]].map(([n,v])=>`<div class="cap"><span>${n}</span>${pill(v?'已配置 / 已找到':'待连接',v?'ok':'warn')}</div>`).join('')}</div>${c.resolver_note?`<p class="small muted space">链接解析${c.resolver?'已通过实测':'还没通过实测'}：${esc(c.resolver_note)}</p>`:''}<p class="small muted space">找到文件不等于完整能力实测。${esc(c.motion_format)}</p>${asrSettingsPanel(c,asr)}<div class="rule space"><h3>手机访问（同一局域网）</h3><label class="check"><input id="lan-enabled" type="checkbox" ${state.boot.lan_enabled?'checked':''} ${state.boot.lan_mode?'':'disabled'}> 允许手机访问（需要访问码）</label><p class="small muted">默认开启；访问码在启动窗口显示，也保存在 app\\.runtime\\lan-token.txt。关闭后手机立即连不上，电脑本机不受影响。${state.boot.lan_mode?'':'当前以仅本机方式启动，重启 start.bat 后开关才生效。'}</p>${state.boot.lan_url?`<p class="small">手机打开：<a class="link" href="${esc(state.boot.lan_url)}" target="_blank" rel="noopener">${esc(state.boot.lan_url)}</a><br>访问码：<strong>${esc(state.boot.lan_token||'')}</strong>（换码：改 app\\.runtime\\lan-token.txt 后重启）</p>`:''}<button data-action="lan-save" class="small-button" ${state.boot.lan_mode?'':'disabled'}>保存手机访问开关</button></div><div class="rule space"><h3>配乐文件夹</h3><p class="small muted">包装时从这里取曲，人声段自动压低；工作台不内置音乐，也不会上网抓曲。目录为空就不加配乐，只保留原声。</p><label class="field"><span>文件夹路径</span><input id="music-folder" type="text" value="${esc(c.packaging_music_dir||'')}" placeholder="例如：本机配乐文件夹的完整路径"></label><p class="small muted" id="music-status">当前 ${c.packaging_music_tracks||0} 首 · ${esc(c.packaging_music_hint||'')}</p><button data-action="music-pick" class="small-button" type="button">选文件夹…</button> <button data-action="music-save" class="small-button" type="button">保存路径</button></div><div class="rule space"><h3>云端 Key（可选）</h3><p class="small muted">默认保存在包外 .secrets 目录（deepseek.key / volc_asr.key），不进包、不随包分发；网页不回显已保存的 Key。当前：大模型「${c.llm_key_set?'已配置':'未配置'}」· 火山转写「${c.asr_key_set?'已配置':'未配置'}」。只有包外目录不可写时才会降级存进数据目录，并当场提示。</p><label class="field"><span>大模型 Key（DeepSeek）</span><input id="key-llm" type="password" autocomplete="new-password" placeholder="单行粘贴，保存后输入框清空"></label><button class="small-button" data-action="save-key" data-field="llm" type="button">保存大模型 Key</button><label class="field space"><span>火山转写 Key</span><input id="key-asr" type="password" autocomplete="new-password" placeholder="单行粘贴，保存后输入框清空"></label><button class="small-button" data-action="save-key" data-field="asr" type="button">保存火山转写 Key</button></div>${backupPanel(bk)}<section class="panel space" id="data-sovereignty"><h2>知识库 · 数据主权</h2><p class="small">你的思考只属于你：知识库记录只存本机数据目录。调用模型时只把<strong>本次问题/检索片段</strong>作为提示词发出去，工作台不整库上传，也不用于训练；第三方模型服务的数据处理以其条款为准。</p><div class="row space"><a class="button-link primary" href="${media('/api/brain/export')}" download="重启系统-整体导出.zip">一键整体导出（JSON＋Markdown）</a><a class="link small" href="${media('/api/brain/export?format=json')}" download="重启系统-整体导出.json">仅 JSON</a><a class="link small" href="${media('/api/brain/export?format=markdown')}" download="重启系统-整体导出.md">仅 Markdown</a><label class="button-link">导入备份<input id="brain-import-file" type="file" accept=".json,.zip" hidden></label></div><p class="small muted">导入默认按 id/标题合并去重、不覆盖已有卡；可选 replace=1 覆盖同 id（接口参数）。</p><p class="small muted">导出含认知卡、碎片、会话、打卡档案与打卡记录；不包含视频素材和密钥。</p><div class="rule space"><h3>删除说明</h3><p class="small muted">认知卡「删除」先移到已删除，可恢复；「彻底删除」会从本机数据库移除、不能找回，并同步删掉其索引记录。备份包是历史副本，不会被自动清理——要删干净，请同时删除对应备份文件。碎片/会话/打卡目前没有界面批量删除入口，可先整体导出，再按数据目录中的记录/文件处理。</p></div></section><details><summary>开发配置</summary><pre class="code">IP_LLM_URL / IP_LLM_MODEL / IP_LLM_KEY<br>IP_ASR_URL / IP_ASR_KEY<br>IP_RESOLVER_URL / IP_RESOLVER_KEY<br>IP_FFMPEG / IP_FFPROBE<br>IP_MOTION_ADAPTER / IP_MOTION_PYTHON</pre><p class="small muted">Key 只填在包外 .secrets 目录（deepseek.key / volc_asr.key，默认与包同级，可用 IP_SECRETS_DIR 指定）；数据目录 app\\.runtime\\.env.local 仅作兜底。包根 .env.local 是空模板，程序不会写入。start.bat 以 --host 0.0.0.0 启动，局域网内手机访问 /api 需要访问码，可在上方「手机访问」开关里随时关闭。公开部署前仍需 HTTPS 与多用户隔离。接入契约见项目 README。</p></details></div><section class="panel space" id="asset-backup"><h2>资产备份</h2>${dataHomeHtml(dh)}<p class="small">资产带得走：认知、作品、会话和打卡记录可以整体导出成一个压缩包；换机、重装或下一版本都能再导入。建议每周或每新增 10 条认知后备份一次。</p><div class="row space"><a class="button-link primary" id="asset-backup-export" href="${media('/api/brain/export')}" download="重启系统-整体导出.zip">一键导出资产（JSON＋Markdown）</a><span class="small muted" id="asset-backup-note">软件只是容器，资产在你的本机。</span></div><p class="small muted">与升级提示里的「导出备份」是同一个导出端点；导入在下方「数据主权」区。</p></section><section class="panel space" id="settings-legal"><h2>法律与协议</h2><p class="small muted">使用本工作台前请阅读并同意以下文本；会员开通时还会再次确认勾选。</p><div class="row">${legalAnchorHtml('service','《服务协议》')}${legalAnchorHtml('privacy','《隐私政策》')}</div></section><section class="panel space" id="about-product"><h2>关于人生重启系统</h2><p class="small">在 AI 把所有人抹平的时代，让每个普通人把自己的真实经历，炼成不可复制的认知与作品，拥有自己的声音、资产和命运。</p><p class="small muted">软件只是容器，你在里面建起的认知与作品，才是那笔越用越值钱、带得走、抄不走的资产。</p><div class="row space"><button type="button" class="small-button" data-fail-next="diagnostics">导出诊断包（排障用）</button><span class="small muted">含启动器日志、端口判定与核心文件在不在；不含密钥与稿件正文。</span></div></section>${styleCardPanel(p)}</div>`;}
+  try{const fresh=await api('/capabilities');if(fresh&&fresh.capabilities){c=fresh.capabilities;state.boot.capabilities=c;}}catch{}$('#breadcrumb').textContent='个人档案与服务连接';let bk=null;try{bk=await api('/backup/status');}catch{}let dh=null;try{dh=await api('/data-home');}catch{}let asr=null;try{asr=await api('/asr/status');}catch{}return `<div class="eyebrow">YOUR IP PROFILE</div><h1>先认识你，再学会你的表达。</h1><p class="lead">云端能力统一由官方云端网关提供，本机无需填写任何 API Key；登录账号后按会员权益使用。</p><nav class="row space" aria-label="设置分区"><button type="button" class="small-button" data-action="settings-jump" data-target="settings-account">账号与档案</button><button type="button" class="small-button" data-action="settings-jump" data-target="asset-backup">资产与备份</button><button type="button" class="small-button" data-action="settings-jump" data-target="settings-legal">法律与协议</button><button type="button" class="small-button" data-action="settings-jump" data-target="about-product">关于</button><button type="button" class="small-button" data-action="settings-jump" data-target="settings-pref">偏好与连接</button></nav><div class="grid2"><div class="panel" id="settings-account"><form id="profile-form"><input type="hidden" name="revision" value="${p.revision||0}">${[['name','怎么称呼你'],['account','账号名称'],['audience','主要对谁说话']].map(([k,l])=>`<label class="field"><span>${l}</span><input name="${k}" type="text" ${k==='name'?'maxlength="30"':''} value="${esc(p[k])}"></label>`).join('')}<details class="creation-profile-fields"><summary>行业与业务资料 <span class="small muted">用于选题与痛点探索</span></summary>${[['industry','行业背景','例如：宠物医疗，经营一家宠物医院'],['experience','真实经历与专业积累','例如：从业7年；只填写能核实的经历'],['product','产品或服务','提供什么、适合谁、有什么实际区别']].map(([k,l,ph])=>`<label class="field space"><span>${l}</span><textarea name="${k}" rows="2" maxlength="5000" placeholder="${ph}">${esc(p[k]||'')}</textarea></label>`).join('')}</details><label class="field"><span>说话风格</span><textarea name="style">${esc(p.style)}</textarea></label><label class="field"><span>表达红线</span><textarea name="redlines">${esc(p.redlines)}</textarea></label>${profileHabitFields(p)}<button class="primary" type="submit">保存个人档案</button></form></div><div class="panel" id="settings-pref"><h2>执行能力</h2><div class="caps">${[['本机FFmpeg',c.ffmpeg],['生成模型 '+(c.llm_model||''),c.llm],['本地分段工坊转写',c.asr],['链接解析',c.resolver],['本地MotionGit',c.motion_installed],['平台发布',c.publishing]].map(([n,v])=>`<div class="cap"><span>${n}</span>${pill(v?'已配置 / 已找到':'待连接',v?'ok':'warn')}</div>`).join('')}</div>${c.resolver_note?`<p class="small muted space">链接解析${c.resolver?'已通过实测':'还没通过实测'}：${esc(c.resolver_note)}</p>`:''}<p class="small muted space">找到文件不等于完整能力实测。${esc(c.motion_format)}</p>${asrSettingsPanel(c,asr)}<div class="rule space"><h3>手机访问（同一局域网）</h3><label class="check"><input id="lan-enabled" type="checkbox" ${state.boot.lan_enabled?'checked':''} ${state.boot.lan_mode?'':'disabled'}> 允许手机访问（需要访问码）</label><p class="small muted">默认开启；访问码在启动窗口显示，也保存在 app\\.runtime\\lan-token.txt。关闭后手机立即连不上，电脑本机不受影响。${state.boot.lan_mode?'':'当前以仅本机方式启动，重启 start.bat 后开关才生效。'}</p>${state.boot.lan_url?`<p class="small">手机打开：<a class="link" href="${esc(state.boot.lan_url)}" target="_blank" rel="noopener">${esc(state.boot.lan_url)}</a><br>访问码：<strong>${esc(state.boot.lan_token||'')}</strong>（换码：改 app\\.runtime\\lan-token.txt 后重启）</p>`:''}<button data-action="lan-save" class="small-button" ${state.boot.lan_mode?'':'disabled'}>保存手机访问开关</button></div><div class="rule space"><h3>配乐文件夹</h3><p class="small muted">包装时从这里取曲，人声段自动压低；工作台不内置音乐，也不会上网抓曲。目录为空就不加配乐，只保留原声。</p><label class="field"><span>文件夹路径</span><input id="music-folder" type="text" value="${esc(c.packaging_music_dir||'')}" placeholder="例如：本机配乐文件夹的完整路径"></label><p class="small muted" id="music-status">当前 ${c.packaging_music_tracks||0} 首 · ${esc(c.packaging_music_hint||'')}</p><button data-action="music-pick" class="small-button" type="button">选文件夹…</button> <button data-action="music-save" class="small-button" type="button">保存路径</button></div>${backupPanel(bk)}<section class="panel space" id="data-sovereignty"><h2>知识库 · 数据主权</h2><p class="small">你的思考只属于你：知识库记录只存本机数据目录。调用模型时只把<strong>本次问题/检索片段</strong>作为提示词发出去，工作台不整库上传，也不用于训练；第三方模型服务的数据处理以其条款为准。</p><div class="row space"><a class="button-link primary" href="${media('/api/brain/export')}" download="重启系统-整体导出.zip">一键整体导出（JSON＋Markdown）</a><a class="link small" href="${media('/api/brain/export?format=json')}" download="重启系统-整体导出.json">仅 JSON</a><a class="link small" href="${media('/api/brain/export?format=markdown')}" download="重启系统-整体导出.md">仅 Markdown</a><label class="button-link">导入备份<input id="brain-import-file" type="file" accept=".json,.zip" hidden></label></div><p class="small muted">导入默认按 id/标题合并去重、不覆盖已有卡；可选 replace=1 覆盖同 id（接口参数）。</p><p class="small muted">导出含认知卡、碎片、会话、打卡档案与打卡记录；不包含视频素材和密钥。</p><div class="rule space"><h3>删除说明</h3><p class="small muted">认知卡「删除」先移到已删除，可恢复；「彻底删除」会从本机数据库移除、不能找回，并同步删掉其索引记录。备份包是历史副本，不会被自动清理——要删干净，请同时删除对应备份文件。碎片/会话/打卡目前没有界面批量删除入口，可先整体导出，再按数据目录中的记录/文件处理。</p></div></section><details><summary>开发配置</summary><pre class="code">IP_LLM_URL / IP_LLM_MODEL / IP_LLM_KEY<br>IP_ASR_URL / IP_ASR_KEY<br>IP_RESOLVER_URL / IP_RESOLVER_KEY<br>IP_FFMPEG / IP_FFPROBE<br>IP_MOTION_ADAPTER / IP_MOTION_PYTHON</pre><p class="small muted">Key 只填在包外 .secrets 目录（deepseek.key / volc_asr.key，默认与包同级，可用 IP_SECRETS_DIR 指定）；数据目录 app\\.runtime\\.env.local 仅作兜底。包根 .env.local 是空模板，程序不会写入。start.bat 以 --host 0.0.0.0 启动，局域网内手机访问 /api 需要访问码，可在上方「手机访问」开关里随时关闭。公开部署前仍需 HTTPS 与多用户隔离。接入契约见项目 README。</p></details></div><section class="panel space" id="asset-backup"><h2>资产备份</h2>${dataHomeHtml(dh)}<p class="small">资产带得走：认知、作品、会话和打卡记录可以整体导出成一个压缩包；换机、重装或下一版本都能再导入。建议每周或每新增 10 条认知后备份一次。</p><div class="row space"><a class="button-link primary" id="asset-backup-export" href="${media('/api/brain/export')}" download="重启系统-整体导出.zip">一键导出资产（JSON＋Markdown）</a><span class="small muted" id="asset-backup-note">软件只是容器，资产在你的本机。</span></div><p class="small muted">与升级提示里的「导出备份」是同一个导出端点；导入在下方「数据主权」区。</p></section><section class="panel space" id="settings-legal"><h2>法律与协议</h2><p class="small muted">使用本工作台前请阅读并同意以下文本；会员开通时还会再次确认勾选。</p><div class="row">${legalAnchorHtml('service','《服务协议》')}${legalAnchorHtml('privacy','《隐私政策》')}</div></section><section class="panel space" id="about-product"><h2>关于人生重启系统</h2><p class="small">在 AI 把所有人抹平的时代，让每个普通人把自己的真实经历，炼成不可复制的认知与作品，拥有自己的声音、资产和命运。</p><p class="small muted">软件只是容器，你在里面建起的认知与作品，才是那笔越用越值钱、带得走、抄不走的资产。</p><div class="row space"><button type="button" class="small-button" data-fail-next="diagnostics">导出诊断包（排障用）</button><span class="small muted">含启动器日志、端口判定与核心文件在不在；不含密钥与稿件正文。</span></div></section>${styleCardPanel(p)}</div>`;}
 const ROUTE_ALIAS={growth:'restart',factory:'create',home:'restart',brain:'restart'}   /* t175（需求单 D 方案A）：旧 #/brain 直接改成 #/restart，历史收藏不白屏 */;
   // 2026-11-16 旧书签/收藏不再 404：旧 hash 静默改写成新路由（replaceState 不触发二次渲染）。
   /* t182（2026-11-24）：别名改为「参数感知」。
@@ -2632,14 +2676,6 @@ async function action(el){
     const on=$('#asr-diarize')&&$('#asr-diarize').checked;
     const r=await api('/asr/diarize','POST',{enabled:!!on});
     toast(`说话人分离已${r.diarize?'开启':'关闭'}。${r.restarted?'常驻模型已释放，下次转写会按新设置重新加载。':'下次转写生效。'}`);
-    await route();
-  }
-  else if(a==='save-key'){
-    const field=el.dataset.field,box=$('#key-'+field),value=(box&&box.value||'').trim();
-    if(!value)throw Error('请先填写 Key 再保存。');
-    const r=await api('/settings/key','POST',{field,key:value});
-    if(box)box.value='';
-    toast(r.warning||`Key 已保存到 ${r.path}，立即生效；网页不会再显示这把 Key。`);
     await route();
   }
   else if(a==='report-false-positive'){

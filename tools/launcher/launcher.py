@@ -1950,6 +1950,23 @@ class Launcher:
         return self.run_pywebview(webview)
 
 
+def ensure_desktop_shortcut_async():
+    """后台创建/补建桌面快捷入口（幂等，绝不影响启动）。
+    2026-11-26：客户反馈「总要进文件夹找 start.bat 双击，不正规」→
+    启动器每次拉起时后台补建桌面「人生重启系统.lnk」（已存在即跳过；
+    用户删掉后下次启动自动恢复）。见 tools/create_desktop_shortcut.py。"""
+    script = HERE.parent / "create_desktop_shortcut.py"
+    if not script.is_file():
+        return
+    try:
+        subprocess.Popen(
+            [sys.executable, str(script)],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=CREATE_NO_WINDOW, close_fds=True)
+    except Exception:
+        pass
+
+
 def main():
     parser = argparse.ArgumentParser(description="共用桌面外壳启动器")
     parser.add_argument("--config", required=True)
@@ -1968,6 +1985,9 @@ def main():
         log.info("配置=%s 产品=%s 端口=%s console=%s python=%s",
                  args.config, cfg.get("product_id"), cfg.get("port"),
                  console, Path(sys.executable).name)
+
+        if not args.check and not args.set_autostart:
+            ensure_desktop_shortcut_async()
 
         if args.set_autostart:
             auto = cfg.get("autostart", {})

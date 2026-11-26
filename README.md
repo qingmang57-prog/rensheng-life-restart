@@ -34,7 +34,7 @@ python tools/setup_full.py
 2. 双击 `tools\setup_full.bat`（补齐全部组件并自检）
 3. 双击 `start.bat`
 
-只跑核心功能（对话、转写、选题、写稿、打卡）也可以：`pip install -r requirements.txt` 后直接 `start.bat`，缺组件时界面会用人话提示缺什么、怎么补。云端转写与大模型通过 `api.jidixh.com` 代理，注册账号即可试用。
+只跑核心功能（对话、转写、选题、写稿、打卡）也可以：依赖不要自己装，全部由 `tools\setup_full.bat` 补齐（见 INSTALL.md 第 2 节），缺组件时界面会用人话提示缺什么、怎么补。云端转写与大模型通过 `api.jidixh.com` 代理，注册账号即可试用。
 
 首次启动会打开桌面窗口（WebView2）；没有 WebView2 时自动回落浏览器。
 数据默认保存在「文档 \ 人生重启系统数据」，删软件不会丢数据。

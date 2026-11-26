@@ -1,0 +1,25 @@
+/* 2026-11-17（t47）：多平台发布工作台 —— 外部样式（CSP style-src 'self'，无内联） */
+.pub-workbench { display: grid; gap: 12px; }
+.pub-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 8px; }
+.pub-card { display: grid; gap: 4px; justify-items: start; padding: 10px 12px; text-align: left;
+  border: 1px solid var(--border, #2c2c2c); border-radius: 10px; background: var(--surface, #17171a);
+  color: inherit; cursor: pointer; }
+.pub-card:hover { border-color: var(--gold, #c8a24a); }
+.pub-card.is-active { border-color: var(--gold, #c8a24a); box-shadow: inset 0 0 0 1px var(--gold, #c8a24a); }
+.pub-card strong { font-size: 14px; }
+.pub-body { display: grid; gap: 10px; }
+.pub-kit { display: grid; gap: 10px; }
+.pub-compliance { margin: 0; padding: 8px 10px; border-left: 2px solid var(--gold, #c8a24a);
+  background: var(--tint-soft, rgba(200,162,74,.08)); font-size: 12px; }
+.pub-kit-row { display: grid; gap: 4px; padding: 8px 10px; border: 1px solid var(--border, #2c2c2c);
+  border-radius: 8px; }
+.pub-kit-text { margin: 0; font-size: 13px; line-height: 1.55; overflow-wrap: anywhere;
+  white-space: pre-wrap; }
+.pub-steps { display: grid; gap: 4px; }
+.pub-steps ol { margin: 0; padding-left: 20px; }
+
+@media (max-width: 480px) {
+  .pub-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pub-card { padding: 8px 10px; }
+  .pub-kit-text { font-size: 12px; }
+}

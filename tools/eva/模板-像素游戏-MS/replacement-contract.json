@@ -1,0 +1,53 @@
+{
+  "template": "像素游戏机（MS · 1920x1080 游戏化四节拍）",
+  "schema_version": "0.1.0",
+  "source_revision": {
+    "scenes.js": "sha256:ea31643a44bfa60d169d316d29492393c87c234b3475cd0a73ef4839e90f984e",
+    "intro.js": "sha256:077e542412bcd00deae89a81d3a84e38f8831a556df0188a23bf302ff4ce5d39",
+    "app.js": "sha256:809b429836fff67926174f6650bfbbb580f07b8c759451b0fcfff1be13b4f4ed",
+    "derived_from": "content/template/{scenes.js,intro.js,kit.js} 全读实测（t17 2026-11-19 施工B）；容量由 verbatim 运行时 clip 封顶，非人工预算"
+  },
+  "canvas": { "width": 1920, "height": 1080, "fps": 30, "duration_default_s": 15.033 },
+  "invariants": [
+    "像素风四件套：CRT 扫描线+像素点阵底（scenes.js:54-61）/ qstep 运动量化（scenes.js:17）/ canvas 精灵 pixelated（scenes.js:35-43）/ 直角硬阴影卡禁圆角（scenes.js:50-51），圆只留给头像窗 morph",
+    "夜晚蓝霓虹色板 INK/CYAN/PINK/YEL/GRN/DARK/DIM（scenes.js:11-12）+ 渐变底（scenes.js:56）",
+    "固定 B 四节拍等分 [0,.25,.5,.75]xEND（scenes.js:15）：B1 开屏→B2 风格四选→B3 收集品三框→B4 通关 CTA；不可增删镜",
+    "头像窗 4 窗 morph choreography（SQ1→CI1→SQ2→CI2，evaKeys 5 键 outBack，scenes.js:20-30）+ ringFn 青色辉光（scenes.js:31-32）",
+    "verbatim 中文化铁律：上屏中文必须是逐字稿归一化子串，否则置空；宁少不假，绝不翻译/编造（intro.js:46-49,75-78,116）",
+    "C.face 居中常量 {x:.354,y:.364,h:.42} 硬编 540x960 素材（intro.js:19-22，t24 实测）；本包不暴露 host.face 覆盖",
+    "1920x1080 stage 坐标硬编（窗几何/卡片位置不随参数缩放，scenes.js:20-23/118/146）；确定性帧时钟（无 Date.now/Math.random，grep 实测）",
+    "sfx 仅登记线索，scripts/sfx.py 外渲（kit.js:47-48）；无字幕层"
+  ],
+  "replaceable": {
+    "capacity_rule": "与竖屏包不同：上屏中文由 verbatim 运行时 cap 封顶（cap=max(2,min(8,round(英文词 ASCII 长 x 0.45)))，intro.js:113）+ clip 标点截断（intro.js:79-87）→ 上屏 ≤8 字硬顶，超长自动截断不溢出；英文 demo 词为版式占位符，渲染期被逐字稿句子替换（TreeWalker isEN 判定，intro.js:120-133）",
+    "slots": {
+      "duration": { "type": "number", "line": "intro.js:3", "capacity": "建议 12-20s，默认 15.033", "overflow": "B 节拍等分随 END 拉长；FRAMES=round(dur*30)（intro.js:32）" },
+      "lines": { "type": "transcript", "line": "{start,end,speak|text}，句中点 25/50/80% 归 4 桶 intro.js:58-63；语义角色分桶 roleOf intro.js:97-103", "capacity": "每条上屏 ≤8 字（cap 封顶）", "overflow": "clip 标点截断" },
+      "s1_h": { "type": "text", "line": "slots-fallback 8 槽之一 intro.js:68", "capacity": "≤8 字（cap）", "overflow": "标点截断" },
+      "s1_n": { "type": "text", "line": "intro.js:68", "capacity": "≤8 字", "overflow": "标点截断" },
+      "s2_g": { "type": "text", "line": "intro.js:68", "capacity": "≤8 字", "overflow": "标点截断" },
+      "s3_g1": { "type": "text", "line": "intro.js:68", "capacity": "≤8 字", "overflow": "标点截断" },
+      "s3_g2": { "type": "text", "line": "intro.js:68", "capacity": "≤8 字", "overflow": "标点截断" },
+      "s3_g3": { "type": "text", "line": "intro.js:68", "capacity": "≤8 字", "overflow": "标点截断" },
+      "s4_h": { "type": "text", "line": "intro.js:68", "capacity": "≤8 字", "overflow": "标点截断" },
+      "s4_n": { "type": "text", "line": "intro.js:68", "capacity": "≤8 字", "overflow": "标点截断" },
+      "shots": { "type": "image_list", "line": "P.shots intro.js:24 → B3 三相框 i%len scenes.js:152", "capacity": "3 张竖图 302x436", "overflow": "多于 3 截断，少于 3 循环复用" },
+      "host.dir": { "type": "asset_dir", "line": "C.evaDir intro.js:18", "capacity": "540x960 帧序列", "overflow": "缺→回退 media/eva，目录不存在则人物窗空" },
+      "brand": { "type": "text", "line": "IN.BRAND=P.brand intro.js:28", "capacity": "≤10 字", "overflow": "定义于 IN 但 scenes.js 未消费（诚实差距）" }
+    },
+    "access_path": "window.USER_PARAMS ← render.mjs addInitScript（render.mjs:68）→ app.js 转 __EVA_P（app.js）；intro.js 直读 USER_PARAMS（intro.js:2/52）；场景消费 IN.STYLES（take(4) 池，intro.js:25）与 IN.SHOTS"
+  },
+  "missing_input_behavior": {
+    "no_lines_no_slots": "语料空 → pick 返回空串 → 英文文本节点全部置空（intro.js:112-116,133）：宁少不假，画面剩装饰+人物窗，不造假文案；不阻塞渲染",
+    "no_shots": "B3 三相框空框（img src undefined，scenes.js:152），不造假图",
+    "no_host_dir": "回退 'media/eva'（intro.js:18）；目录不存在则人物窗空，文字照常",
+    "slots_fallback": "无 lines 时自动启用 8 槽 fallback（MODE=slots-fallback，intro.js:65-73），窗口导出 __CN_MODE 可查",
+    "blocking": "无阻塞缺料；但缺料成片信息量趋零，交付前必须核对 __CN_STATS.replaced>0 且 shots/host.dir 已供"
+  },
+  "overflow_policy": "cap 封顶＋标点截断防溢出（与竖屏包的人工字数预算路线不同）；英文占位词被替换或置空，不会残留假文案",
+  "review": {
+    "technical": "ffprobe 1920x1080/30fps 解码 rc0；泵契约 node render.mjs --preview --time <s> / --times 列表 / --params x.json --out demo.mp4 [--scale][--dur]；中文化回归：__CN_STATS.frames>0、violations=0、__CN_REPLACED 全过 verbatim（intro.js:141,159 出口）",
+    "experience": "原速听看：游戏化隐喻是否成立、四张风格卡是否读完、三证据图是否看清、STAGE CLEAR 是否带行动冲动；执行人自测≠独立核验，人眼（青芒）定验收",
+    "capacity_check": "池子供给核对：lines 或 8 槽至少一类非空；shots 3 张；注入对照渲染验证上屏中文∈逐字稿"
+  }
+}

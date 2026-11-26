@@ -1,0 +1,1 @@
+window.JDSpatialPolicy={version:1,theme:'warm',preset:'auto'};

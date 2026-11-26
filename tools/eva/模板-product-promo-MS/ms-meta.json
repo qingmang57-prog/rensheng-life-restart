@@ -1,0 +1,7 @@
+{
+  "name": "MS · 产品演示宣传（1920×1080）",
+  "caption": "横屏 · 深空画布：徽记汇合→协作画布三幕（光标协同/组件装卡/评论区收束）→徽记绽放收尾，产品发布向",
+  "width": 1920,
+  "height": 1080,
+  "note": "本机渲染，不扣积分；HyperFrames 官方 product-promo 原生模板接入（Apache-2.0），GSAP 本地 vendored 3.14.2，Inter 字体 OFL 本地化，场景窗口支持 USER_PARAMS/URL 变量重排"
+}

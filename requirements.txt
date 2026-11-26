@@ -1,0 +1,33 @@
+# 人可读依赖清单（不是安装来源；安装请用 requirements.lock.txt）
+# 依据：对 app/*.py 做 AST 静态扫描，取出真实 import 的第三方顶层模块，
+#       再到 requirements.lock.txt 里查对应精确版本。采集时间 2026-11-03。
+#
+# 直接 import 的只有下面 4 组；其余 50 余项是 rembg 的传递依赖和环境自带的
+# 历史包（python-docx / python-pptx / pandas / reportlab 等当前 app 代码并未 import，
+# 保留是为了锁死现状，不是运行必需）。
+
+# 图像 / 抠图（app/avatar_service.py 实测 import）
+rembg==2.0.86
+onnxruntime==1.31.1
+opencv-python-headless==4.12.0.88
+pillow==12.3.0
+numpy==2.5.4
+
+# rembg 的传递依赖（U2Net 推理链，lock 中已固定）
+scikit-image==0.26.0
+scipy==1.18.1
+PyMatting==1.1.16
+pooch==1.9.0
+tqdm==4.70.1
+jsonschema==4.26.0
+
+# 可选分支：app/avatar_service.py::_local_generate 才 import
+# （当前主环境未安装，属“装了才启用”，因此不写进 lock）
+# torch
+# diffusers
+
+# 正文抽取（app/wash_service.py 可选 import；装了用 trafilatura，没装自动退回内置解析器）
+trafilatura==2.3.1
+
+# 本地语音识别的解释器与依赖不在本环境：见 requirements-asr.lock.txt
+# 运镜/包装 Python 环境另有一套：见 requirements-motion.lock.txt

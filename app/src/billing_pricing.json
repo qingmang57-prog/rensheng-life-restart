@@ -1,0 +1,141 @@
+{
+  "version": 2,
+  "updated_at": "2026-11-14",
+  "currency": "CNY",
+  "credit_milli": 1000,
+  "pricing_note": "2026-11-16 拍板：在售只保留年卡 499 元/365 天；月卡已下架（enabled=false）。本文件可直接增删档位，改完即生效，代码不写死档位。",
+  "plans": {
+    "free": {
+      "label": "免费",
+      "price_cents": 0,
+      "list_price_cents": 0,
+      "period": "none",
+      "period_days": 0,
+      "months": 0,
+      "days": 0,
+      "discount_bp": 10000,
+      "enabled": true,
+      "sort": 0,
+      "badge": "",
+      "pricing_status": "confirmed",
+      "benefits": [
+        "每月 3 次成片导出（自然月重置，不累积）",
+        "导出最高 720p",
+        "云端转写不可用；本地转写不限次数",
+        "第二大脑问答与封面解锁按额度扣减"
+      ],
+      "benefits_note": "与云端 trial 模板一致：exports_per_month=3、max_height=720、allow_cloud_asr=0"
+    },
+    "month": {
+      "label": "月卡（已下架）",
+      "price_cents": 4900,
+      "list_price_cents": 4900,
+      "period": "month",
+      "period_days": 30,
+      "months": 1,
+      "days": 30,
+      "discount_bp": 10000,
+      "enabled": false,
+      "sort": 10,
+      "badge": "",
+      "pricing_status": "confirmed",
+      "benefits": [
+        "已下架：不再对外售卖，保留配置仅用于历史订单与权益查询"
+      ]
+    },
+    "year": {
+      "label": "年卡",
+      "price_cents": 49900,
+      "list_price_cents": 49900,
+      "period": "year",
+      "period_days": 365,
+      "months": 12,
+      "days": 365,
+      "discount_bp": 10000,
+      "enabled": true,
+      "sort": 20,
+      "badge": "在售唯一档位",
+      "pricing_status": "confirmed",
+      "pause_allowed": 1,
+      "pause_max_days": 60,
+      "includes": {
+        "diagnosis_minutes": 30
+      },
+      "benefits": [
+        "有效期内成片导出不限次数",
+        "导出分辨率不限",
+        "云端转写可用",
+        "全部风格包可用，专属客服"
+      ],
+      "benefits_note": "与云端 vip 模板一致：exports_per_month 不限、max_height 不限、allow_cloud_asr=1"
+    }
+  },
+  "free_limits": {
+    "exports_per_month": 3,
+    "exports_per_day": null,
+    "brain_ask_per_day": null,
+    "max_height": 720,
+    "watermark": false,
+    "max_duration_seconds": null
+  },
+  "free_limits_note": "以下数字为占位默认值，待用户确认；改这里即生效，代码不写死。",
+  "watermark_note": "水印开关保留，默认关闭；启用需用户拍板。",
+  "hold_ttl_seconds": 21600,
+  "credit_validity": {
+    "purchased": "permanent",
+    "granted_grace_days": 30,
+    "remind_days_before_expiry": [7, 3, 1]
+  },
+  "actions": {
+    "asr_minute": {
+      "label": "语音转写",
+      "unit": "minute",
+      "unit_milli": 1000,
+      "min_milli": 3000,
+      "billable": true,
+      "settle_rule": "on_complete"
+    },
+    "comment_angle": {
+      "label": "评论拆角度",
+      "unit": "piece",
+      "unit_milli": 8000,
+      "min_milli": 0,
+      "billable": true,
+      "settle_rule": "on_complete"
+    },
+    "topic_generate": {
+      "label": "选题生成",
+      "unit": "piece",
+      "unit_milli": 5000,
+      "min_milli": 0,
+      "billable": true,
+      "settle_rule": "on_complete"
+    },
+    "brain_ask": {
+      "label": "第二大脑问答（一次提问）",
+      "unit": "piece",
+      "unit_milli": 1000,
+      "min_milli": 0,
+      "billable": true,
+      "settle_rule": "on_complete"
+    },
+    "avatar_unlock": {
+      "label": "形象抠图（按源图 SHA 一次授权，永久复用）",
+      "unit": "piece",
+      "unit_milli": 30000,
+      "min_milli": 0,
+      "billable": true,
+      "settle_rule": "on_complete"
+    },
+    "cover_template_unlock": {
+      "label": "封面模板解锁（一次授权，永久复用）",
+      "unit": "piece",
+      "unit_milli": 49000,
+      "min_milli": 0,
+      "billable": true,
+      "settle_rule": "on_complete",
+      "price_range_milli": [49000, 99000],
+      "item_prices_milli": {}
+    }
+  }
+}

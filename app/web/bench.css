@@ -1,0 +1,218 @@
+/* 找选题：从「手上有什么」出发的引导式起题页。
+   只作用于 #/bench，不改其它页面；颜色全部取 styles.css 的主题变量。 */
+
+/* ---------- 最前面：这条讲什么类型（第一问，可不选） ---------- */
+.bench-type-panel{padding:20px 24px 18px}
+.bench-type-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;min-width:0}
+.bench-type-head h2{margin:0;font:400 19px/1.4 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--text)}
+.bench-types{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.bench-type-chip{padding:7px 16px;border:1px solid var(--border);border-radius:999px;background:var(--surface2);color:var(--muted);font-size:13px;cursor:pointer;transition:border-color .18s ease,color .18s ease,background-color .18s ease}
+.bench-type-chip:hover{border-color:var(--gold);color:var(--text)}
+.bench-type-chip.is-on{border-color:var(--gold);background:var(--tint);color:var(--text)}
+.bench-type-note{margin:12px 0 0}
+
+/* ---------- 顶部：一句话 + 五个抽屉 ---------- */
+.bench-hero{padding:26px 24px 22px}
+.bench-hero h1{margin:0;font:400 27px/1.32 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;letter-spacing:.02em;color:var(--text)}
+.bench-lead{margin:9px 0 0;font-size:13px;line-height:1.7;color:var(--muted)}
+
+.bench-drawers{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:24px}
+.bench-drawer{display:flex;flex-direction:column;align-items:flex-start;min-height:126px;padding:16px 15px 15px;border:1px solid var(--border);border-radius:14px;background:var(--surface2);cursor:pointer;text-align:left;transition:border-color .18s ease,transform .18s ease,background-color .18s ease}
+.bench-drawer:hover{border-color:var(--gold);transform:translateY(-2px)}
+.bench-drawer .bench-ico{display:flex;color:var(--gold);margin-bottom:auto;transition:opacity .18s ease}
+.bench-drawer:hover .bench-ico,.bench-drawer.is-open .bench-ico{opacity:1}
+.bench-label{margin-top:18px;font-size:12px;color:var(--muted);letter-spacing:.04em}
+.bench-num{margin-top:7px;font:300 30px/1 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--text);font-variant-numeric:tabular-nums}
+.bench-num.is-todo{font:400 13px/30px system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;letter-spacing:.12em;color:var(--gold);opacity:.78}
+.bench-drawer.is-open{border-color:var(--gold);background:var(--tint)}
+.bench-drawer.is-open .bench-num{color:var(--gold)}
+.bench-drawer.is-open .bench-label{color:var(--text)}
+.bench-drawer.is-empty{border-style:dashed}
+.bench-drawer.is-empty .bench-num{color:var(--gold)}
+/* 转发放大型句式命中的评论：轻量标记，不加计数 */
+.bench-share-mark{display:inline-flex;align-items:center;font-size:10px;line-height:1.5;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:1px 7px;opacity:.85}
+/* 起题区的「这句话想让人转给谁」：一行轻量选择，不阻断 */
+.bench-share-row{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+.bench-share-row select{min-width:0;max-width:60%}
+/* 浅色下 surface2 与 tint 太接近，未选中改白底，选中态才看得出来 */
+:root.light .bench-drawer{background:var(--surface)}
+:root.light .bench-drawer.is-open{background:var(--tint)}
+
+/* ---------- 两栏 ---------- */
+.bench-split{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,1fr);gap:16px;align-items:start;margin-top:16px}
+.bench-split>aside{display:flex;flex-direction:column;gap:16px;min-width:0}
+.bench-stage{min-width:0}
+
+/* ---------- 小标题行 ---------- */
+.bench-sec{display:flex;align-items:center;gap:9px;margin:0 0 13px;min-height:18px}
+.bench-sec .bench-sec-ico{display:flex;align-items:center;justify-content:center;flex:none;width:17px;height:17px;color:var(--gold);line-height:1}
+.bench-sec .bench-sec-ico svg{display:block;width:16px;height:16px}
+.bench-sec strong{font-size:13px;font-weight:600;color:var(--text)}
+.bench-sec .bench-sec-note{margin-left:auto;font-size:11px;color:var(--muted)}
+
+/* ---------- 素材列表（观众原话 / 我讲过的 / 判断） ---------- */
+.bench-list{display:grid;gap:8px}
+.bench-scroll{max-height:392px;overflow:auto;padding-right:4px;scrollbar-gutter:stable;scrollbar-width:thin}
+.bench-scroll::-webkit-scrollbar{width:8px}
+.bench-scroll::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px}
+.bench-scroll::-webkit-scrollbar-track{background:transparent}
+.bench-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 12px;padding:13px 14px;border:1px solid var(--border);border-radius:11px;background:var(--surface);text-align:left;transition:border-color .18s ease}
+.bench-item:hover{border-color:var(--border-strong)}
+.bench-item.is-on{border-color:var(--gold);background:var(--tint)}
+.bench-item p{grid-column:1;margin:0;font:14px/1.68 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--text);overflow-wrap:anywhere}
+.bench-item .bench-item-foot{grid-column:1;display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.bench-item .bench-item-foot span{overflow-wrap:anywhere}
+.bench-item .bench-dot::before{content:'';display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--gold);margin-right:5px;vertical-align:2px}
+.bench-go{grid-row:1/3;grid-column:2;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--border-strong);background:transparent;color:var(--gold);font-size:13px;padding:0;transition:border-color .18s ease,background-color .18s ease}
+.bench-go:hover:not(:disabled){border-color:var(--gold);background:var(--tint)}
+
+/* 判断类：标题 + 一句主张 + 勾选框 */
+.bench-check{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;padding:12px 14px;border:1px solid var(--border);border-radius:11px;background:var(--surface);cursor:pointer;transition:border-color .18s ease,background-color .18s ease}
+.bench-check:hover{border-color:var(--border-strong)}
+.bench-check input{margin-top:4px}
+.bench-check strong{display:block;font-size:14px;line-height:1.6;font-weight:600;color:var(--text);overflow-wrap:anywhere}
+.bench-check span{display:block;margin-top:3px;font-size:12px;line-height:1.62;color:var(--muted);overflow-wrap:anywhere}
+.bench-check:has(input:checked){border-color:var(--gold);background:var(--tint)}
+
+/* ---------- 十个方向 ---------- */
+/* 十个问句：两列，名字一行、问题一行。不给术语，只给能直接回答的话。 */
+.bench-dirs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.bench-dir{display:grid;gap:3px;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);text-align:left;transition:border-color .18s ease,color .18s ease,background-color .18s ease}
+.bench-dir i{font-style:normal;font-size:10px;letter-spacing:.1em;color:var(--muted);font-variant-numeric:tabular-nums}
+.bench-dir strong{font-size:12.5px;font-weight:600}
+.bench-dir small{font-size:11px;line-height:1.6;color:var(--muted);overflow-wrap:anywhere}
+.bench-dir:hover{border-color:var(--gold);color:var(--gold)}
+.bench-dir:hover small{color:var(--gold);opacity:.8}
+.bench-dir.is-on{border-color:var(--gold);background:var(--tint);color:var(--gold)}
+.bench-dir.is-on i{color:var(--gold);opacity:.75}
+.bench-dir.is-on small{color:var(--gold);opacity:.85}
+
+/* ---------- 时间锚（未建档时的说明） ---------- */
+.bench-anchors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.bench-anchor{display:grid;gap:4px;padding:13px 14px;border:1px dashed var(--border);border-radius:11px;background:var(--surface);color:var(--text);text-align:left;transition:border-color .18s ease,background-color .18s ease}
+.bench-anchor strong{font-size:13px;font-weight:600}
+.bench-anchor span{font-size:11px;line-height:1.6;color:var(--muted);overflow-wrap:anywhere}
+.bench-anchor:hover{border-color:var(--gold)}
+.bench-anchor.is-on{border-style:solid;border-color:var(--gold);background:var(--tint)}
+
+/* ---------- 说一句 + 提交 ---------- */
+.bench-say{margin:0}
+.bench-say textarea{min-height:64px}
+.bench-say .bench-say-hint{font-size:11px;line-height:1.6;color:var(--muted);margin:0}
+.bench-run{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:16px}
+.bench-run-note{font-size:11px;color:var(--muted);margin-right:auto}
+.bench-more{margin-top:18px}
+.bench-more .creation-goals{margin-bottom:18px}
+
+/* 已经在用的来源提示（选了什么） */
+.bench-picked{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:14px 0 0;font-size:11px;color:var(--muted)}
+.bench-picked b{font-weight:600;color:var(--gold)}
+
+/* 空的素材来源 */
+.bench-none{padding:26px 16px;text-align:center;border:1px dashed var(--border);border-radius:11px;color:var(--muted)}
+.bench-none strong{display:block;color:var(--text);font-size:14px;margin-bottom:6px}
+.bench-none p{font-size:12px;line-height:1.7;margin:0}
+
+/* ---------- 选题池（右栏） ---------- */
+.bench-pool{display:flex;flex-direction:column;height:100%}
+.bench-pool .creation-pool-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.bench-pool .creation-pool-head h2{margin:0;font-size:19px}
+.bench-pool .bench-pool-note{font-size:11px;color:var(--muted)}
+.bench-pool .creation-topic:first-of-type{padding-top:14px}
+.bench-pool-foot{margin-top:auto;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted)}
+
+/* ---------- 对标作品库（收进更多设定） ---------- */
+.bench-ref{margin-top:14px}
+
+/* ---------- 响应式 ---------- */
+@media(max-width:1180px){
+  .bench-drawers{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:1100px){
+  .bench-split{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:760px){
+  .bench-hero{padding:22px 18px}
+  .bench-hero h1{font-size:22px}
+  .bench-drawers{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .bench-drawer{min-height:108px;padding:13px 13px 12px}
+  .bench-num{font-size:26px}
+  .bench-dirs{grid-template-columns:minmax(0,1fr)}
+  .bench-anchors{grid-template-columns:minmax(0,1fr)}
+  .bench-sec .bench-sec-note{display:none}
+  .bench-drawer.is-empty{grid-column:span 2;flex-direction:row;align-items:center;gap:12px;min-height:0;padding:14px}
+  .bench-drawer.is-empty .bench-ico{margin-bottom:0}
+  .bench-drawer.is-empty .bench-label{margin-top:0;flex:1;font-size:13px;color:var(--text)}
+  .bench-drawer.is-empty .bench-num{margin-top:0;font-size:22px}
+  .bench-item p{font-size:13px}
+}
+
+/* ---------- 贴一条视频链接，拆 5 个角度 ---------- */
+.bench-link{margin-top:16px;padding:16px 20px 18px}
+.bench-link-head{display:flex;align-items:flex-start;gap:11px}
+.bench-link-ico{display:flex;align-items:center;justify-content:center;width:30px;height:30px;flex:0 0 30px;
+  border-radius:9px;background:var(--tint-soft);border:1px solid var(--border);color:var(--gold);margin-top:1px}
+.bench-link-head strong{display:block;font-size:14px;color:var(--text)}
+.bench-link-head p{margin:3px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.bench-link-form{display:flex;gap:9px;margin-top:13px}
+.bench-link-form input{flex:1;min-width:0;height:38px;padding:0 12px;border-radius:9px;
+  border:1px solid var(--border-strong);background:var(--surface2);color:var(--text);font-size:13px}
+.bench-link-form input::placeholder{color:var(--muted);opacity:.85}
+.bench-link-form input:focus{outline:none;border-color:var(--gold)}
+.bench-link-form button{flex:0 0 auto;height:38px;padding:0 16px;border-radius:9px;font-size:13px;white-space:nowrap}
+.bench-link-note{display:block;margin-top:11px;font-size:12.5px;color:var(--muted);line-height:1.65;word-break:break-word}
+.bench-link-note.is-error{color:var(--danger,#d9534f)}
+.bench-link-note.is-ok{color:var(--text)}
+.bench-link-note b{color:var(--text);font-weight:600}
+.bench-link-note a{white-space:nowrap}
+.bench-spin{display:inline-block;vertical-align:-2px;width:11px;height:11px;margin-right:7px;border-radius:50%;
+  border:1.6px solid var(--border-strong);border-top-color:var(--gold);animation:bench-spin .8s linear infinite}
+@keyframes bench-spin{to{transform:rotate(360deg)}}
+
+.bench-angles-wrap{margin-top:16px}
+.bench-angles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px;margin-top:2px}
+.bench-angle{display:flex;flex-direction:column;gap:8px;padding:13px 13px 12px;border-radius:11px;
+  border:1px solid var(--border);background:var(--surface2)}
+.bench-angle-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.bench-angle-tag{font-size:11px;letter-spacing:.04em;color:var(--gold);background:var(--tint-soft);
+  border:1px solid var(--tint);border-radius:999px;padding:2px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bench-angle-no{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bench-angle h3{margin:0;font-size:13.5px;line-height:1.42;color:var(--text);font-weight:650;letter-spacing:.005em}
+.bench-angle-why{margin:0;font-size:12px;line-height:1.58;color:var(--muted);
+  display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;
+  flex:1 1 auto;min-height:calc(5 * 1.58em)}
+.bench-angle-hook{margin:0;font-size:12.5px;line-height:1.5;color:var(--text);opacity:.92;
+  border-left:2px solid var(--tint);padding-left:8px;min-height:calc(2 * 1.5em)}
+.bench-angle-use{margin-top:auto;height:31px;border-radius:8px;font-size:12.5px;
+  border:1px solid var(--border-strong);background:transparent;color:var(--text);cursor:pointer}
+.bench-angle-use:hover{background-image:linear-gradient(var(--btn-wash),var(--btn-wash))}
+.bench-angles-foot{margin-top:11px;font-size:12px;line-height:1.6;color:var(--muted)}
+.bench-angles-foot a{color:var(--gold)}
+
+@media(max-width:1320px){ .bench-angles{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media(max-width:860px){
+  .bench-link{padding:15px 15px 16px}
+  .bench-link-form{flex-direction:column}
+  .bench-link-form button{width:100%}
+  .bench-angles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bench-angles-wrap .row.spread{flex-direction:column;align-items:flex-start;gap:7px}
+  .bench-angles-wrap .row.spread .actions{width:100%;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .bench-angles-wrap .row.spread h2{font-size:16px;line-height:1.35}
+}
+@media(max-width:600px){
+  .bench-angles{grid-template-columns:minmax(0,1fr)}
+  .bench-angle-why{-webkit-line-clamp:none;display:block;min-height:0}
+  .bench-angle-hook{min-height:0}
+  .bench-angle h3{font-size:14px}
+}
+
+/* ---------- 2026-11-26 整合：类型／手上有什么／贴链接／拆角度 四块并成一张卡 ----------
+   四者是相邻兄弟节点；只收外框与内部细分隔线，不改 DOM、不动事件绑定与局部刷新。
+   角度区为空时整块隐藏，链接块自己收底圆角。 */
+.bench-type-panel,.bench-hero,.bench-link,.bench-angles-wrap{margin-bottom:0;border-radius:0}
+.bench-type-panel{border-radius:var(--radius) var(--radius) 0 0;border-bottom:0}
+.bench-hero{border-bottom:0}
+.bench-link{margin-top:0;border-bottom:0}
+.bench-angles-wrap{border:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);padding:0 22px 18px;margin-top:0}
+.bench-angles-wrap:empty{display:none}
+.bench-link:has(+ .bench-angles-wrap:empty){border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius)}

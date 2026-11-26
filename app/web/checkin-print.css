@@ -1,0 +1,44 @@
+/* 结算单 A4 打印稿：独立样式，不依赖应用主题；始终浅色。 */
+@page{size:A4 portrait;margin:12mm 12mm 10mm}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;color:#37352f;
+  font:10px/1.4 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.doc{max-width:186mm;margin:0 auto}
+.doc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10mm;
+  border-bottom:2px solid #b45309;padding-bottom:3mm;margin-bottom:4mm}
+.doc-eyebrow{margin:0 0 1.5mm;font-size:9px;letter-spacing:2px;color:#b45309}
+.doc-head h1{margin:0 0 1.5mm;font-size:22px;line-height:1.2;font-weight:600}
+.doc-meta{margin:0;font-size:9.5px;color:#77726a}
+.doc-print{border:1px solid #b45309;background:#fff;color:#b45309;border-radius:4px;
+  padding:2mm 4mm;font-size:10px;white-space:nowrap}
+.doc-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2.5mm;margin-bottom:3.5mm}
+.doc-card{border:1px solid #e3e0da;border-radius:3px;padding:2.4mm 3mm;background:#faf9f6}
+.doc-card span{display:block;font-size:9px;color:#77726a}
+.doc-card strong{display:block;margin-top:.8mm;font-size:15px;font-weight:600}
+.doc-card-key{border-color:#b45309;background:#f7ecd9}
+.doc-card-key strong{color:#b45309}
+.doc-rules{border:1px solid #e3e0da;border-radius:3px;padding:2.6mm 3.5mm;margin-bottom:3.5mm;background:#fff}
+.doc-rules p{margin:0 0 1.2mm;font-size:9.5px;line-height:1.5}
+.doc-rules p:last-child{margin-bottom:0}
+.doc-rules b{color:#000}
+.doc-pending{color:#8a5a0c;border-top:1px dashed #e3e0da;padding-top:1.4mm;margin-top:1.6mm!important}
+.doc-tablewrap{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin-bottom:3.5mm}
+.doc-table{width:100%;border-collapse:collapse;border:1px solid #e3e0da;border-radius:3px;overflow:hidden;page-break-inside:avoid}
+.doc-tablehead{display:grid;grid-template-columns:15mm 9mm 15mm 1fr 30mm;gap:1mm;
+  background:#f1f0ec;border-bottom:1px solid #e3e0da;padding:1.3mm 1.6mm;font-size:8px;color:#77726a}
+.doc-tablehead th{text-align:left;font-weight:400;overflow:hidden;white-space:nowrap}
+.doc-table tbody tr{display:grid;grid-template-columns:15mm 9mm 15mm 1fr 30mm;gap:1mm;padding:1.15mm 1.6mm;
+  border-bottom:1px solid #efeee9;font-size:8.4px;line-height:1.3}
+.doc-table tbody tr:last-child{border-bottom:0}
+.doc-table td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;text-align:left}
+.st-missed td:nth-child(3){color:#96271b;font-weight:600}
+.st-missed{background:#fbefed}
+.st-checked td:nth-child(3){color:#b45309}
+.st-today{background:#fdf7ea}
+.st-future td{color:#a8a49c}
+.doc-foot{display:grid;grid-template-columns:minmax(0,1fr) 62mm;gap:6mm;border-top:1px solid #e3e0da;padding-top:2.5mm}
+.doc-foot p{margin:0 0 1.4mm;font-size:8.6px;line-height:1.5;color:#4b4740}
+.doc-foot b{color:#000}
+.doc-sign p{margin:0 0 3.4mm;font-size:9px;color:#37352f}
+.doc-line{display:inline-block;width:46mm;border-bottom:1px solid #77726a;margin-left:1mm}
+@media print{.doc-print{display:none}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}

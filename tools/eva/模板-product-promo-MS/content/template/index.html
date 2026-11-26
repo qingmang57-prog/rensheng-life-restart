@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Product Promo</title>
+    <!-- 接入改造①：GSAP 由 CDN 改为本地 vendored（离线可用）。Apache-2.0 模板源：heygen-com/hyperframes registry/examples/product-promo -->
+    <script src="assets/vendor/gsap-3.14.2.min.js"></script>
+    <style>
+      /* 接入改造②：Inter 由 Google Fonts 改为本地 @font-face（SIL OFL 1.1，许可证见 assets/fonts/OFL-Inter-LICENSE.txt）。
+         Inter v20 为可变字体（wght 100-900，latin 子集），一条 @font-face 覆盖 400/500/600/800。 */
+      @font-face {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: block;
+        src: url("assets/fonts/Inter-Variable-latin.woff2") format("woff2");
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #0a0a0f;
+        font-family: "Inter", sans-serif;
+      }
+      .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      /* 人生帧泵缩放约定：render.mjs --scale 直接变换 #stage，官方运行时与工坊泵不受影响 */
+      #stage {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: top left;
+      }
+      .caption-text-wrapper {
+        position: absolute;
+        bottom: 150px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+        overflow: hidden;
+        padding: 10px 0;
+      }
+      .caption-line {
+        color: white;
+        font-size: 48px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        text-align: center;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        transform: translateY(100%);
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="20"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- 接入改造③：场景宿主 id 与 data-composition-id 对齐（渲染器按同一 id 寻找宿主/根/时间线）。
+           场景窗口（start/duration）写的是默认值，页面加载后由下方 HF_PROMO_CONFIG 按
+           window.USER_PARAMS 或 URL 参数统一覆盖，再建时间线——时长不硬编码。 -->
+      <!-- Scene 1: Logo Intro -->
+      <div
+        id="scene1-logo-intro"
+        class="scene"
+        data-composition-id="scene1-logo-intro"
+        data-composition-src="compositions/scene1-logo-intro.html"
+        data-start="0"
+        data-duration="1.5"
+        data-track-index="1"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+
+      <!-- Scene 2-4: Continuous Canvas -->
+      <div
+        id="scene2-4-canvas"
+        class="scene"
+        data-composition-id="scene2-4-canvas"
+        data-composition-src="compositions/scene2-4-canvas.html"
+        data-start="1.5"
+        data-duration="12.5"
+        data-track-index="1"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+
+      <!-- Scene 5: Logo Outro -->
+      <div
+        id="scene5-logo-outro"
+        class="scene"
+        data-composition-id="scene5-logo-outro"
+        data-composition-src="compositions/scene5-logo-outro.html"
+        data-start="14"
+        data-duration="6"
+        data-track-index="1"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+
+      <!-- Captions（内联组合，无外部文件） -->
+      <div
+        id="captions"
+        data-track-kind="captions"
+        data-composition-id="captions"
+        data-start="1.5"
+        data-duration="12.5"
+        data-track-index="2"
+        data-width="1920"
+        data-height="1080"
+      >
+        <div class="caption-text-wrapper">
+          <div id="caption-text" class="caption-line">Starting with a blank canvas.</div>
+        </div>
+
+        <script>
+          (function () {
+            const tl = gsap.timeline({ paused: true });
+            const text = document.querySelector("#caption-text");
+
+            tl.to(text, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0);
+            tl.to(text, { opacity: 0, y: -20, duration: 0.3, ease: "power3.in" }, 3.2);
+            tl.set(text, { innerText: "Three cursors. One file. Zero meetings.", y: 40 }, 3.5);
+            tl.to(text, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 3.5);
+            tl.to(text, { opacity: 0, y: -20, duration: 0.3, ease: "power3.in" }, 7.7);
+            tl.set(
+              text,
+              { innerText: "Components in. Feedback resolved. No one waited.", y: 40 },
+              8.0,
+            );
+            tl.to(text, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 8.0);
+            tl.to(text, { opacity: 0, y: -20, duration: 0.4, ease: "power3.in" }, 12.1);
+
+            window.__timelines = window.__timelines || {};
+            window.__timelines["captions"] = tl;
+          })();
+        </script>
+      </div>
+    </div>
+
+    <!-- 接入改造④：变量化时长。默认值与上游一致；USER_PARAMS / URL 参数可整体重排三段窗口与总时长。
+         说明：变量控制的是「场景窗口与总时长」（编排层）；场景内部节拍仍按原始设计时长，
+         窗口短于内部时长会按合同在窗口边界截断（超长则尾部定帧）。 -->
+    <script>
+      (function () {
+        // 来源优先级：URL ?key=value > window.USER_PARAMS > 内置默认（与上游一致）
+        const q = new URLSearchParams(location.search);
+        const up = window.USER_PARAMS || {};
+        const num = (k, d) => {
+          const v = Number(q.get(k) ?? up[k]);
+          return Number.isFinite(v) && v > 0 ? v : d;
+        };
+
+        const s1Start = num("s1_start", 0);
+        const s1Dur = num("s1_dur", 1.5);
+        const s2Start = num("s2_start", s1Start + s1Dur);
+        const s2Dur = num("s2_dur", 12.5);
+        const s3Start = num("s3_start", s2Start + s2Dur);
+        const s3Dur = num("s3_dur", 6);
+        const total = Math.max(num("dur", s3Start + s3Dur), s3Start + s3Dur);
+
+        // 场景窗口（全局秒）
+        const windows = {
+          main: { start: 0, dur: total },
+          "scene1-logo-intro": { start: s1Start, dur: s1Dur },
+          "scene2-4-canvas": { start: s2Start, dur: s2Dur },
+          "scene5-logo-outro": { start: s3Start, dur: s3Dur },
+          captions: { start: s2Start, dur: s2Dur }, // 字幕跟随主画布窗口
+        };
+        window.HF_PROMO_WINDOWS = windows;
+
+        const setWin = (id, w) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.setAttribute("data-start", String(w.start));
+          el.setAttribute("data-duration", String(w.dur));
+        };
+        const root = document.getElementById("stage");
+        root.setAttribute("data-duration", String(total));
+        setWin("scene1-logo-intro", windows["scene1-logo-intro"]);
+        setWin("scene2-4-canvas", windows["scene2-4-canvas"]);
+        setWin("scene5-logo-outro", windows["scene5-logo-outro"]);
+        setWin("captions", windows.captions);
+        window.HF_PROMO_CONFIG = {
+          width: 1920,
+          height: 1080,
+          duration: total,
+          scenes: {
+            intro: windows["scene1-logo-intro"],
+            canvas: windows["scene2-4-canvas"],
+            outro: windows["scene5-logo-outro"],
+          },
+        };
+      })();
+    </script>
+
+    <script>
+      // 根时间线：主画布窗口收尾前 0.25s 缩小+虚化淡出（时刻由窗口变量推导，不硬编码）
+      window.__timelines = window.__timelines || {};
+      (function () {
+        const canvas = window.HF_PROMO_WINDOWS["scene2-4-canvas"];
+        const fadeAt = Math.max(canvas.start, canvas.start + canvas.dur - 0.25);
+        const mainTl = gsap.timeline({ paused: true });
+
+        mainTl.set("#scene2-4-canvas", { scale: 1, filter: "blur(0px)" }, canvas.start);
+        mainTl.to(
+          "#scene2-4-canvas",
+          { duration: 0.25, scale: 0.94, filter: "blur(6px)", opacity: 0, ease: "power2.in" },
+          fadeAt,
+        );
+
+        window.__timelines["main"] = mainTl;
+      })();
+    </script>
+
+    <script>
+      // 接入改造⑤：双端帧泵适配层（无 HyperFrames 运行时也可渲染）。
+      // ①window.renderAt(t)：把全局秒映射到各组合本地秒后 seek 全部已注册时间线，双 rAF 落帧后返回；
+      // ②window.CONSUMER_READY：组合挂载＋字体就绪后 resolve。
+      // 在官方 HyperFrames 运行时（window.__hyperframes / __player 存在）下本加载器自动让位，不重复挂载。
+      (function () {
+        const runtimePresent = () =>
+          Boolean(window.__hyperframes || window.__player || window.__playerReady);
+
+        async function mountComposition(host) {
+          const src = host.getAttribute("data-composition-src");
+          if (!src || host.childElementCount > 0) return;
+          const res = await fetch(src, { cache: "no-cache" });
+          if (!res.ok) throw new Error("composition fetch failed: " + src + " " + res.status);
+          const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+          const tpl = doc.querySelector("template");
+          if (!tpl) throw new Error("no <template> in " + src);
+          // 依序接入 style / 标记 / script（script 需重建节点才会执行）
+          for (const node of tpl.content.childNodes) {
+            if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "STYLE") {
+              const style = document.createElement("style");
+              style.textContent = node.textContent;
+              host.appendChild(style);
+            } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "SCRIPT") {
+              if (node.src) {
+                const s = document.createElement("script");
+                s.src = new URL(node.getAttribute("src"), location.href).href;
+                host.appendChild(s);
+                await new Promise((r) => (s.onload = r) || (s.onerror = r));
+              } else {
+                const s = document.createElement("script");
+                s.textContent = node.textContent;
+                host.appendChild(s);
+              }
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+              const imported = document.importNode(node, true);
+              // 离线加载器等效官方运行时：组合根铺满宿主，让场景内 100% 尺寸链成立（否则 overflow:hidden 场景整体裁剪）
+              if (imported.getAttribute && imported.getAttribute("data-composition-id")) {
+                imported.style.position = "absolute";
+                imported.style.top = "0";
+                imported.style.left = "0";
+                imported.style.width = "100%";
+                imported.style.height = "100%";
+              }
+              host.appendChild(imported);
+            }
+          }
+          // 模板脚本为同步 IIFE，追加节点后时间线即注册；留有界等待兜底（setTimeout 非墙钟帧逻辑，仅供挂载完成判定）
+          const id = host.getAttribute("data-composition-id");
+          for (let i = 0; i < 50 && !(window.__timelines && window.__timelines[id] && window.__timelines[id].duration); i++) {
+            await new Promise((r) => setTimeout(r, 10));
+          }
+        }
+
+        window.renderAt = async (t) => {
+          const wins = window.HF_PROMO_WINDOWS || {};
+          const tls = window.__timelines || {};
+          for (const id of Object.keys(tls)) {
+            const tl = tls[id];
+            if (!tl || typeof tl.seek !== "function") continue;
+            const w = wins[id] || { start: 0, dur: tl.duration() };
+            const local = Math.min(Math.max(t - w.start, 0), tl.duration());
+            // 宿主窗口可见性：官方运行时按 data-start/duration 显隐场景；离线端由这里等效接管
+            if (id !== "main") {
+              const host = document.getElementById(id);
+              if (host) {
+                const on = t >= w.start && t < w.start + w.dur;
+                host.style.visibility = on ? "visible" : "hidden";
+              }
+            }
+            tl.seek(local, false);
+          }
+          // 双宏任务让出事件循环，确保 seek 后的样式提交先于帧截图
+          await new Promise((r) => setTimeout(r, 0));
+          await new Promise((r) => setTimeout(r, 0));
+        };
+
+        window.CONSUMER_READY = (async () => {
+          if (!runtimePresent()) {
+            for (const host of document.querySelectorAll("[data-composition-src]")) {
+              await mountComposition(host);
+            }
+          }
+          if (document.fonts && document.fonts.ready) await document.fonts.ready;
+        })();
+
+        // 官方渲染器兼容信号：页面就绪即 resolve
+        window.__renderReady = window.CONSUMER_READY;
+      })();
+    </script>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+<!-- 示例资产：通用协作光标占位，可整文件替换（模板场景实际使用内联 SVG 光标，此文件为素材备用件） -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" width="96" height="64">
+  <g transform="translate(4,4)">
+    <path d="M0 0 L18 26 L7 27 L14 40 L9 42 L2 30 L0 34 Z" fill="#3D8FE8" stroke="#0a0a0f" stroke-width="1.5"/>
+    <rect x="14" y="30" width="46" height="14" rx="7" fill="#3D8FE8"/>
+    <text x="37" y="40.5" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="#0a0a0f" text-anchor="middle">Designer</text>
+  </g>
+  <g transform="translate(50,34)">
+    <path d="M0 0 L18 26 L7 27 L14 40 L9 42 L2 30 L0 34 Z" fill="#E8A33D" stroke="#0a0a0f" stroke-width="1.5"/>
+    <rect x="14" y="30" width="42" height="14" rx="7" fill="#E8A33D"/>
+    <text x="35" y="40.5" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="#0a0a0f" text-anchor="middle">Engineer</text>
+  </g>
+</svg>

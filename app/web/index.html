@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/png" href="/brand/logo-64.png">
+  <meta name="color-scheme" content="dark light">
+  <title>人生重启系统</title>
+  <link rel="icon" href="/brand/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/brand/logo-180.png">
+  <meta name="description" content="在 AI 把所有人抹平的时代，让每个普通人把自己的真实经历，炼成不可复制的认知与作品，拥有自己的声音、资产和命运。">
+  <link rel="stylesheet" href="/styles.css?v=20261126.1200">
+  <link rel="stylesheet" href="/readability.css?v=20261126.0400">
+  <link rel="stylesheet" href="/home.css?v=20261126.0250">
+  <link rel="stylesheet" href="/creation.css?v=20261126.1200">
+  <link rel="stylesheet" href="/bench.css?v=20261126.0400">
+  <link rel="stylesheet" href="/checkin.css?v=20261117.1715">
+  <link rel="stylesheet" href="/packaging.css?v=20261116.1002">
+  <script src="/flow-ui.js?v=20261125.2000" defer></script>
+  <script src="/intake-ui.js?v=20261125.2000" defer></script>
+<script src="/knowledge-card-ui.js?v=20261125.1803" defer></script>
+<script src="/chat-ui.js?v=20261125.2323" defer></script>
+  <link rel="stylesheet" href="/growth.css?v=20261125.2017">
+  <link rel="stylesheet" href="/auth.css?v=20261116.1002">
+  <script src="/vendor/d3-force-bundle.js?v=20261116.1002" defer></script>
+  <script src="/growth-graph.js?v=20261116.1002" defer></script>
+  <script src="/growth-ask.js?v=20261118.2100" defer></script>
+  <script src="/growth-search.js?v=20261116.1002" defer></script>
+  <script src="/growth-ui.js?v=20261125.2017" defer></script>
+  <link rel="stylesheet" href="/publish.css?v=20261117.1045">
+  <script src="/publish-ui.js?v=20261117.1045" defer></script>
+  <script src="/panel-loader.js?v=20261126.1200" defer></script>
+  <script src="/app.js?v=20261126.1500" defer></script>
+  <script src="/auth-ui.js?v=20261125.1320" defer></script>
+  <script src="/voice-input.js?v=20261125.1220" defer></script>
+  <link rel="stylesheet" href="/shell-titlebar.css?v=20261116.1002">
+  <script src="/shell-titlebar.js?v=20261116.1002" defer></script>
+</head>
+<body>
+<!-- 登录门禁：未登录时显示；登录成功后整页刷新进入工作台 -->
+<div id="auth-gate" class="auth-gate is-checking">
+  <div class="auth-cosmos" aria-hidden="true">
+    <div class="auth-stars"></div>
+    <div class="auth-nebula auth-nebula-a"></div>
+    <div class="auth-nebula auth-nebula-b"></div>
+    <div class="auth-vortex"></div>
+  </div>
+  <section class="auth-panel" aria-labelledby="auth-brand">
+    <div class="auth-mark" aria-hidden="true"><img src="/brand/logo-128.png" width="58" height="58" alt=""></div>
+    <h1 class="auth-title" id="auth-brand">人生重启系统</h1>
+    <p class="auth-sub">60 天的时间足够改变你的一生</p>
+    <p class="auth-checking" id="auth-checking">正在检查登录状态…</p>
+    <div class="auth-tabs" role="tablist" aria-label="登录或注册">
+      <button type="button" class="auth-tab is-active" data-auth-tab="login" role="tab" aria-selected="true">登录</button>
+      <button type="button" class="auth-tab" data-auth-tab="register" role="tab" aria-selected="false">注册</button>
+    </div>
+    <form id="auth-form" autocomplete="on">
+      <label class="auth-field"><span id="auth-user-label">账号或邮箱</span><input id="auth-user" type="text" placeholder="账号名或注册邮箱" autocomplete="username" required maxlength="120"></label>
+      <label class="auth-field"><span>密码</span><input id="auth-pass" type="password" placeholder="至少 8 位" autocomplete="current-password" required minlength="8" maxlength="72"></label>
+      <div class="auth-extra" id="auth-register-fields" hidden>
+        <label class="auth-field"><span id="auth-email-label">邮箱</span><input id="auth-email" type="email" placeholder="用来接收验证码和找回密码" autocomplete="email" maxlength="120"></label>
+        <label class="auth-field" id="auth-code-field"><span>邮箱验证码</span><span class="auth-code-row"><input id="auth-code" type="text" inputmode="numeric" placeholder="6 位数字" autocomplete="one-time-code" maxlength="6"><button class="auth-code-btn" id="auth-send" type="button">获取验证码</button></span></label>
+        <p class="auth-hint">没收到？先看看垃圾邮件；60 秒后可重发。</p>
+      </div>
+      <button class="auth-submit" id="auth-submit" type="submit">进入系统</button>
+      <p class="auth-msg" id="auth-msg" role="alert"></p>
+      <p class="auth-switch" id="auth-switch" hidden>已有账号？<button type="button" class="auth-switch-btn" data-auth-tab="login">去登录</button><button type="button" class="auth-switch-btn" id="auth-switch-reset" hidden>用邮箱找回密码</button></p>
+      <button class="auth-link" id="auth-forgot" type="button">忘记密码？用注册邮箱找回</button>
+      <p class="auth-tip" id="auth-tip">账号由云端统一管理，换电脑用同一个账号登录；登录状态在本机保持 30 天。注册成功即开始免费体验 1 天：试用期内每月 3 次成片导出、最高 720p，云端转写不可用；到期后已有内容仍可查看，素材与剪映草稿仍可导出。</p>
+    </form>
+    <form id="auth-reset-form" autocomplete="on" hidden>
+      <p class="auth-reset-head">用注册邮箱收验证码，重设密码</p>
+      <label class="auth-field"><span>邮箱</span><input id="reset-email" type="email" placeholder="注册时填的邮箱" autocomplete="email" maxlength="120"></label>
+      <label class="auth-field"><span>邮箱验证码</span><span class="auth-code-row"><input id="reset-code" type="text" inputmode="numeric" placeholder="6 位数字" autocomplete="one-time-code" maxlength="6"><button class="auth-code-btn" id="reset-send" type="button">获取验证码</button></span></label>
+      <label class="auth-field"><span>新密码</span><input id="reset-pass" type="password" placeholder="至少 8 位" autocomplete="new-password" minlength="8" maxlength="72"></label>
+      <button class="auth-submit" id="reset-submit" type="submit">重设密码</button>
+      <p class="auth-msg" id="reset-msg" role="alert"></p>
+      <button class="auth-link" id="auth-back" type="button">返回登录</button>
+    </form>
+  </section>
+</div>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="#/chat" class="brand"><span class="brand-mark has-logo" id="brand-mark"><img src="/brand/logo-64.png" width="32" height="32" alt=""></span><span><span id="brand-name">人生重启系统</span><small>内容创作工作台</small></span></a>
+    <button class="name-link" data-action="edit-name" type="button" aria-label="修改我的名字"><span>✎ 我的名字</span><span class="name-link-value" id="brand-name-mini">人生重启系统</span></button>
+    <!-- 2026-11-25（界面改版）：侧栏最多两级（成熟规范：WinUI NavigationView / shadcn sidebar）。
+         主入口「对话」；创作相关的 5 个子页收在「创作中心」一组里，默认收起；「新建」放导航上方；
+         底部的状态与「个人档案」移出折叠组、固定贴在侧栏最下面（原先包在「更多功能」里，内容一长就跟着滚）。 -->
+    <button class="sidebar-create" data-action="create" type="button">＋ 新建一条内容</button>
+    <div class="sidebar-divider"></div>
+    <nav class="sidebar-main" aria-label="主板块">
+      <a href="#/chat" data-nav="chat"><span class="nav-icon">✧</span>对话</a>
+      <a href="#/restart" data-nav="restart"><span class="nav-icon">◎</span>重启系统</a>
+      <details class="sidebar-group" id="sidebar-create-group">
+        <summary><span class="nav-icon">▣</span>创作中心<span class="nav-caret" aria-hidden="true">▸</span></summary>
+        <nav class="sidebar-tools" aria-label="创作中心">
+          <a href="#/create" data-nav="create"><span class="nav-icon">▣</span>工作总览</a>
+          <a href="#/bench" data-nav="bench"><span class="nav-icon">✦</span>找选题</a>
+          <a href="#/feedback" data-nav="feedback"><span class="nav-icon">◍</span>发布与复盘</a>
+          <a href="#/matrix" data-nav="matrix"><span class="nav-icon">▦</span>多平台矩阵</a>
+          <a href="#/checkin" data-nav="checkin"><span class="nav-icon">◔</span>60 天打卡</a>
+        </nav>
+      </details>
+    </nav>
+    <div class="sidebar-note"><span class="status-dot"></span>人生重启系统<small>资料保存在这台电脑上，和软件分开放，删软件不会丢。<br>后台任务可在页面关闭后继续。</small></div>
+    <a class="settings-link" href="#/settings">⚙　个人档案与服务连接</a>
+  </aside>
+  <div class="app-body">
+    <header class="topbar"><span id="breadcrumb">重启系统 · 成长总览</span><div class="top-actions"><span id="save-status" class="muted"></span><button id="avatar-menu-btn" class="avatar avatar-button" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="avatar-menu" aria-label="账号菜单"><span id="brand-avatar">我</span></button><div class="avatar-menu" id="avatar-menu" role="menu" hidden><a class="avatar-menu-item" href="#/settings" role="menuitem">个人档案与系统设置</a><button id="theme-toggle" class="avatar-menu-item" type="button" role="menuitem">主题切换：浅色 / 深色</button><button id="auth-devices" class="avatar-menu-item" type="button" role="menuitem" hidden>登录设备</button><button id="auth-logout" class="avatar-menu-item" type="button" role="menuitem" hidden>退出登录</button></div></div></header>
+    <div id="trial-banner" class="trial-banner" role="status" hidden></div>
+    <main id="main" aria-live="polite"><div class="loading">正在读取本地工作台…</div></main>
+    <footer class="page-footer">我的数据 · 版本可追溯 · 真实任务状态</footer>
+  </div>
+</div>
+<div id="qc" class="qc" aria-hidden="true">
+  <button id="qc-fab" class="qc-fab" type="button" data-qc-open aria-label="记一条：文字、链接、图片、音视频">＋ 记一条</button>
+  <div class="qc-mask" data-qc-close></div>
+  <section class="qc-sheet" role="dialog" aria-modal="true" aria-labelledby="qc-title">
+    <header class="qc-head"><strong id="qc-title">记一条</strong><button class="qc-x" type="button" data-qc-close aria-label="关闭">×</button></header>
+    <!-- 2026-11-25：三个 tab 取消，这里直接放首页那个单对话口（app.js 打开浮层时挂进来）。 -->
+    <div id="qc-intake-host"></div>
+    <p id="qc-status" class="qc-status" role="status" aria-live="polite"></p>
+  </section>
+</div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="modal"><div class="modal-header"><h2 id="modal-title"></h2><button class="icon-button" id="close-modal" type="button" aria-label="关闭对话框">×</button></div><div id="modal-body"></div></dialog>
+<dialog id="auth-devices-dialog"><div class="modal-header"><h2 id="auth-devices-title">登录设备</h2><button class="icon-button" id="auth-devices-close" type="button" aria-label="关闭对话框">×</button></div><div class="auth-devices-body"><p class="auth-devices-msg" id="auth-devices-msg" role="status"></p><ul class="auth-devices-list" id="auth-devices-list"></ul><button class="auth-device-refresh" id="auth-devices-refresh" type="button">刷新列表</button></div></dialog>
+<script src="/version-badge.js?v=20261116.1002" defer></script>
+</body>
+</html>
+

@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "3d7b7d55424e8753ebfdc39b793ed3892a87caceba3a1b20eb10a4bac5b9b673"
+    },
+    {
+      "path": "LICENSE-OpenCV-Apache2.txt",
+      "sha256": "edef0fac1eb08d29d34563f724742e078da2513e196133a12c6ad9ff01e26107"
+    },
+    {
+      "path": "LICENSE-YuNet-MIT.txt",
+      "sha256": "7f24ac3bf189475b0bc7763305c01565495f9c559ac60923d608fd494afc4fd1"
+    },
+    {
+      "path": "models/yunet.onnx",
+      "sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4"
+    },
+    {
+      "path": "render.cjs",
+      "sha256": "0b4dbc9d5a9b39ebceffd3a9039e21093fbd38105842bf01c00af6d0c123fc5c"
+    },
+    {
+      "path": "rs_eva_engine.py",
+      "sha256": "a135c02980290bf94235afea304fba7455a41d66364fa6c1c1c71bdac4dab35e"
+    },
+    {
+      "path": "template/eva-window.js",
+      "sha256": "a95f1e5df003cfe9ece60da4c2d99e7b6fceb635563c54c906d2306c382d9f44"
+    },
+    {
+      "path": "template/index.html",
+      "sha256": "ef659e28efd6d9674e0bc77631cc935271f76d3353b263ac227c00c4ab225092"
+    },
+    {
+      "path": "template/LICENSE-EVA.txt",
+      "sha256": "6330281bfe261c83adebba421664714a701fbf0e6545903c172c18a591b1e4aa"
+    },
+    {
+      "path": "template/runtime.js",
+      "sha256": "bfeecde8d8cf1286114190960ebd54f9d3c5f90d9be08e7e10858ee65f63251d"
+    }
+  ],
+  "exclude": [
+    "local-assets.json",
+    "__pycache__"
+  ],
+  "localMusicBundled": false,
+  "localFontsBundled": false
+}

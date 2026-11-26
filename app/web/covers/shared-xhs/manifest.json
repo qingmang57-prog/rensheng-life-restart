@@ -1,0 +1,28 @@
+{
+  "version": "1.0.1",
+  "width": 1080,
+  "height": 1440,
+  "templates": [
+    "shared-xhs-title",
+    "shared-xhs-person",
+    "shared-xhs-card"
+  ],
+  "source": "https://github.com/AlineFan/xhs-cover-skill/blob/main/assets/cover-scene1.html",
+  "license": "MIT",
+  "adaptation": "Original A/B1/C layout and colors; field binding, offline fonts, fixed 3:4 canvas.",
+  "runtimeModelCalls": 0,
+  "fields": {
+    "title": {
+      "max": 12
+    },
+    "subtitle": {
+      "max": 18
+    },
+    "badge": {
+      "max": 20
+    },
+    "account": {
+      "max": 30
+    }
+  }
+}

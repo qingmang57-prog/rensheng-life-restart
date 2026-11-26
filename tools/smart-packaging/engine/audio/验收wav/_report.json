@@ -1,0 +1,334 @@
+{
+ "summary": {
+  "sfx_types": 68,
+  "drums": 5,
+  "instruments": 6,
+  "wav_dir": "验收wav",
+  "silence_fails": [],
+  "status": "PASS"
+ },
+ "details": {
+  "sfx": [
+   {
+    "type": "whoosh",
+    "peak": 0.8182
+   },
+   {
+    "type": "swoosh",
+    "peak": 0.6277
+   },
+   {
+    "type": "pop",
+    "peak": 1.0
+   },
+   {
+    "type": "ding",
+    "peak": 1.0
+   },
+   {
+    "type": "hit",
+    "peak": 1.0
+   },
+   {
+    "type": "boing",
+    "peak": 0.4155
+   },
+   {
+    "type": "err",
+    "peak": 0.3355
+   },
+   {
+    "type": "win_pop",
+    "peak": 0.9002
+   },
+   {
+    "type": "glitch",
+    "peak": 0.9002
+   },
+   {
+    "type": "crash",
+    "peak": 0.9002
+   },
+   {
+    "type": "bsod",
+    "peak": 0.5148
+   },
+   {
+    "type": "flap",
+    "peak": 0.508
+   },
+   {
+    "type": "chirp",
+    "peak": 0.8805
+   },
+   {
+    "type": "squawk",
+    "peak": 0.8805
+   },
+   {
+    "type": "peck",
+    "peak": 0.8805
+   },
+   {
+    "type": "land",
+    "peak": 0.3334
+   },
+   {
+    "type": "rise",
+    "peak": 0.5401
+   },
+   {
+    "type": "notif",
+    "peak": 0.5401
+   },
+   {
+    "type": "bubble_pop",
+    "peak": 0.5401
+   },
+   {
+    "type": "dock",
+    "peak": 0.2715
+   },
+   {
+    "type": "coin",
+    "peak": 0.2715
+   },
+   {
+    "type": "agent",
+    "peak": 0.3559
+   },
+   {
+    "type": "hum",
+    "peak": 0.3559
+   },
+   {
+    "type": "powerdown",
+    "peak": 0.3559
+   },
+   {
+    "type": "snore",
+    "peak": 0.816
+   },
+   {
+    "type": "slide",
+    "peak": 0.816
+   },
+   {
+    "type": "record_scratch",
+    "peak": 0.816
+   },
+   {
+    "type": "steps",
+    "peak": 0.7433
+   },
+   {
+    "type": "typing",
+    "peak": 0.7433
+   },
+   {
+    "type": "tick_run",
+    "peak": 0.7322
+   },
+   {
+    "type": "counter",
+    "peak": 0.6168
+   },
+   {
+    "type": "game_bleeps",
+    "peak": 0.4289
+   },
+   {
+    "type": "creak",
+    "peak": 0.4289
+   },
+   {
+    "type": "sparkle",
+    "peak": 0.4289
+   },
+   {
+    "type": "chime",
+    "peak": 0.4109
+   },
+   {
+    "type": "write",
+    "peak": 0.4109
+   },
+   {
+    "type": "thud",
+    "peak": 0.4109
+   },
+   {
+    "type": "msg",
+    "peak": 0.8643
+   },
+   {
+    "type": "check",
+    "peak": 0.8643
+   },
+   {
+    "type": "stamp",
+    "peak": 0.8643
+   },
+   {
+    "type": "marker",
+    "peak": 0.6218
+   },
+   {
+    "type": "achieve",
+    "peak": 0.9439
+   },
+   {
+    "type": "key_thock",
+    "peak": 0.9439
+   },
+   {
+    "type": "click",
+    "peak": 0.9439
+   },
+   {
+    "type": "tick",
+    "peak": 0.4777
+   },
+   {
+    "type": "swipe",
+    "peak": 0.4777
+   },
+   {
+    "type": "card",
+    "peak": 1.0
+   },
+   {
+    "type": "clock",
+    "peak": 1.0
+   },
+   {
+    "type": "crack",
+    "peak": 1.0
+   },
+   {
+    "type": "alert",
+    "peak": 0.3985
+   },
+   {
+    "type": "scroll",
+    "peak": 0.884
+   },
+   {
+    "type": "suck",
+    "peak": 0.884
+   },
+   {
+    "type": "enter",
+    "peak": 0.884
+   },
+   {
+    "type": "fall",
+    "peak": 0.8403
+   },
+   {
+    "type": "rep",
+    "peak": 0.8403
+   },
+   {
+    "type": "slash",
+    "peak": 0.8403
+   },
+   {
+    "type": "shine",
+    "peak": 0.5953
+   },
+   {
+    "type": "fill",
+    "peak": 0.5953
+   },
+   {
+    "type": "type",
+    "peak": 0.5953
+   },
+   {
+    "type": "crt",
+    "peak": 0.4082
+   },
+   {
+    "type": "hdd",
+    "peak": 0.4082
+   },
+   {
+    "type": "dissolve",
+    "peak": 0.4082
+   },
+   {
+    "type": "fill_up",
+    "peak": 0.5394
+   },
+   {
+    "type": "bleeps",
+    "peak": 0.5394
+   },
+   {
+    "type": "levelup",
+    "peak": 0.5394
+   },
+   {
+    "type": "ff",
+    "peak": 0.2865
+   },
+   {
+    "type": "jump",
+    "peak": 0.2865
+   },
+   {
+    "type": "rise_s",
+    "peak": 0.2424
+   }
+  ],
+  "drums": [
+   {
+    "name": "kick",
+    "peak": 0.8843
+   },
+   {
+    "name": "snare",
+    "peak": 1.0
+   },
+   {
+    "name": "clap",
+    "peak": 0.9897
+   },
+   {
+    "name": "hat",
+    "peak": 1.0
+   },
+   {
+    "name": "shaker",
+    "peak": 0.6304
+   }
+  ],
+  "instruments": [
+   {
+    "name": "pad",
+    "peak": 0.3439
+   },
+   {
+    "name": "pluck",
+    "peak": 0.2813
+   },
+   {
+    "name": "bass",
+    "peak": 0.5199
+   },
+   {
+    "name": "epiano",
+    "peak": 0.8691
+   },
+   {
+    "name": "bell",
+    "peak": 0.706
+   },
+   {
+    "name": "chip",
+    "peak": 0.2715
+   }
+  ]
+ }
+}

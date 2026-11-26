@@ -1,0 +1,8 @@
+{
+ "profile": "dreamweaver.compliance-fonts/1",
+ "allowed": [
+  "Anton",
+  "NotoSC"
+ ],
+ "note": "场景代码仅用这两个字体族；新增字体必须先入此白名单"
+}

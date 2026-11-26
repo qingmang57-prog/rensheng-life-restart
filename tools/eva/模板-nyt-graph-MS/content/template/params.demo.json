@@ -1,0 +1,15 @@
+{
+  "duration": 15,
+  "vars": {
+    "headline": "Demo: Quarterly Revenue vs. Conversion Rate",
+    "subtitle": "Jul–Dec 2025, in thousands",
+    "key_revenue": "Revenue (left axis)",
+    "key_conversion": "Conversion Rate (right axis)",
+    "source": "Source: Demo dataset injected via USER_PARAMS",
+    "months": "Jul,Aug,Sep,Oct,Nov,Dec",
+    "revenue": "10,14,13,17,21,26",
+    "conversion": "2.4,3.0,2.8,3.5,3.9,4.6",
+    "max_revenue": "30",
+    "max_conversion": "6"
+  }
+}

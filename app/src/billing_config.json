@@ -1,0 +1,11 @@
+{
+  "trial_grant_credits": 0,
+  "trial_grant_note": "2026-11-16 起停止新增发放；存量余额保留可用",
+  "redeem": {
+    "code_bytes": 10,
+    "max_failures": 5,
+    "failure_window_seconds": 600,
+    "lock_seconds": 900
+  },
+  "free_seats": 50
+}

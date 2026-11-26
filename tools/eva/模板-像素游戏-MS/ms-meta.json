@@ -1,0 +1,9 @@
+{
+  "slug": "像素游戏",
+  "name": "MS · 像素游戏机",
+  "caption": "像素游戏机",
+  "source": "pixel",
+  "origin": "切片工坊/assets/eva_custom/pixel/p01",
+  "aspect": "16:9",
+  "note": "22款开源/像素接通；默认风格词由逐字稿槽覆盖，深度分镜走切片工坊 LLM 链"
+}

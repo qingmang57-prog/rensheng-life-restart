@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "templateId": "jd-spatial-voice-v1",
+  "coreVersion": "1.0.2",
+  "contractVersion": 1,
+  "files": [
+    {
+      "path": "_assets/jd/spatial-v1/contract.json",
+      "sha256": "731b5bb98729942b7d0d3cdc4046d50d02d4332905b9e8660ee54d3af74b0511"
+    },
+    {
+      "path": "_assets/jd/spatial-v1/dom.js",
+      "sha256": "03c8a183ea758252af6b9b10bd210b8e27075b0c8f4c37fb48ca4fb663091f0b"
+    },
+    {
+      "path": "_assets/jd/spatial-v1/fonts/LICENSE-NotoSansSC.txt",
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    {
+      "path": "_assets/jd/spatial-v1/fonts/NotoSansSC.otf",
+      "sha256": "faa6c9df652116dde789d351359f3d7e5d2285a2b2a1f04a2d7244df706d5ea9"
+    },
+    {
+      "path": "_assets/jd/spatial-v1/plan.js",
+      "sha256": "704dd27977c18f73755e25d7ccccbe08f0289badc81215be2396daa50f6d887d"
+    },
+    {
+      "path": "_assets/jd/spatial-v1/pose.js",
+      "sha256": "ae3835813e13af30f5ccba40a1532447fc87273d9feca400ffaefcb71d47ee9f"
+    },
+    {
+      "path": "template/cover-preview.jpg",
+      "sha256": "cf6d037d6b068b985bca9dd3e217b1534454af52dc835460fada88071189976a"
+    },
+    {
+      "path": "template/cover.css",
+      "sha256": "a65e4083d029b7dd588da8e486d3f7ea55cbf94f90d2301adde98e51baae7252"
+    },
+    {
+      "path": "template/cover.html",
+      "sha256": "bdcea9afe81251220dccf84238c757095fb14be58d7655145625e77bf95dd5f4"
+    },
+    {
+      "path": "template/cover.js",
+      "sha256": "c5e3f48849bf89ed5c85d1e2d829e3ae20768bf2e5acce1b304ab1113a13d4b1"
+    },
+    {
+      "path": "template/index.html",
+      "sha256": "56b28250935eb3faeec3a181c36a89e2a3bd252f2fb865a3aa2e950f7de0ae59"
+    },
+    {
+      "path": "template/main.js",
+      "sha256": "0f8657753f6d8112905b0f00d68b89b49d7ce0dba99f39a24375c8c1e1435017"
+    },
+    {
+      "path": "template/policy.js",
+      "sha256": "4b62ea04fec370fc898f2d991f56ff8999c0afb2e98a3661906d3b4ce97e2f31"
+    },
+    {
+      "path": "template/README.md",
+      "sha256": "3d9dd9144a84db20156e0633690fcf0021e2a92853afd55eb75fc26999bb384a"
+    },
+    {
+      "path": "template/style.css",
+      "sha256": "158bf81cb9ad224cd4768f08fdb69ab28a6dc7df80d5d328eaa54ff8e8ad05be"
+    }
+  ],
+  "bundleDigest": "09db738361f9c99d470948594a237df138d6031fd704e1099252ac8119be91d0"
+}

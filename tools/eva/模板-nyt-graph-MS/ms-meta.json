@@ -1,0 +1,7 @@
+{
+  "name": "NYT 编辑风双轴图表",
+  "caption": "16:9 · 编辑部衬线标题 · 柱线双轴数据图表 · 15 秒定长",
+  "width": 1920,
+  "height": 1080,
+  "note": "HyperFrames nyt-graph 视觉核心（Apache-2.0，源 heygen-com/hyperframes registry/examples/nyt-graph）；标题/副标题/来源/图例与图表数据（月份、营收、转化率、量程、柱标前后缀）经 data-variable-values 注入；无人物窗口（组合级图表，跳过人脸追踪）。定长 15s@30fps，暂不接口播时长。由人生重启系统智能包装入口调用。"
+}

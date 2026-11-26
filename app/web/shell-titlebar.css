@@ -1,0 +1,75 @@
+/* 程序外壳自绘标题条：只在 WebView2 独立窗口（无边框宿主）里生效。
+   浏览器直接打开工作台时，shell-titlebar.js 不会给 html 加 .shell-hosted，本文件全部样式不生效。
+
+   配色跟着工作台皮肤走：颜色全部取自 styles.css 的 :root / :root.light 主题变量
+   （--surface / --text / --muted / --btn-wash / --gold），换皮肤即时生效，不用重启外壳。
+   登录门禁页恒为暗色（auth.css 写死 #100f0d），门禁显示期间标题条强制回到暗色，避免上浅下深。 */
+html.shell-hosted{
+  --shell-tb-h:38px;
+  --shell-tb-bg:var(--surface,#1a1916);
+  --shell-tb-text:var(--text,#fbf8f1);
+  --shell-tb-muted:var(--muted,#c7beaa);
+  --shell-tb-line:rgba(227,179,65,.22);
+  --shell-tb-hover:var(--btn-wash,rgba(255,255,255,.09));
+  --shell-tb-close:#c4362c;
+}
+html.shell-hosted.light{
+  --shell-tb-line:rgba(0,0,0,.10);
+  --shell-tb-close:#cf3a2e;
+}
+/* 登录门禁显示中（#auth-gate 未 hidden）：门禁本身是暗色，标题条跟着暗 */
+html.shell-hosted body:has(#auth-gate:not([hidden])){
+  --shell-tb-bg:#100f0d;
+  --shell-tb-text:#fbf8f1;
+  --shell-tb-muted:#cfc8bb;
+  --shell-tb-line:rgba(227,179,65,.22);
+  --shell-tb-hover:rgba(255,255,255,.09);
+}
+
+html.shell-hosted body{padding-top:var(--shell-tb-h);box-sizing:border-box}
+html.shell-hosted .app-shell{min-height:calc(100dvh - var(--shell-tb-h))}
+html.shell-hosted main{min-height:calc(100dvh - 130px - var(--shell-tb-h))}
+html.shell-hosted #auth-gate{top:var(--shell-tb-h)}
+
+.shell-titlebar{position:fixed;top:0;left:0;right:0;height:var(--shell-tb-h,38px);z-index:2400;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--shell-tb-bg,#1a1916);color:var(--shell-tb-text,#fbf8f1);
+  border-bottom:1px solid var(--shell-tb-line,rgba(227,179,65,.22));
+  font:13px/1 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+  -webkit-user-select:none;user-select:none;cursor:default;
+  transition:background-color .16s ease,color .16s ease,border-color .16s ease}
+.shell-tb-brand{display:flex;align-items:center;gap:8px;padding-left:12px;pointer-events:none}
+.shell-tb-brand img{width:18px;height:18px;display:block;border-radius:4px;-webkit-user-drag:none}
+.shell-tb-brand .shell-tb-logo-light{display:none}
+html.light .shell-tb-brand .shell-tb-logo-dark{display:none}
+html.light .shell-tb-brand .shell-tb-logo-light{display:block}
+html.shell-hosted.light body:has(#auth-gate:not([hidden])) .shell-tb-logo-dark{display:block}
+html.shell-hosted.light body:has(#auth-gate:not([hidden])) .shell-tb-logo-light{display:none}
+.shell-tb-name{letter-spacing:.6px;color:var(--shell-tb-text,#f3ead8)}
+.shell-tb-actions{display:flex;height:100%}
+.shell-tb-btn{width:46px;height:100%;display:grid;place-items:center;border:0;border-radius:0;
+  background:transparent;color:var(--shell-tb-muted,#cfc8bb);padding:0;margin:0}
+.shell-tb-btn:hover:not(:disabled){background:var(--shell-tb-hover,rgba(255,255,255,.09));color:var(--shell-tb-text,#fff)}
+.shell-tb-btn:focus-visible{outline:2px solid var(--gold,#e3b341);outline-offset:-2px}
+.shell-tb-btn[data-shell="close"]:hover{background:var(--shell-tb-close,#c4362c);color:#fff}
+.shell-tb-btn svg{width:10px;height:10px;display:block}
+.shell-tb-restore{display:none}
+html.shell-maximized .shell-tb-max{display:none}
+html.shell-maximized .shell-tb-restore{display:block}
+
+/* 拖动区：标题条与侧栏顶部（logo + 名称）。指针形状保持默认，避免像可点按钮 */
+html.shell-hosted .shell-drag-zone{cursor:default}
+html.shell-hosted .app-shell .sidebar .brand{-webkit-user-select:none;user-select:none}
+html.shell-hosted .app-shell .sidebar .brand img{-webkit-user-drag:none}
+
+/* 无边框窗口丢掉系统缩放边：用 8 条透明热区把拉伸补回来 */
+.shell-edge{position:fixed;z-index:2500;background:transparent}
+html.shell-maximized .shell-edge{display:none}
+.shell-edge-t{top:0;left:0;right:0;height:6px;cursor:ns-resize}
+.shell-edge-b{bottom:0;left:0;right:0;height:6px;cursor:ns-resize}
+.shell-edge-l{top:0;bottom:0;left:0;width:6px;cursor:ew-resize}
+.shell-edge-r{top:0;bottom:0;right:0;width:6px;cursor:ew-resize}
+.shell-edge-tl{top:0;left:0;width:12px;height:12px;cursor:nwse-resize}
+.shell-edge-tr{top:0;right:0;width:12px;height:12px;cursor:nesw-resize}
+.shell-edge-bl{bottom:0;left:0;width:12px;height:12px;cursor:nesw-resize}
+.shell-edge-br{bottom:0;right:0;width:12px;height:12px;cursor:nwse-resize}

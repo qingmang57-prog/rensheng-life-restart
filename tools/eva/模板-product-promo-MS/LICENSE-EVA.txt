@@ -1,0 +1,24 @@
+产品演示宣传模板（模板-product-promo-MS）第三方素材与许可证清单
+================================================================
+
+1. 模板源码改编
+   - 来源：HyperFrames 官方示例 registry/examples/product-promo
+     仓库：https://github.com/heygen-com/hyperframes（Apache License 2.0）
+   - 改编内容：商标徽标与口号替换为中性占位、品牌色替换为中性演示色板、
+     GSAP/字体本地化、场景窗口变量化、双端帧泵适配层（renderAt/CONSUMER_READY）。
+   - Apache-2.0 要求保留来源声明，本文件即声明；上游无独立 NOTICE 文件要求随附。
+
+2. GSAP 3.14.2（assets/vendor/gsap-3.14.2.min.js）
+   - 来源：https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js
+   - 许可证：GreenSock 标准许可（允许在网页产品中自由使用，不经 GSAP 不得再分发为独立动画库）。
+     本包将其作为网页运行时依赖随模板本地引用，未修改文件内容。
+
+3. Inter 可变字体（assets/fonts/Inter-Variable-latin.woff2）
+   - 来源：Google Fonts（rsms/inter，v20 latin 子集）
+   - 许可证：SIL Open Font License 1.1，全文见 assets/fonts/OFL-Inter-LICENSE.txt。
+
+4. 占位素材（assets/placeholder/*.svg）
+   - 本包自制中性占位图形，随模板自由使用，无第三方权利约束。
+
+5. 红线说明
+   - 本模板与素材仅限本机渲染使用；禁止将其上传到任何云端仓库或对外发布。

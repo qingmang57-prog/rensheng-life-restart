@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "product_id": "qiepian",
+  "product_name": "切片工坊",
+  "enabled": false,
+  "note": "仅评估用配置，尚未接入；切片工坊当前仍由自己的 start.py/start.bat 启动。",
+  "window_title": "切片工坊",
+  "window": {
+    "width": 1280,
+    "height": 820,
+    "min_width": 980,
+    "min_height": 640,
+    "background": "#F6F5FA"
+  },
+  "port": 9934,
+  "host": "127.0.0.1",
+  "port_fallback_count": 10,
+  "mutex_name": "qiepian_single_instance_v2",
+  "health": {
+    "path": "/api/health",
+    "match": "",
+    "timeout_sec": 2
+  },
+  "backend": {
+    "command": ["{root}\\切片工坊.exe"],
+    "cwd": "{root}",
+    "startup_timeout_sec": 90,
+    "retry_limit": 3,
+    "watchdog_interval_sec": 30,
+    "watchdog_failures": 2,
+    "watchdog_restart_timeout_sec": 45
+  },
+  "tray": {
+    "tooltip": "切片工坊",
+    "show": "显示主界面",
+    "browser": "用浏览器打开",
+    "autostart": "开机自启",
+    "quit": "退出"
+  },
+  "splash": {
+    "title": "切片工坊",
+    "subtitle": "正在准备切片工坊",
+    "accent": "#3D7EFF",
+    "background": "#F6F5FA",
+    "text": "#2B2A33",
+    "muted": "#7A7788"
+  },
+  "icon": {
+    "letter": "切",
+    "background": "#3D7EFF",
+    "foreground": "#FFFFFF"
+  },
+  "log_dir": "{root}\\.runtime\\launcher\\{product_id}",
+  "autostart": {
+    "value_name": "切片工坊",
+    "command": "",
+    "default": false
+  },
+  "update_url": ""
+}

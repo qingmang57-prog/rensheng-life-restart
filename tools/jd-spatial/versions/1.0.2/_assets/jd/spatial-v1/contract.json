@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "coreVersion": "1.0.2",
+  "templateId": "jd-spatial-voice-v1",
+  "layout": "spatial-voice",
+  "fps": 30,
+  "canvas": [
+    1080,
+    1920
+  ]
+}

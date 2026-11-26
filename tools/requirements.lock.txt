@@ -1,0 +1,97 @@
+# 主运行时锁定清单（精确版本）
+# 采集方式：在包内实测 `tools\python\python.exe -m pip freeze`，非手写
+# 采集时间：2026-11-03
+# 解释器：Python 3.12.14（tools/python，pip 26.2.2）
+# 用途：rebuild.ps1 只认这份文件；requirements.txt 仅供人读，不用于安装
+#
+# 已剔除 1 条不可移植记录（原样留证）：
+#   artifact_tool_v2 @ <构建机临时目录>/generated-source--oai-artifact-tool/lib/agent/tools/artifact_tool_v2
+#   原因：指向构建机临时目录，换机必失效；app/*.py 静态扫描无 import，装它也无法复现。
+#
+# 注意：本清单不含 torch / diffusers（当前主环境本来就没有）。二者只在
+# app/avatar_service.py::_local_generate 的可选分支里 import，属“装了才启用”的能力。
+
+annotated-types==0.8.0
+attrs==26.1.0
+certifi==2026.10.19
+cffi==2.1.1
+charset-normalizer==3.5.2
+colorama==0.4.6
+cryptography==50.0.2
+et_xmlfile==2.0.0
+flatbuffers==25.12.19
+idna==3.20
+ImageIO==2.38.1
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+lazy-loader==0.6
+llvmlite==0.50.0
+lxml==6.1.3
+networkx==3.7
+numba==0.68.1
+numpy==2.5.4
+onnxruntime==1.31.1
+opencv-python-headless==4.12.0.88
+openpyxl==3.1.5
+packaging==26.3
+pandas==3.0.1
+pdf2image==1.17.0
+pdfminer.six==20251230
+pdfplumber==0.11.9
+pillow==12.3.0
+platformdirs==4.14.3
+pooch==1.9.0
+protobuf==7.36.2
+pycparser==3.11
+pydantic==2.14.1
+pydantic_core==2.50.1
+pyhumps==3.8.0
+pyloudnorm==0.2.0
+PyMatting==1.1.16
+pypdf==6.10.0
+pypdfium2==5.14.0
+python-dateutil==2.9.0.post0
+python-docx==1.2.0
+python-pptx==1.0.2
+referencing==0.37.0
+rembg==2.0.86
+reportlab==4.4.9
+requests==2.34.2
+rpds-py==2026.9.1
+scikit-image==0.26.0
+scipy==1.18.1
+setuptools==84.1.0
+six==1.17.0
+soundfile==0.14.0
+tifffile==2026.10.15
+tqdm==4.70.1
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+tzdata==2026.5
+urllib3==2.8.0
+wheel==0.48.0
+xlsxwriter==3.2.9
+
+# 2026-11-04 正文抽取：app/wash_service.py 可选 import；
+# 未安装时自动退回内置 HTMLParser 抽取器，主流程不受影响。
+trafilatura==2.3.1
+babel==2.18.0
+courlan==1.4.0
+dateparser==1.5.0
+htmldate==1.11.0
+jusText==3.0.2
+lxml_html_clean==0.4.6
+pytz==2026.6
+regex==2026.9.29
+tld==0.13.2
+tzlocal==5.4.5
+
+# 2026-11-05 画面字幕离线识别：rapidocr 3.10.0（Apache-2.0），模型随 wheel 内置，
+# 复用包内既有 onnxruntime 1.31.1 与 opencv-python-headless 4.12.0.88；
+# 安装时禁止引入 opencv-python（会覆盖 headless，破坏现有链路）。
+rapidocr==3.10.0
+pyclipper==1.4.0
+shapely==2.2.0
+PyYAML==6.0.3
+omegaconf==2.4.0
+colorlog==6.12.0

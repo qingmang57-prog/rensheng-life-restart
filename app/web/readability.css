@@ -1,0 +1,438 @@
+/* Fixed application chrome: only the workspace scrolls. */
+html,body{height:100%;overflow:hidden}
+.app-shell{height:100dvh;min-height:0;overflow:hidden}
+.sidebar{height:100dvh;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+/* 2026-11-16 交付修复：窗口高度不足时侧栏底部「个人档案与服务连接」被窗口边缘切掉且无滚动可见性。
+   保留滚动；2026-11-26 按用户要求隐藏侧栏滚动条（滚轮/触控板仍可滚），主工作区细滚动条保留。 */
+.sidebar::-webkit-scrollbar{width:0;height:0;display:none}
+.brand,.sidebar nav,.settings-link{flex-shrink:0}
+.sidebar-group,.sidebar-note{flex-shrink:0}
+@media(max-height:820px){
+  .sidebar{padding:16px 17px 10px;gap:8px}
+  .sidebar nav{gap:4px}
+  .sidebar nav a{padding:9px}
+  .sidebar-group>summary{padding:9px}
+  .sidebar-group>.sidebar-tools a{padding:9px}
+  .sidebar-group .sidebar-create{padding:9px}
+  .sidebar-note{padding:12px 13px 8px}
+  .settings-link{padding:9px 13px}
+}
+@media(max-height:700px){
+  .sidebar{padding:12px 17px 8px;gap:5px}
+  .sidebar nav a{padding:8px}
+  .sidebar-group>summary{padding:8px}
+  .sidebar-group>.sidebar-tools a{padding:8px}
+  .sidebar-group .sidebar-create{padding:8px}
+  .sidebar-note{padding:6px 13px 4px}
+  .sidebar-note small{display:none}
+  .settings-link{padding:7px 13px}
+}
+.app-body{height:100dvh;min-height:0;display:grid;grid-template-rows:76px auto minmax(0,1fr) 34px;overflow:hidden}
+/* 2026-11-16 第二大脑显示不全：外壳标题条占 38px，但 app-body 仍按 100dvh 算，底部（页脚）被挤出窗口 38px。
+   宿在外壳里时扣掉标题条高度，页脚回到视口内，主区滚动到底就是真底。 */
+html.shell-hosted .app-body{height:calc(100dvh - var(--shell-tb-h,38px))}
+.topbar{grid-row:1}.trial-banner{grid-row:2}main{grid-row:3}.page-footer{grid-row:4}
+.topbar{height:76px;background:var(--bg);z-index:5}
+/* 2026-11-16 第二大脑显示不全：主区一直是唯一滚动容器，但滚动条被隐藏，两万多像素的内容看起来像被硬切。
+   改成细滚动条（与侧栏同一套），滚动可见、能滚到底；宽度只占 8px，不影响卡片栅格。 */
+main{width:100%;min-height:0;margin:0 auto;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent;scroll-padding:28px}
+main::-webkit-scrollbar{width:8px;height:8px}
+main::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px}
+main::-webkit-scrollbar-track{background:transparent}
+.page-footer{padding:5px 36px;white-space:nowrap;overflow:hidden;background:var(--bg)}
+.brain-heading{display:flex;align-items:center;justify-content:space-between;gap:28px;margin-bottom:26px}
+.brain-heading h1{font-size:30px;margin-bottom:8px}
+.brain-heading .lead{margin:0;font-size:13px}
+.brain-heading .eyebrow{margin-bottom:8px}
+.brain-heading .actions{flex-shrink:0}
+.brain-overview{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;margin-bottom:26px}
+.brain-map{position:relative;min-height:190px;border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;align-items:center;gap:24px;padding:26px;background:radial-gradient(ellipse at 18% 45%,var(--tint),transparent 75%),var(--surface)}
+.brain-orbit{position:relative;flex-shrink:0;width:132px;height:132px;display:grid;place-items:center;color:var(--gold)}
+.brain-orbit>svg{position:absolute;width:100%;height:100%;inset:0;opacity:.7}
+.brain-orbit-count{display:grid;justify-items:center;line-height:1.15}
+.brain-orbit-count strong{font:40px/1.15 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;font-weight:400}
+.brain-orbit-count span{font-size:10px;letter-spacing:2px;margin-top:6px;color:var(--muted)}
+.brain-map-copy{min-width:0}.brain-map-copy h2{font-size:18px;margin-bottom:10px}.brain-map-copy p{font-size:12px;color:var(--muted);margin-bottom:14px;max-width:210px}.brain-map-copy .link{font-size:12px}
+.brain-answer-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.brain-answer-actions .small{margin-left:4px}
+.brain-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.brain-news-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;min-width:0}
+.brain-news-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
+.brain-news-head span{font-size:12px;font-weight:600}
+.brain-news-head small{font-size:10px;color:var(--muted)}
+.brain-news-list{display:flex;flex-direction:column;gap:6px}
+.brain-news-list a{display:block;font-size:12px;line-height:1.5;color:var(--text);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brain-news-list a:hover{color:var(--gold)}
+.category-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.category-tile{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px 17px;min-width:0}
+.category-tile:hover,.category-tile.selected{border-color:var(--gold);background:var(--tint)}
+.category-symbol{width:36px;height:36px;flex-shrink:0;display:grid;place-items:center;border-radius:10px;background:var(--surface2);color:var(--category,var(--gold))}
+.category-symbol svg{width:21px;height:21px}
+.cat-beliefs{--category:#b79757}.cat-identity{--category:#7b9f93}.cat-money{--category:#a68aaf}.cat-work{--category:#7b9cbd}
+.cat-human{--category:#b0705f}.cat-wealth{--category:#6f8f6a}.cat-success{--category:#c1874a}.cat-ops{--category:#857a6a}
+.category-label{display:grid;gap:2px;min-width:0;line-height:1.5}.category-label strong{font-size:13px;font-weight:500}.category-label small{color:var(--muted);font-size:10px}
+.category-tile>.category-number{font:25px/1 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--text);margin-left:auto}
+.brain-tools{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:14px 0}
+.brain-tools .small{margin:0}.view-switch{display:flex;border:1px solid var(--border);border-radius:8px;padding:3px;gap:3px}
+.view-switch button{font-size:11px;border:0;background:transparent;padding:5px 10px;color:var(--muted)}
+.view-switch button.selected{background:var(--tint);color:var(--gold)}
+.brain-search-hero{margin:0 0 28px;display:flex;flex-direction:column;gap:14px}
+.brain-chat-hero{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px;background:var(--surface);border:1px solid var(--border);border-radius:22px;box-shadow:0 4px 24px rgba(0,0,0,.18);transition:border-color .15s,box-shadow .15s}
+.brain-chat-hero:focus-within{border-color:var(--gold);box-shadow:0 4px 28px rgba(227,179,65,.18)}
+.brain-chat-hero .brain-chat-icon{color:var(--gold);flex-shrink:0;display:grid;place-items:center}
+.brain-chat-hero .brain-chat-icon svg{width:22px;height:22px}
+.brain-chat-hero input{flex:1;border:0;background:transparent;padding:10px 4px;font-size:15px;outline:none;box-shadow:none;color:var(--text)}
+.brain-chat-hero input::placeholder{color:var(--muted);opacity:.7}
+.brain-send-btn{display:inline-flex;align-items:center;gap:6px;border-radius:16px;padding:10px 18px;font-size:14px;flex-shrink:0}
+.brain-send-btn svg{width:16px;height:16px}
+.brain-quick-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.brain-quick-label{font-size:11px;color:var(--muted);flex-shrink:0}
+.brain-quick-tags button{font-size:12px;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:6px 14px;transition:all .15s}
+.brain-quick-tags button:hover{border-color:var(--gold);color:var(--gold);background:var(--tint)}
+/* 2026-11-16 先本地后模型：每条回答标出来源，用户一眼分清是不是自己的记录 */
+.brain-answer-source{display:inline-block;margin:0 7px 0 0;padding:0 8px;border-radius:999px;font-size:11px;line-height:1.75;font-weight:400;vertical-align:1px;border:1px solid var(--border)}
+.brain-answer-source.local{color:#8fd0a8;border-color:rgba(143,208,168,.45);background:rgba(143,208,168,.10)}
+.brain-answer-source.model{color:var(--gold);border-color:rgba(227,179,65,.45);background:rgba(227,179,65,.10)}
+.brain-answer-ms{margin-left:8px;font-size:11px;color:var(--muted);opacity:.65}
+@media(max-width:760px){.brain-search-hero{gap:10px;margin-bottom:22px}.brain-chat-hero{padding:8px 8px 8px 14px;border-radius:18px;gap:8px}.brain-chat-hero .brain-chat-icon svg{width:19px;height:19px}.brain-chat-hero input{font-size:14px;padding:8px 2px}.brain-send-btn{padding:9px 12px;font-size:13px}.brain-send-btn span{display:none}.brain-quick-label{display:none}.brain-quick-tags button{font-size:11px;padding:5px 11px}}
+.knowledge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.knowledge-card{position:relative;display:flex;flex-direction:column;min-height:236px;padding:21px 22px;border:1px solid var(--border);border-radius:14px;background:var(--surface);overflow:hidden}
+.knowledge-card:hover{border-color:var(--gold)}
+.knowledge-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.knowledge-card-top .category-symbol{width:34px;height:34px;border-radius:9px}.knowledge-card-id{font-size:10px;letter-spacing:.4px;color:var(--muted)}
+.knowledge-card h3{font-size:17px;line-height:1.65;font-weight:500;margin:0 0 9px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.knowledge-card .claim{font-size:12px;line-height:1.9;color:var(--muted);margin:0 0 16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.knowledge-card-foot{margin-top:auto;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--muted)}
+.knowledge-card-foot .card-arrow{margin-left:auto;color:var(--gold);font-size:16px}.state-indicator{width:5px;height:5px;display:inline-block;border-radius:50%;background:var(--muted);flex-shrink:0}.state-indicator.pending{background:var(--warn)}.state-indicator.accepted{background:var(--ok)}
+.knowledge-card.expanded .claim{-webkit-line-clamp:unset;display:block}.knowledge-card.expanded h3{-webkit-line-clamp:unset;display:block}
+.knowledge-grid.expanded{align-items:start}
+.knowledge-card .usage-warning{color:var(--warn);font-size:10px;border:1px solid var(--border);padding:1px 6px;border-radius:4px}
+@media(min-width:1550px){.knowledge-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1180px){.brain-heading{align-items:flex-start;flex-direction:column;gap:16px}.brain-overview{grid-template-columns:1fr}.brain-map{min-height:164px}.brain-map-copy p{max-width:360px}.category-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.category-tile{padding:13px 10px;gap:8px}.category-tile .category-symbol{width:29px;height:29px}.category-label small{display:none}.category-tile>.category-number{font-size:21px}}
+@media(max-width:760px){.app-shell{grid-template-rows:auto minmax(0,1fr)}.sidebar{height:auto;max-height:190px;overflow-y:auto;padding:11px 15px}.sidebar .brand{padding-bottom:8px}.sidebar .nav-caption{display:none}.sidebar nav a{padding:8px 10px}.app-body{height:auto;grid-template-rows:54px auto minmax(0,1fr) 25px}.topbar{height:54px}.page-footer{padding:2px 16px;font-size:10px}main{min-height:0;padding:22px 16px}.brain-heading{gap:14px;margin-bottom:20px}.brain-heading h1{font-size:24px}.brain-heading .actions{gap:8px;flex-wrap:wrap}.brain-heading .actions button{font-size:12px;padding:8px 12px}.brain-overview{gap:12px;margin-bottom:20px}.brain-map{padding:18px;gap:16px;min-height:154px}.brain-orbit{width:105px;height:105px}.brain-orbit-count strong{font-size:33px}.brain-map-copy h2{font-size:16px}.brain-map-copy p{font-size:11px;margin-bottom:8px}.category-grid{grid-template-columns:1fr 1fr;gap:8px}.category-tile{padding:12px}.category-label small{display:block}.knowledge-grid{grid-template-columns:minmax(0,1fr);gap:12px}.knowledge-card{min-height:208px;padding:18px}.knowledge-card-top{margin-bottom:12px}.knowledge-card h3{font-size:16px}.knowledge-card .claim{font-size:13px}.brain-tools{gap:8px}.brain-tools .small{font-size:11px}}
+@media(max-height:520px) and (max-width:760px){.sidebar .brand{display:none}.sidebar{padding-top:6px;padding-bottom:6px}.app-body{grid-template-rows:45px auto minmax(0,1fr) 20px}.topbar{height:45px}}
+/* 页脚固定占 34px：主滚动区底部多留一个页脚高度，小窗口下 CTA、历史入口、复制按钮能滚到页脚上方 */
+main{padding-bottom:calc(36px + 40px)}
+@media(max-width:760px){main{padding-bottom:calc(22px + 40px)}}
+@media(max-width:420px){.density-note{display:none}.brain-map{gap:12px}.brain-orbit{width:90px;height:90px}.brain-map-copy h2{font-size:15px}.category-label small{font-size:9px}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.intake-launch{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:38px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:30px;margin:25px 0}.launch-symbol{display:grid;place-items:center;width:38px;height:38px;background:var(--tint);color:var(--gold);border-radius:11px;font-size:24px;margin-bottom:16px}.intake-launch h2{font-size:19px;margin-bottom:8px}.intake-launch p{font-size:12px;color:var(--muted);max-width:300px;margin:0}.intake-launch textarea{min-height:100px;margin-bottom:12px}.workflow-path{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:3px 8px 20px;flex-wrap:wrap;color:var(--muted);font-size:12px}.workflow-path b{font:13px system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--gold);margin-right:8px;font-weight:400}.workflow-path i{font-style:normal;opacity:.4}.project-cards{display:grid;gap:12px}.project-resume{display:flex;gap:18px;align-items:center;padding:22px;background:var(--surface);border:1px solid var(--border);border-radius:12px}.project-thumbnail{width:46px;height:58px;flex-shrink:0;background:var(--tint);border:1px solid var(--border);border-radius:9px;display:grid;place-items:center;color:var(--gold)}.project-thumbnail svg{width:28px;height:32px}.project-summary{flex:1;min-width:0}.project-summary h3{font-size:15px;margin:0 0 5px;overflow-wrap:anywhere}.project-summary p{font-size:11px;color:var(--muted);margin:0}.button-link{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;padding:10px 15px;font-size:12px;white-space:nowrap}.workflow-secondary{margin-top:26px}.workflow-secondary details{max-width:650px}.next-action-card{display:flex;align-items:flex-start;gap:18px;border:1px solid var(--border);border-radius:12px;background:var(--tint);padding:22px}.next-action-card>span{font-size:22px;color:var(--gold)}.next-action-card strong{font-size:15px;font-weight:500}.next-action-card p{font-size:12px;color:var(--muted);margin:6px 0 0}.next-action-card details p{margin:12px 0}.metric-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:22px}.metric-tile{border:1px solid var(--border);background:var(--bg);border-radius:10px;padding:12px 7px;display:grid;justify-items:center;gap:5px;min-width:0}.metric-tile .metric-icon{font-size:20px;color:var(--gold);line-height:1.2}.metric-tile strong{font:18px/1.5 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;overflow-wrap:anywhere;max-width:100%}.metric-tile>span:last-child{font-size:10px;color:var(--muted)}.time-window{font:11px ui-monospace,Consolas,monospace;color:var(--gold);background:var(--tint);padding:4px 8px;border-radius:5px}.opening-panel blockquote{font-size:20px;line-height:1.8;border-left:2px solid var(--gold);margin:20px 0;padding:0 0 0 16px}.source-structure>div{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--border)}.source-structure>div>span{color:var(--gold);width:26px;flex-shrink:0}.source-structure blockquote{margin:7px 0;font-size:13px}.source-structure p{margin:0;color:var(--muted);font-size:12px}.cue-list{max-height:380px;overflow:auto;margin-top:12px}.cue-list>div{display:flex;gap:15px;padding:10px 0;border-bottom:1px solid var(--border)}.cue-list span{font:10px/2 ui-monospace,monospace;white-space:nowrap;color:var(--gold)}.cue-list p{font-size:12px;margin:0}.intake-workspace aside .panel>button{width:100%}
+@media(max-width:1000px){.intake-launch{grid-template-columns:1fr;gap:20px}.intake-launch-copy{display:grid;grid-template-columns:38px 1fr;gap:0 14px}.intake-launch-copy .launch-symbol{grid-row:span 2;margin:0}.intake-launch-copy p{max-width:none}.intake-launch h2{font-size:17px}.project-summary p span{display:none}}
+@media(max-width:760px){.intake-launch{padding:20px;margin:20px 0}.intake-launch .row .muted{font-size:10px}.workflow-path{font-size:10px;gap:7px;justify-content:flex-start}.workflow-path i{display:none}.workflow-path b{font-size:11px;margin-right:4px}.project-resume{padding:16px;gap:12px;flex-wrap:wrap}.project-resume .button-link{margin-left:auto}.project-summary{min-width:calc(100% - 65px)}.metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-tile strong{font-size:20px}.next-action-card{padding:18px}.opening-panel blockquote{font-size:18px}.button-link{min-height:44px}}
+.mobile-label{display:none}
+.default-title{font-size:22px;line-height:1.8;margin-top:24px;color:var(--text)}
+.steps>.step-locked{font-size:12px;padding:7px 11px;color:var(--muted);opacity:.45}.steps>.step-locked>span{margin-right:5px}.intake-pending{max-width:850px;padding:32px}.intake-pending>p{max-width:610px;font-size:13px}.intake-pending .workflow-path{max-width:450px;margin:25px 0 10px}.intake-pending .launch-symbol{margin-bottom:20px}
+@media(max-width:760px){.sidebar .brand{display:none}.sidebar{padding:8px 12px}.app-body{grid-template-rows:48px auto minmax(0,1fr) 25px}.topbar{height:48px}.brain-heading{flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}.brain-heading h1{font-size:22px;margin:0}.brain-heading .eyebrow,.brain-heading .lead,.brain-map{display:none}.brain-heading .actions{margin-left:auto;gap:6px}.brain-heading .actions button{padding:6px 9px;font-size:11px}.brain-heading .desktop-label{display:none}.mobile-label{display:inline}.brain-overview{display:block;margin-bottom:16px}.category-tile{padding:10px}.category-label small{display:none}.category-symbol{width:30px;height:30px}.category-grid{gap:8px}}
+/* 示例库免责说明在手机上必须可见：覆盖上面的 .lead 隐藏规则（.brain-heading .lead.example-lead 特异性更高）。 */
+@media(max-width:760px){.brain-heading .lead.example-lead{display:block;flex-basis:100%;font-size:12px}}
+/* 窄屏侧栏：不裁切、不折行，五个入口两列铺满 */
+@media(max-width:480px){.sidebar{max-height:none;overflow:visible;padding:10px 12px}.sidebar nav{grid-template-columns:1fr 1fr;gap:6px}.sidebar nav a{padding:9px 10px;font-size:12px}.sidebar-note{display:none}.sidebar-create{min-height:44px}}
+.reference-launch{display:grid;gap:12px;padding:22px 26px;margin-top:18px;border:1px dashed var(--border);border-radius:16px;background:var(--surface)}
+.reference-launch>span:first-child{font-weight:600}.reference-launch input{max-width:100%;padding:8px 0}.reference-launch progress{max-width:100%;width:100%;height:6px}
+.candidate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}.candidate-card{display:grid;gap:12px;padding:20px;border:1px solid var(--border);border-radius:14px;text-decoration:none;color:inherit;background:var(--surface)}.candidate-card p{font-size:14px;line-height:1.7;margin:0}.candidate-card strong{line-height:1.6}.next-action-card .button-link{flex-shrink:0}
+@media(max-width:700px){.reference-launch{padding:18px}.next-action-card{flex-wrap:wrap}.next-action-card .button-link{width:100%;text-align:center}.candidate-grid{grid-template-columns:1fr}details.panel .workspace{display:block}details.panel .workspace>aside{margin-top:16px}}
+
+
+/* 对标选题（#/bench） */
+.bench-layout{grid-template-columns:minmax(0,1fr) 330px}
+.bench-add{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+.bench-add input{flex:1;min-width:220px}
+.bench-row{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-top:1px solid var(--border)}
+.bench-row:first-of-type{border-top:0}
+.bench-row.current{background:var(--tint);border-radius:8px;padding-left:10px;padding-right:10px}
+.bench-main{flex:1;min-width:0}
+.bench-main>strong{font-size:14px;font-weight:500;overflow-wrap:anywhere}
+.bench-sub{font-size:12px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
+.bench-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.bench-head{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:12px;padding:0 0 8px;border-bottom:1px solid var(--border);font-size:11px;color:var(--muted)}
+.bench-work{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:start}
+.bench-work:last-child{border-bottom:0}
+.bench-work .check{padding:0;margin:0}
+.bench-stats{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:4px}
+.bench-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px}
+.bench-sort{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+.bench-rate-miss{color:var(--warn)}
+.bench-topic{padding:14px 0;border-top:1px solid var(--border)}
+.bench-topic:first-of-type{border-top:0}
+.bench-comment{padding:10px 0;border-bottom:1px solid var(--border)}
+.bench-comment:last-child{border-bottom:0}
+@media(max-width:1000px){.bench-layout{grid-template-columns:1fr}}
+@media(max-width:760px){.bench-row{flex-wrap:wrap}.bench-actions{width:100%;justify-content:flex-end}.bench-head{display:none}.bench-work{grid-template-columns:22px minmax(0,1fr)}.bench-work>button{grid-column:2;justify-self:start}.bench-foot{justify-content:flex-start}}
+
+
+/* 多平台矩阵（#/matrix） */
+.matrix-target{border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:12px}
+.matrix-target>.check{margin:0 0 10px}
+.matrix-payload{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.matrix-payload .span-all{grid-column:1/-1}
+#matrix-account-form select{max-width:220px}
+@media(max-width:760px){.matrix-payload{grid-template-columns:1fr}.matrix-target{padding:14px}#matrix-account-form{flex-direction:column}#matrix-account-form select,#matrix-account-form input{max-width:100%}}
+
+
+/* 发布与复盘（#/feedback） */
+.fb-toolbar{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.fb-toolbar .field{margin-bottom:0;min-width:260px;flex:1}
+.fb-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+.fb-tile{border:1px solid var(--border);background:var(--bg);border-radius:10px;padding:12px;display:grid;gap:4px;min-width:0}
+.fb-tile strong{font:18px/1.5 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;overflow-wrap:anywhere}
+.fb-tile span{font-size:10px;color:var(--muted)}
+.fb-works{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.fb-card{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:18px;display:grid;gap:10px;min-width:0}
+.fb-card .metric-grid{grid-template-columns:repeat(5,minmax(0,1fr));margin-top:4px}
+.fb-insight{border-top:1px solid var(--border);padding:16px 0}
+.fb-insight:first-of-type{border-top:0}
+.fb-insight h3{margin:0}
+.fb-register{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)}
+.fb-register .field{margin-bottom:0;flex:1;min-width:260px}
+.fb-evidence{margin-top:10px}
+.fb-evidence summary{cursor:pointer;font-size:12px;color:var(--muted)}
+.fb-evidence-item{padding:10px 0;border-top:1px solid var(--border)}
+.fb-evidence-item:first-of-type{border-top:0}
+@media(max-width:760px){.fb-summary{grid-template-columns:1fr 1fr}.fb-works{grid-template-columns:1fr}.fb-toolbar .field{min-width:0}.fb-register .field{min-width:0}.fb-card .metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* 20261113 首页导入区大上传框（参考切片工坊样式；同时覆盖参考视频/直剪两个 .dropzone） */
+.dropzone{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:46px 24px;margin-top:20px;border:1.5px dashed var(--border);border-radius:16px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.dropzone:hover,.dropzone.dragover{border-color:var(--gold);background:var(--tint)}
+.dropzone-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:14px;background:var(--tint);color:var(--gold);margin-bottom:2px}
+.dropzone-icon svg{width:24px;height:24px;display:block}
+.dropzone-title{font-size:15px;font-weight:600;color:var(--text)}
+.dropzone-formats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.dropzone-formats i{font-style:normal;font-size:12px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 9px}
+.dropzone input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.dropzone progress{max-width:320px;width:100%;margin:4px 0 0}
+@media(max-width:700px){.dropzone{padding:34px 16px}}
+.dropzone progress[value="0"]{display:none}
+/* 2026-11-16 同类排查（滚动条）：上一版把这四类容器设成 scrollbar-width:none，
+   但 dialog（会员中心/长弹层）、登录设备列表、创作知识、目标选择器都是可滚列表，
+   滚动条没了就等于「看不出下面还有内容」。统一改成和主区一致的细滚动条；短内容时自然不出现。 */
+dialog,.auth-devices-list,.creation-knowledge,.g-picker-groups{scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+dialog::-webkit-scrollbar,.auth-devices-list::-webkit-scrollbar,.creation-knowledge::-webkit-scrollbar,.g-picker-groups::-webkit-scrollbar{width:8px;height:8px}
+dialog::-webkit-scrollbar-thumb,.auth-devices-list::-webkit-scrollbar-thumb,.creation-knowledge::-webkit-scrollbar-thumb,.g-picker-groups::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px}
+dialog::-webkit-scrollbar-track,.auth-devices-list::-webkit-scrollbar-track,.creation-knowledge::-webkit-scrollbar-track,.g-picker-groups::-webkit-scrollbar-track{background:transparent}
+
+/* 2026-11-16 第二大脑 · 教练式独立窗口（右侧停靠，不用聊天气泡） */
+.bc-window{position:fixed;top:var(--bc-top,0px);right:0;bottom:0;width:clamp(560px,52vw,660px);z-index:1200;display:flex;flex-direction:column;background:var(--surface);border-left:1px solid var(--border);box-shadow:-18px 0 48px rgba(0,0,0,.26);overflow:hidden}
+/* 2026-11-16：程序外壳的标题条固定在顶部高 38px（右下角是最小化/最大化/关闭）。
+   停靠窗口原来从 top:0 起，压住了那三个按钮，自己的标题栏也被挡掉一截，看着像多出一条空白横条。
+   这里让窗口从标题条下沿开始；浏览器直接打开（无 .shell-hosted）时 --bc-top 仍是 0，行为不变。 */
+html.shell-hosted{--bc-top:var(--shell-tb-h,38px)}
+/* 2026-11-16 同类排查（没扣标题条）：.app-shell 与 .sidebar 仍写死 height:100dvh，
+   在外壳里实际可用高度少了 38px，侧栏最后一项被窗口底边切掉且滚不出来；统一扣 --shell-tb-h。 */
+html.shell-hosted .app-shell,html.shell-hosted .sidebar{height:calc(100dvh - var(--shell-tb-h,38px))}
+/* 窄窗（≤760）本来就是「侧栏自适应、主区吃掉剩余高度」。上面按视口扣标题条的固定高度会把 app-body
+   顶出窗口：375 宽实测 app-body 顶边 812、主区顶边 860，页脚被 overflow:hidden 切掉。
+   侧栏与 app-body 在窄窗交还自适应，只保留 app-shell 视口高度。 */
+@media(max-width:760px){html.shell-hosted .sidebar,html.shell-hosted .app-body{height:auto}html.shell-hosted .app-body>main{min-height:0}}
+/* 弹层是 top layer，会盖在 38px 标题条上：630 高时 90dvh 的弹层顶边到 31px，压住窗口按钮。
+   扣掉标题条高度让它从标题条下沿开始，仍然居中。 */
+html.shell-hosted dialog{max-height:calc(90dvh - var(--shell-tb-h,38px))}
+/* 提词器是全屏浮层（fixed inset:0），同样从标题条下沿开始，底部不再多出 38px。 */
+html.shell-hosted .prompter-page{top:var(--shell-tb-h,38px)}
+.bc-window[hidden]{display:none}
+.bc-window.bc-detached{top:calc(var(--bc-top,0px) + 72px);right:auto;bottom:auto;left:auto;height:min(78vh,760px);border:1px solid var(--border);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.bc-window.bc-max{left:12px!important;top:calc(var(--bc-top,0px) + 12px)!important;right:12px!important;bottom:12px!important;width:auto!important;height:auto!important;border-radius:12px}
+.bc-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px 12px 20px;border-bottom:1px solid var(--border);cursor:move;touch-action:none;background:var(--surface2)}
+.bc-max .bc-head{cursor:default}
+.bc-title{font-size:14px;font-weight:600;letter-spacing:.3px}
+.bc-title small{margin-left:8px;font-size:11px;font-weight:400;color:var(--muted);letter-spacing:0}
+.bc-tools{display:flex;gap:4px}
+.bc-tools button{width:28px;height:28px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:15px;line-height:1;cursor:pointer}
+.bc-tools button:hover{background:var(--tint);color:var(--gold);border-color:var(--border)}
+.bc-log{flex:1;overflow-y:auto;padding:22px 20px 18px;display:flex;flex-direction:column;gap:22px;overscroll-behavior:contain}
+.bc-turn{font-size:15px;line-height:1.75;word-break:break-word}
+.bc-user{align-self:flex-end;max-width:78%;padding:9px 13px;border-radius:9px;background:rgba(255,255,255,.055);color:var(--text)}
+.bc-assistant{align-self:stretch;padding-left:16px;border-left:1px solid var(--border)}
+.bc-opening{font-size:12px;line-height:1.7;color:var(--muted);margin-bottom:9px}
+.bc-answer{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;line-height:1.75}
+.bc-turn.open .bc-answer{display:block;overflow:visible}
+.bc-detail{display:none;margin-top:10px;font-size:14px;line-height:1.75;color:var(--text);opacity:.92}
+.bc-turn.open .bc-detail{display:block}
+.bc-more{margin-top:6px;padding:0;border:0;background:none;color:var(--muted);font-size:12px;cursor:pointer}
+.bc-more:hover{color:var(--gold)}
+.bc-cite{display:flex;gap:10px;margin-top:12px;padding:9px 12px;border-left:3px solid var(--pillar,var(--gold));border-radius:4px;background:rgba(255,255,255,.04);text-decoration:none;color:var(--text)}
+.bc-cite:hover{background:rgba(255,255,255,.075)}
+.bc-cite-main{min-width:0}
+.bc-cite-text{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:1.65;color:var(--muted)}
+.bc-cite-meta{display:block;margin-top:4px;font-size:11px;color:var(--muted);opacity:.75}
+.bc-cite-weak{border-left-color:#8a8f98;background:rgba(255,255,255,.025)}
+.bc-cite-weak .bc-cite-meta{opacity:.6}
+.bc-cite-weak .bc-cite-text{opacity:.82}
+.bc-pick{margin-top:7px;font-size:11px;line-height:1.6;color:var(--muted);opacity:.8}
+/* 2026-11-16：开场句下面那句“为什么是这张”。沿用 .bc-pick 的灰小字，只收紧与开场句的间距，
+   并允许在 375 宽下按词换行，不横向溢出。 */
+.bc-opening-note{margin-top:-4px;margin-bottom:2px;opacity:.75;overflow-wrap:anywhere}
+.bc-actions{display:flex;gap:14px;margin-top:12px}
+.bc-actions button{padding:0;border:0;background:none;color:var(--muted);font-size:12px;cursor:pointer}
+.bc-actions button:hover{color:var(--gold)}
+.bc-pillars{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.bc-pillars button{padding:2px 9px;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--muted);font-size:11px;cursor:pointer}
+.bc-pillars button:hover{color:var(--gold);border-color:var(--gold)}
+.bc-status{margin-top:10px;padding:7px 10px;border-left:2px solid var(--border);border-radius:6px;background:rgba(255,255,255,.035);font-size:12px;line-height:1.6;color:var(--muted)}
+.bc-status.error{color:#d98b8b;border-left-color:#b45b5b}
+.bc-empty{font-size:13px;line-height:1.8;color:var(--muted)}
+.bc-form{display:flex;gap:8px;align-items:flex-end;padding:10px 20px 12px;border-top:1px solid var(--border);background:var(--surface)}
+.bc-form textarea{flex:1;resize:none;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);padding:9px 11px;font-size:15px;line-height:1.6;max-height:96px;outline:none}
+.bc-form textarea:focus{border-color:var(--gold)}
+.bc-send{flex-shrink:0;padding:9px 16px;border-radius:10px}
+.bc-in{animation:bc-in .26s ease both}
+@keyframes bc-in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@media(min-width:1100px){body.bc-open:not(.bc-detached) .app-shell{padding-right:clamp(560px,52vw,660px);transition:padding .18s ease}}
+@media(max-width:720px){
+  .bc-window{width:100vw;border-left:0}
+  .bc-window.bc-detached{top:var(--bc-top,0px);left:0;width:100vw;height:calc(100dvh - var(--bc-top,0px));border:0;border-radius:0}
+  .bc-log{padding:18px 16px 14px}
+  .bc-form{padding:9px 14px}
+  .bc-head{padding:10px 12px 10px 16px}
+}
+/* 2026-11-16 第二大脑 · 深挖访谈面板（待确认 → 一键应用 → 一键撤销） */
+.iv-card{margin:22px 0;padding:18px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);min-width:0}
+.iv-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.iv-head h2{font-size:18px;margin:2px 0 0}
+.iv-switch{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:5px 12px;cursor:pointer}
+.iv-switch input{accent-color:var(--gold)}
+.iv-mode{font-size:12px;color:var(--muted);margin:6px 0 14px;line-height:1.7}
+.iv-body{display:grid;gap:14px}
+.iv-question{padding:14px 16px;border-radius:12px;background:var(--surface2);border-left:3px solid var(--gold)}
+.iv-level{font-size:11px;letter-spacing:.4px;color:var(--gold)}
+.iv-question p{margin:6px 0 0;font-size:16px;line-height:1.75}
+.iv-answer{width:100%;min-height:88px;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:14px;line-height:1.7;resize:vertical;font-family:inherit}
+.iv-answer:focus{outline:none;border-color:var(--gold)}
+.iv-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.iv-hint{font-size:11px;color:var(--muted)}
+.iv-summary{padding:14px 16px;border-radius:12px;background:var(--surface2);border:1px solid var(--border)}
+.iv-summary p{margin:6px 0;font-size:14px;line-height:1.8}
+.iv-safety{border-color:var(--warn)}
+.iv-section{border-top:1px solid var(--border);padding-top:14px;display:grid;gap:9px}
+.iv-section-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.iv-section-head span{font-size:11px;color:var(--muted)}
+.iv-item{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer}
+.iv-item input{margin-top:3px;accent-color:var(--gold)}
+.iv-item-main{display:grid;gap:3px;font-size:13px;line-height:1.65;min-width:0}
+.iv-quote{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.iv-tag{display:inline-block;font-size:10px;letter-spacing:.3px;color:var(--gold);border:1px solid var(--border);border-radius:999px;padding:1px 8px;margin-right:8px;vertical-align:1px}
+.iv-applied{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);font-size:13px}
+.iv-applied-text{flex:1;min-width:0;overflow-wrap:anywhere}
+.iv-applied button{flex-shrink:0;font-size:12px;padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer}
+.iv-applied button:hover{color:var(--gold);border-color:var(--gold)}
+.iv-chips{display:flex;flex-wrap:wrap;gap:8px}
+.iv-chip{font-size:12px;color:var(--muted);border:1px dashed var(--border);border-radius:999px;padding:4px 11px}
+.iv-theme{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:14px}
+.iv-theme:focus{outline:none;border-color:var(--gold)}
+.iv-muted{font-size:12px;color:var(--muted);margin:0}
+.iv-fb{font-size:11px;color:var(--warn);margin:0}
+@media(max-width:760px){.iv-card{padding:14px}.iv-question p{font-size:15px}}
+/* 2026-11-16 第二大脑页窄宽断点：对话窗口停靠时视口不变、只有内容区变窄，
+   所以由 app.js 的 ResizeObserver 按 #main 内容宽度（不是视口）挂 .bc-narrow。
+   阈值 520px：实测内容区 316px 时 h1 挤成 4 行竖排、工具栏右溢 112px（main.scrollWidth 500 > clientWidth 388）。 */
+main.bc-narrow{overflow-x:hidden}
+main.bc-narrow .brain-heading{flex-direction:column;align-items:flex-start;gap:14px;margin-bottom:18px}
+main.bc-narrow .brain-heading h1{font-size:24px;letter-spacing:-.2px}
+main.bc-narrow .brain-heading .lead{font-size:12px}
+main.bc-narrow .brain-heading .actions{width:100%;gap:8px}
+main.bc-narrow .brain-heading .actions>button{padding:7px 11px;font-size:12px;min-width:0}
+main.bc-narrow .brain-heading .desktop-label{display:none}
+main.bc-narrow .brain-heading .mobile-label{display:inline}
+main.bc-narrow .brain-search-hero{margin-bottom:20px;gap:10px}
+main.bc-narrow .brain-chat-hero{padding:8px 8px 8px 14px;gap:8px}
+main.bc-narrow .brain-chat-hero input{font-size:14px;padding:8px 4px}
+main.bc-narrow .brain-quick-tags{gap:6px}
+main.bc-narrow .brain-overview{grid-template-columns:minmax(0,1fr);gap:12px;margin-bottom:20px}
+main.bc-narrow .brain-map{padding:16px;gap:14px;min-height:0}
+main.bc-narrow .brain-orbit{width:88px;height:88px}
+main.bc-narrow .brain-orbit-count strong{font-size:28px}
+main.bc-narrow .brain-map-copy h2{font-size:16px;margin-bottom:8px}
+main.bc-narrow .brain-map-copy p{max-width:none;margin-bottom:10px}
+main.bc-narrow .category-grid{grid-template-columns:minmax(0,1fr);gap:8px}
+main.bc-narrow .category-tile{padding:11px 13px;gap:10px}
+main.bc-narrow .category-tile>.category-number{font-size:20px}
+main.bc-narrow .brain-tools{margin:10px 0}
+main.bc-narrow .brain-tools .density-note{display:none}
+main.bc-narrow .knowledge-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+main.bc-narrow .knowledge-card{min-height:0;padding:16px 17px}
+main.bc-narrow .knowledge-card h3{font-size:16px}
+
+/* 2026-11-16 成长总览四张统计卡（有效目标 / 全部积累 / 本月记录 / 等待归位）：
+   对话窗停靠时视口不变、只有内容盒变窄（实测约 560px），媒体查询不触发，
+   四列时标题被挤成一字一行竖排、数字溢出卡片叠到隔壁。
+   这里按 .growth 内容盒宽度（容器查询，不是视口宽度）在 ≤700px 切 2×2，
+   标题保持单行、数字缩小，宽度再小也不会叠。 */
+.growth{container-type:inline-size;container-name:growth}
+@container growth (max-width:700px){
+  .growth .g-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .growth .g-stats>div{padding:15px 16px;min-width:0}
+  .growth .g-stats span{white-space:nowrap;font-size:11px;gap:6px;overflow:hidden}
+  .growth .g-stats .g-icon{width:15px;height:15px;flex-shrink:0}
+  .growth .g-stats strong{font-size:28px;line-height:1.5;margin-top:4px}
+}
+
+.bc-dot:nth-child(3){animation-delay:.3s}
+@keyframes bc-dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.bc-in,.bc-dot{animation:none}}
+/* 721-760：平板窄屏留 8px 边；<=720 用上面的 100vw 规则真正全屏（原先这条把 375 也留了 8px 边）。 */
+@media(min-width:721px) and (max-width:760px){.bc-window{left:8px!important;right:8px!important;top:calc(var(--bc-top,0px) + 8px)!important;bottom:8px!important;width:auto!important;height:auto!important;border-radius:12px}}
+
+/* 消息少时贴底显示，不在顶部留大片空白；.bc-empty 仅空会话时出现 */
+.bc-log>:first-child{margin-top:auto}
+.bc-empty{margin:auto 6px;text-align:center;font-size:12px;line-height:1.8;color:var(--muted);opacity:.85}
+
+/* 2026-11-16 窄屏修复：顶栏内容（会员中心 + 设备 + 退出 + 头像）在 375 下曾把 .topbar 撑到 426px，
+   右侧被裁。这里让顶栏可作为 flex 项收缩，并在 <=480 收紧按钮：会员中心只留图标、登录按钮减内边距。 */
+@media(max-width:480px){
+  .topbar{min-width:0;padding:0 12px;gap:8px}
+  #breadcrumb{flex:1 1 auto;min-width:0}
+  .top-actions{gap:6px;min-width:0;flex-shrink:1}
+  .top-actions .member-entry{padding:6px 9px;gap:0}
+  .top-actions .me-title{display:none}
+  .top-actions .auth-logout{padding:5px 8px;font-size:11px}
+  .top-actions .icon-button{padding:2px 6px;font-size:19px}
+  #save-status{max-width:72px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+}
+
+/* 2026-11-16 第二大脑显示不全（实测 1280×630）：内容本身高于主区（overview 高 425px，起点 419px），
+   630 高时「行业热点」和右列统计卡被切在折线以下；主区是唯一滚动容器（html/body overflow:hidden），
+   之前滚动条被隐藏，所以看起来像被硬切。
+   这里按窗口高度做两档纵向收口（只作用于第二大脑页，用 main:has(> .brain-heading) 限定）：
+   先把标题、搜索框、概览区的留白和卡片内边距压紧，能进一屏就进；进不去的部分靠主区细滚动条可见地滚。
+   宽度断点用的仍是视口最小宽（>=1000），窄屏 375 的既有规则不受影响。 */
+@media (min-width:1000px) and (max-height:900px){
+  main:has(> .brain-heading){padding-top:24px}
+  main:has(> .brain-heading) .brain-heading{margin-bottom:16px}
+  main:has(> .brain-heading) .brain-heading h1{font-size:26px;margin-bottom:5px}
+  main:has(> .brain-heading) .brain-search-hero{margin-bottom:16px;gap:10px}
+  main:has(> .brain-heading) .brain-overview{margin-bottom:16px;gap:14px}
+  main:has(> .brain-heading) .brain-map{min-height:0;padding:20px}
+  main:has(> .brain-heading) .category-tile{padding:9px 12px;gap:9px}
+  main:has(> .brain-heading) .category-tile .category-symbol{width:28px;height:28px}
+  main:has(> .brain-heading) .category-label small{display:none}
+  main:has(> .brain-heading) .category-tile>.category-number{font-size:20px}
+  main:has(> .brain-heading) .brain-news-card{padding:9px 14px}
+  main:has(> .brain-heading) .brain-news-head{margin-bottom:4px}
+  main:has(> .brain-heading) .brain-news-list{gap:3px}
+  main:has(> .brain-heading) .brain-news-list a{font-size:11.5px;line-height:1.4}
+}
+@media (min-width:1000px) and (max-height:700px){
+  main:has(> .brain-heading){padding-top:16px}
+  main:has(> .brain-heading) .brain-heading{margin-bottom:12px}
+  main:has(> .brain-heading) .brain-heading .eyebrow{display:none}
+  main:has(> .brain-heading) .brain-heading h1{font-size:22px;margin-bottom:3px}
+  main:has(> .brain-heading) .brain-heading .lead{font-size:12px}
+  main:has(> .brain-heading) .brain-search-hero{margin-bottom:12px;gap:8px}
+  main:has(> .brain-heading) .brain-chat-hero{padding:7px 8px 7px 14px}
+  main:has(> .brain-heading) .brain-chat-hero input{padding:7px 4px;font-size:14px}
+  main:has(> .brain-heading) .brain-send-btn{padding:8px 15px;font-size:13px}
+  main:has(> .brain-heading) .brain-quick-tags{gap:6px}
+  main:has(> .brain-heading) .brain-quick-tags button{padding:4px 11px;font-size:11px}
+  main:has(> .brain-heading) .brain-overview{gap:12px;margin-bottom:12px}
+  main:has(> .brain-heading) .brain-map{padding:16px;gap:14px}
+  main:has(> .brain-heading) .brain-map-copy h2{font-size:16px;margin-bottom:6px}
+  main:has(> .brain-heading) .brain-map-copy p{margin-bottom:8px}
+  main:has(> .brain-heading) .brain-orbit{width:108px;height:108px}
+  main:has(> .brain-heading) .brain-orbit-count strong{font-size:32px}
+  main:has(> .brain-heading) .category-grid{gap:7px}
+  main:has(> .brain-heading) .category-tile{padding:7px 10px;gap:8px}
+  main:has(> .brain-heading) .category-tile .category-symbol{width:26px;height:26px;border-radius:8px}
+  main:has(> .brain-heading) .category-label strong{font-size:12px}
+  main:has(> .brain-heading) .category-tile>.category-number{font-size:18px}
+  main:has(> .brain-heading) .brain-news-card{padding:8px 13px}
+  main:has(> .brain-heading) .brain-news-list a{font-size:11px;line-height:1.35}
+}

@@ -1,0 +1,54 @@
+{
+  "template": "竖屏锐金（MS · 1080x1920 带货口播）",
+  "schema_version": "0.1.0",
+  "source_revision": {
+    "scenes.js": "sha256:6b2acba4305000bc09399b9b813ec8a900399d973142da3c317f35eb35f3a2fa",
+    "app.js": "sha256:d62c5b9d6cf8ea0ebb926389b12bad3c9bfae04dc18a5f9eb60e8ed2184b6cab",
+    "derived_from": "content/template/ 全读实测（t17 2026-11-19 施工B）；容量=几何字数预算，非代码自适应"
+  },
+  "canvas": { "width": 1080, "height": 1920, "fps": 30, "duration_default_s": 15 },
+  "invariants": [
+    "1080x1920 分带版式四场：钩子砸字(0-3.22s SC)→标签章节(3.22-7.02)→编号清单(7.02-11.55)→金句圆窗(11.55-15.1)，scenes.js:84/118/156/199",
+    "SC=duration/15 等比缩放全部节拍/evaKeys/sfx（duration>1 才生效，scenes.js:14）；几何 X()/Y()/F() 按 1080/1920 缩放（scenes.js:18-20）",
+    "夜校色板 GOLD #FFD400 / HOT #FF1F2E / INK #F5F5F0 / DIM #7E8794 / LINE #2A313C（scenes.js:24-25）+ 每场暗角",
+    "字阶 78/64/54/42/26/24/22/92/104px（F() 等比）；砸字公式=白字+末2字染金(scenes.js:89)+红残影(90-99)",
+    "人物窗三窗 choreography：hero win(520,s=1.3)→small win(400,s=1.13)→quote 圆窗 260x260 s=1（scenes.js:44-48）；zoom cap 语义 hero h≤.471 / small cap 上限 / quote cap=1（scenes.js:36-39）",
+    "常驻品牌 chip + 时间码 hud（scenes.js:59-70）；字幕带 1405 起外挂，模板不画（scenes.js:8-9）",
+    "确定性帧时钟：renderAt 纯 t 函数，全包无 Date.now/Math.random（grep 实测 0 命中）",
+    "sfx 仅登记线索（impact/pop/whoosh/riser），scripts/sfx.py 外渲（kit.js:47-48）"
+  ],
+  "replaceable": {
+    "capacity_rule": "模板无字号自适应/无溢出缩放（scenes.js 全文与 kit.js k.cn 实测，定字号绝对定位）→ 容量=几何字数预算（CJK 全角宽≈字号，画布宽 1080）；超预算=出血裁切，必须拆句",
+    "slots": {
+      "s1_l1": { "type": "text", "line": "78px 两行居中 行1 scenes.js:88-99", "capacity": "≤13 字", "overflow": "出血裁切" },
+      "s1_l2": { "type": "text", "line": "78px 行2，末 2 字染金 scenes.js:89", "capacity": "≤13 字（需≥2 字，末 2 字金）", "overflow": "出血裁切" },
+      "s1_tag": { "type": "text", "line": "26px 金 chip 居中 scenes.js:100-105", "capacity": "≤8 字", "overflow": "chip 变宽" },
+      "s2_tag": { "type": "text", "line": "26px nowrap 左标签 scenes.js:122-128", "capacity": "≤12 字", "overflow": "nowrap 出血" },
+      "s2_h": { "type": "text", "line": "64px 左对齐 scenes.js:129-133", "capacity": "≤14 字", "overflow": "出血裁切" },
+      "s2_en": { "type": "text", "line": "24px EN letterSpacing6 scenes.js:134-137", "capacity": "≤24 ASCII 字符", "overflow": "出血裁切" },
+      "s3_h": { "type": "text", "line": "54px 居中 scenes.js:159-162", "capacity": "≤20 字", "overflow": "出血裁切" },
+      "s3_i1": { "type": "text", "line": "42px 清单条1 scenes.js:164-176", "capacity": "≤20 字", "overflow": "出血裁切" },
+      "s3_i2": { "type": "text", "line": "42px 清单条2", "capacity": "≤20 字", "overflow": "出血裁切" },
+      "s3_i3": { "type": "text", "line": "42px 清单条3", "capacity": "≤20 字", "overflow": "出血裁切" },
+      "s4_l1": { "type": "text", "line": "92px 金句白行 scenes.js:207-211", "capacity": "≤11 字", "overflow": "出血裁切" },
+      "s4_l2": { "type": "text", "line": "104px 金句金行 scenes.js:212-216", "capacity": "≤10 字", "overflow": "出血裁切" },
+      "s4_en": { "type": "text", "line": "26px EN letterSpacing10 scenes.js:217-220", "capacity": "≤22 ASCII 字符", "overflow": "出血裁切" },
+      "brand": { "type": "text", "line": "22px 常驻 chip scenes.js:60-65", "capacity": "≤10 字", "overflow": "chip 变宽" },
+      "duration": { "type": "number", "line": "SC 时标 scenes.js:14 / render.mjs:67 DUR_OVERRIDE", "capacity": "建议 10-30s", "overflow": "全节拍等比拉长，版式不变" },
+      "host.dir": { "type": "asset_dir", "line": "C.evaDir scenes.js:33", "capacity": "540x960 帧序列覆盖 0-end", "overflow": "n/a" },
+      "host.face": { "type": "face_point", "line": "C.face {x,y,h} 默认(.354,.344,.45) headFill .62 scenes.js:40-41", "capacity": "hero 窗需 h≤.471（cap 约束 scenes.js:38）", "overflow": "越限则 zoom cap 失效、窗内偏移" }
+    },
+    "access_path": "window.__EVA_P（app.js 注入层）← render.mjs --params 注入 USER_PARAMS（render.mjs:68）；槽位访问器 txt(key,dft)（scenes.js:15）"
+  },
+  "missing_input_behavior": {
+    "text_slots": "全部文本槽有内置默认值 txt(key,dft)（scenes.js:15）→ 缺参不阻塞渲染，但成片为默认内容，交付前必须核对非默认",
+    "host_dir": "唯一缺料影响点：无 host.dir → evaKeys 回退单 hero 窗且 o:0 隐藏（scenes.js:54）→ 文字版式照常渲染，成片无人物，不造假素材；交付声明",
+    "blocking": "无阻塞缺料场景；但人物缺失、文案超预算属内容缺陷，技术 rc0 不豁免体验验收"
+  },
+  "overflow_policy": "定字号绝对定位无自适应：超字数预算即出血/换行溢出，唯一正确做法是按容量表拆句；禁止依赖渲染侥幸",
+  "review": {
+    "technical": "ffprobe 1080x1920/30fps 解码 rc0；泵契约 node render.mjs --preview --time <s> --out p.png / --times 列表（render.mjs:3,84）/ --params params.demo.json --out demo.mp4 [--scale 0.5] [--dur]（render.mjs:4）",
+    "experience": "原速听看：砸字撞击感、三清单逐条读感、金句截图传播价值、三窗缩放节奏服务叙事；执行人自测≠独立核验，人眼（青芒）定验收",
+    "capacity_check": "逐槽对 replaceable.slots 容量字段核对文案长度后才渲染"
+  }
+}

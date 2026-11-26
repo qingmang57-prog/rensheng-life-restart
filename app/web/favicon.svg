@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="金边首字 LOGO">
+  <!-- 白牌骨架：深底 + 金色圆角边框 + 名字首字。配色取自 styles.css :root。
+       文字「我」是中性占位，实际由 branding.name() 首字注入，不写死品牌名（D6）。 -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#1a1916" stroke="#e3b341" stroke-width="1.6"/>
+  <text x="32" y="45" font-size="36" text-anchor="middle" fill="#e3b341" font-family="system-ui,'Microsoft YaHei',sans-serif">我</text>
+</svg>

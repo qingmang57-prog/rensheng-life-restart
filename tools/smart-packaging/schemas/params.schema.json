@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dreamweaver-kit inputs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "timeline",
+    "workflow"
+  ],
+  "properties": {
+    "workflow": {
+      "type": "string",
+      "const": "dreamweaver-kit/1"
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shortTitle"
+      ],
+      "properties": {
+        "shortTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "source": {
+          "type": "object"
+        }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "duration",
+        "segments",
+        "voiceover",
+        "music"
+      ],
+      "properties": {
+        "layout": {
+          "type": "string",
+          "enum": [
+            "landscape",
+            "portrait",
+            "4x3"
+          ],
+          "default": "portrait"
+        },
+        "family": {
+          "type": "string",
+          "description": "家族名，见 catalog.json themes"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 5,
+          "maximum": 600
+        },
+        "presenter": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "src": {
+              "type": "string"
+            },
+            "badge": {
+              "type": "string"
+            },
+            "audio": {
+              "enum": [
+                "source",
+                "mute"
+              ]
+            },
+            "face": {
+              "type": "object",
+              "required": [
+                "cx",
+                "cy",
+                "h"
+              ],
+              "properties": {
+                "cx": {
+                  "type": "number"
+                },
+                "cy": {
+                  "type": "number"
+                },
+                "h": {
+                  "type": "number"
+                }
+              }
+            },
+            "framing": {
+              "enum": [
+                "auto",
+                "none"
+              ]
+            }
+          }
+        },
+        "voiceover": {
+          "type": "string"
+        },
+        "subtitles": {
+          "type": "string"
+        },
+        "music": {
+          "type": "string"
+        },
+        "segments": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "control",
+              "t0",
+              "t1",
+              "props"
+            ],
+            "properties": {
+              "control": {
+                "type": "string"
+              },
+              "t0": {
+                "type": "number"
+              },
+              "t1": {
+                "type": "number"
+              },
+              "props": {
+                "type": "object"
+              },
+              "chapter": {
+                "type": "string"
+              },
+              "presenter": {
+                "enum": [
+                  "card",
+                  "small",
+                  "hide"
+                ]
+              },
+              "transition": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "captionsData": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "start",
+              "end",
+              "text"
+            ],
+            "properties": {
+              "start": {
+                "type": "number"
+              },
+              "end": {
+                "type": "number"
+              },
+              "text": {
+                "type": "string"
+              },
+              "lines": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 2
+              },
+              "hi": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "openingCard": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "brand": {
+              "type": "string"
+            },
+            "lines": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 2
+            },
+            "subtitle": {
+              "type": "string"
+            },
+            "seconds": {
+              "type": "number"
+            }
+          }
+        },
+        "captionStyle": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "single",
+                "double"
+              ]
+            },
+            "hiWords": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "narrationMap": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "shot",
+              "start",
+              "end",
+              "spokenText",
+              "purpose",
+              "captionIndices",
+              "beats"
+            ],
+            "properties": {
+              "shot": {
+                "type": "integer"
+              },
+              "start": {
+                "type": "number"
+              },
+              "end": {
+                "type": "number"
+              },
+              "spokenText": {
+                "type": "string"
+              },
+              "purpose": {
+                "type": "string"
+              },
+              "timingSource": {
+                "type": "string"
+              },
+              "captionIndices": {
+                "type": "array"
+              },
+              "captionBinding": {
+                "type": "string"
+              },
+              "beats": {
+                "type": "array"
+              }
+            }
+          }
+        },
+        "mood": {
+          "type": "string",
+          "enum": [
+            "",
+            "warm"
+          ]
+        }
+      }
+    }
+  }
+}

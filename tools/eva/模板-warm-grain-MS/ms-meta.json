@@ -1,0 +1,7 @@
+{
+  "name": "暖粒人物口播",
+  "caption": "16:9 · 暖米纸纹 · 细颗粒叠层 · 人物窗轨道构图 · HyperFrames 原生",
+  "width": 1920,
+  "height": 1080,
+  "note": "复用 warm-grain 原生样片风格；纹理/字体随包自产与 OFL 授权；人物窗经 face-track 居中接线（静态降级安全）；配乐BGM需打开。"
+}

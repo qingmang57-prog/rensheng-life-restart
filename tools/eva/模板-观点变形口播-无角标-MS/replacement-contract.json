@@ -1,0 +1,56 @@
+{
+  "template": "观点变形口播-无角标",
+  "schema_version": "0.1.0",
+  "source_revision": "runtime.js sha256:144018025c218382ace643bdb093e8b586b2e87b33508ac3f0a026dfdb741569",
+  "canvas": { "width": 1920, "height": 1080, "fps": 30 },
+  "invariants": [
+    "deep-blue-gold palette + grid + orb",
+    "renderAt(t) deterministic frame clock",
+    "word-cue data-at fade grammar",
+    "7-layout semantic mapping",
+    "scene fade easing .68/.22 in, .08/.25 out",
+    "person-window face-track + centering DX=-0.0168 DY=-0.1601 centerY=0.5",
+    "captions from real speech",
+    "original-voice-first, BGM mixed once client-side"
+  ],
+  "replaceable": {
+    "scenes": {
+      "type": "array", "required": true,
+      "items": {
+        "id": { "type": "string", "required": true },
+        "layout": { "type": "enum", "values": ["hook","quote","points","process","contrast","paper","close"], "required": true, "note": "导演按原文语义+mood指派，非配额轮播" },
+        "start": { "type": "number", "unit": "s", "required": true },
+        "end": { "type": "number", "unit": "s", "required": true },
+        "geo": { "type": "enum", "values": "GEOMETRIES[0..8]", "required": true, "note": "人物窗几何9预设，zoom s参数化" },
+        "heading": { "type": "string", "required": false, "fallback": "观点 NN" },
+        "blocks": {
+          "type": "array", "required": true,
+          "items": {
+            "text": { "type": "string", "required": true },
+            "start": { "type": "number", "unit": "s", "required": true, "note": "词级卡点锚点 data-at" }
+          },
+          "capacity": {
+            "points": "font=min67/max35/floor(w/min(15,max(7,len)))",
+            "paper": "font=min78/max36/floor(1600/max(15,len))",
+            "quote_hook_close": "font=min86/max43/floor(2250/max(26,len))",
+            "contrast": "font=min68/max35/floor(1800/max(25,len))"
+          },
+          "overflow": "generic-copy scrollHeight>650 → scale(650/scrollHeight); 长文案拆句或重设计该镜，不缩到不可读"
+        }
+      }
+    },
+    "captions": { "type": "array", "required": true, "items": { "start":"s","end":"s","text":"string" }, "note": "真实语音证据，禁伪造" },
+    "faces": { "type": "array", "required": true, "items": { "t":"s","x":"0..1","y":"0..1","h":"0..1" }, "note": "YuNet 轨迹" },
+    "host": { "type": "object", "required": true, "fields": ["pattern","count","fps","width","height"], "note": "人物视频帧序列" },
+    "brand": { "type": "string", "required": false },
+    "edition": { "type": "string", "required": false, "capacity": "max-width 1000px ellipsis" },
+    "assets": { "type": "object", "required": false, "fields": ["bg","fx","broll"], "note": "assets.json 注入，无则零行为；资产服务动作脚本职责，不为塞资产删减视觉事件" }
+  },
+  "missing_input_behavior": "无人物帧/无字幕→报告阻塞，不拿生成图冒充真实证据",
+  "review": {
+    "technical": ["双端解码rc0","ffprobe规格","跨泵确定性等价","FRAME_DIAGNOSTICS"],
+    "experience": ["原速听看","卡词半秒级合格","人物居中","字幕可读","声画同步","观众经历所声称的变化"],
+    "evidence": "成对同时间戳对比+源/输出hash+残留差距记录",
+    "acceptance": "人眼（青芒）定视觉验收"
+  }
+}

@@ -1,0 +1,1 @@
+# JD空间口播\n同一core供切片工坊和个人IP工作台；只读源内容与时钟。由逐帧renderAt驱动，人物严格decode。\n

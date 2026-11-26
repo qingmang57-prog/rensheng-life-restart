@@ -1,0 +1,10 @@
+{
+  "name": "ip-workbench-smart-packaging",
+  "version": "1.0.0",
+  "private": true,
+  "description": "workbench packaging frame pump (render.mjs) - playwright-core only, no bundled browsers",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright-core": "1.58.2"
+  }
+}

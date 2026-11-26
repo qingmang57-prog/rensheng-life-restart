@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Decision Tree</title>
+    <!-- t7 适配：上游 index.html:7 的 gsap CDN 改为本包 vendored 副本 3.14.2（禁运行时 CDN） -->
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #ffffff;
+        /* t7 适配：上游 "Inter"（Google Fonts 外链）改为本机可解析字体栈；未内置字体文件（下载红线仅限模板源+GSAP）。
+           YaHei 曾被 lint 判 font_family_without_font_face，演示文案全英文故移除；CJK 注入走 sans-serif 系统兜底 */
+        font-family: "Segoe UI", Arial, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="10"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="decision-tree-comp"
+        data-composition-id="decision-tree"
+        data-composition-src="compositions/decision_tree.html"
+        data-start="0"
+        data-duration="10"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+        data-variable-values='{
+          "node_root": "Should I learn to code?",
+          "node_yes": "Yes",
+          "node_not_sure": "Not sure",
+          "node_python": "Start with Python",
+          "node_nocode": "Try no-code first",
+          "node_website": "Build a personal website",
+          "node_course": "Take a free intro course",
+          "label_yes": "Yes",
+          "label_not_sure": "Not sure"
+        }'
+      ></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+
+      // === t7 双端离线打样垫片（步骤③；上游无此块，HyperFrames 原生渲染不走此路径） ===
+      // 组合挂载：fetch 模板 → template 内容 importNode 进挂载点（脚本节点插入即执行，与运行时同构）。
+      async function __hfMountCompositions() {
+        const mounts = document.querySelectorAll('[data-composition-src]');
+        for (const m of mounts) {
+          const src = m.getAttribute('data-composition-src');
+          const res = await fetch(src);
+          if (!res.ok) throw new Error('composition fetch failed: ' + src);
+          const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+          const tpl = doc.querySelector('template');
+          if (!tpl) throw new Error('no <template> in composition: ' + src);
+          m.appendChild(document.importNode(tpl.content, true));
+        }
+      }
+
+      // renderAt(t)：按帧 seek 全部已注册时间轴（suppressEvents=false 保回调随播放头逐步触发）。
+      window.renderAt = async function (t) {
+        const tls = window.__timelines || {};
+        for (const id of Object.keys(tls)) {
+          if (tls[id] && typeof tls[id].seek === 'function') tls[id].seek(t, false);
+        }
+      };
+
+      window.CONSUMER_READY = (async () => {
+        await __hfMountCompositions();
+        await window.renderAt(0);
+      })();
+    </script>
+  </body>
+</html>

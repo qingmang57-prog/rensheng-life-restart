@@ -1,0 +1,268 @@
+{
+  "schema": "ip-components/1",
+  "version": "2026.11.26.1",
+  "built_at": "2026-11-26 02:11:04",
+  "packs": [
+    {
+      "id": "tools_python",
+      "rel": "tools/python",
+      "kind": "full",
+      "bytes": 920973653,
+      "zip_bytes": 799669291,
+      "sha256": "b1a74fdb4e7220c39cffec93f3602d714298f1aa224184902a821ba43962f624",
+      "files": 15318,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_python.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_python.zip"
+      ]
+    },
+    {
+      "id": "tools_node",
+      "rel": "tools/node",
+      "kind": "full",
+      "bytes": 467607551,
+      "zip_bytes": 357880281,
+      "sha256": "a552d946c0ace4ea0b94d9292e446c4d5e295b3c6dd7b4705d404796ac502ab0",
+      "files": 8529,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_node.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_node.zip"
+      ]
+    },
+    {
+      "id": "tools_ffmpeg",
+      "rel": "tools/ffmpeg",
+      "kind": "full",
+      "bytes": 329221735,
+      "zip_bytes": 319843600,
+      "sha256": "5febeaebfd0aa89758b4d24036a7989d486c2c474ea7721898fd9c8f8661bcc9",
+      "files": 45,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_ffmpeg.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_ffmpeg.zip"
+      ]
+    },
+    {
+      "id": "tools_chromium",
+      "rel": "tools/chromium",
+      "kind": "full",
+      "bytes": 498978305,
+      "zip_bytes": 499020358,
+      "sha256": "128b4ff992ca9f1d4c51f9d9aa971d60433bce9a2d2f9471cd67805aab2bf20f",
+      "files": 1265,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_chromium.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_chromium.zip"
+      ]
+    },
+    {
+      "id": "tools_yt-dlp",
+      "rel": "tools/yt-dlp",
+      "kind": "full",
+      "bytes": 23628813,
+      "zip_bytes": 23628807,
+      "sha256": "ace15d41abda32a35d04ea286e1ad3af4565844e14d7f53ae4aacdc90d80a782",
+      "files": 2,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_yt-dlp.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_yt-dlp.zip"
+      ]
+    },
+    {
+      "id": "tools_avatar-model",
+      "rel": "tools/avatar-model",
+      "kind": "full",
+      "bytes": 175997641,
+      "zip_bytes": 164786611,
+      "sha256": "db23e42b869cefdc9aae8a21995745b183d14447ed25b7d4cee8b35e4f80f575",
+      "files": 1,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_avatar-model.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_avatar-model.zip"
+      ]
+    },
+    {
+      "id": "tools_motion-python",
+      "rel": "tools/motion-python",
+      "kind": "full",
+      "bytes": 328386296,
+      "zip_bytes": 296713454,
+      "sha256": "4e0c12d2c08be7f0a27b95f04da0a4a40aefcdae38c406fb8913c4cc3992c90f",
+      "files": 3376,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_motion-python.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_motion-python.zip"
+      ]
+    },
+    {
+      "id": "tools_motion-base-python",
+      "rel": "tools/motion-base-python",
+      "kind": "full",
+      "bytes": 40876765,
+      "zip_bytes": 30373618,
+      "sha256": "cfc9fbd903ac2fe1ad4e7870b8614ef5dec631261844bfc1dd4db6a4abfb6457",
+      "files": 1332,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_motion-base-python.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_motion-base-python.zip"
+      ]
+    },
+    {
+      "id": "app_.runtime_ai-env",
+      "rel": "app/.runtime/ai-env",
+      "kind": "full",
+      "bytes": 750154190,
+      "zip_bytes": 574326774,
+      "sha256": "92b774e975f1a6dc00f745ba6e896cfef9fa98ce4a6a0038c1aac8373793a381",
+      "files": 17921,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/app_.runtime_ai-env.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/app_.runtime_ai-env.zip"
+      ]
+    },
+    {
+      "id": "app_.runtime_browser-env",
+      "rel": "app/.runtime/browser-env",
+      "kind": "full",
+      "bytes": 118127849,
+      "zip_bytes": 104224000,
+      "sha256": "4fbad60902a5440f3002a5b060d2d90e846f3173fb8b99fcd9b12897b8f1ca6b",
+      "files": 766,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/app_.runtime_browser-env.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/app_.runtime_browser-env.zip"
+      ]
+    },
+    {
+      "id": "app_.runtime_models",
+      "rel": "app/.runtime/models",
+      "kind": "full",
+      "bytes": 175997641,
+      "zip_bytes": 164786623,
+      "sha256": "5c01f27ea8737ba735c6ef656fa342c3fb84ce2ca6338a40a0f5b55879baf3d5",
+      "files": 1,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/app_.runtime_models.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/app_.runtime_models.zip"
+      ]
+    },
+    {
+      "id": "tools_eva",
+      "rel": "tools/eva",
+      "kind": "overlay",
+      "bytes": 650203941,
+      "zip_bytes": 653540764,
+      "sha256": "e744c63840c56a3d240523fca6e67dacbd8349b86faa5c3751e15a2583789854",
+      "files": 19826,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_eva.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_eva.zip"
+      ]
+    },
+    {
+      "id": "tools_jd-motion-kit",
+      "rel": "tools/jd-motion-kit",
+      "kind": "overlay",
+      "bytes": 60164673,
+      "zip_bytes": 48253181,
+      "sha256": "3031718920e748bc0c024c418cf05ade7d99e09e92950112de31b429549c4da5",
+      "files": 516,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_jd-motion-kit.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_jd-motion-kit.zip"
+      ]
+    },
+    {
+      "id": "tools_jd-spatial",
+      "rel": "tools/jd-spatial",
+      "kind": "overlay",
+      "bytes": 8415164,
+      "zip_bytes": 8415534,
+      "sha256": "2f552d1c22e67132eecd180a1138cb588e9fb906014df95fe4d309b2739e8a80",
+      "files": 2,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_jd-spatial.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_jd-spatial.zip"
+      ]
+    },
+    {
+      "id": "tools_motion-template",
+      "rel": "tools/motion-template",
+      "kind": "overlay",
+      "bytes": 58051148,
+      "zip_bytes": 43299523,
+      "sha256": "24209b6930867d8d8914c3932ee9b96cb3d8bd9ffc1185da409889c72170e503",
+      "files": 399,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_motion-template.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_motion-template.zip"
+      ]
+    },
+    {
+      "id": "tools_motion-template-244",
+      "rel": "tools/motion-template-244",
+      "kind": "overlay",
+      "bytes": 38559777,
+      "zip_bytes": 32075306,
+      "sha256": "22b2a82ed42cc1680b74116dea10fb62aca67311e01de71a901e8e6dc0a5158b",
+      "files": 528,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_motion-template-244.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_motion-template-244.zip"
+      ]
+    },
+    {
+      "id": "tools_smart-packaging",
+      "rel": "tools/smart-packaging",
+      "kind": "overlay",
+      "bytes": 50338411,
+      "zip_bytes": 38404882,
+      "sha256": "729e75701344ca0a713e4f2861b561cc59395131fafd777cc782627aeff07b14",
+      "files": 455,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_smart-packaging.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_smart-packaging.zip"
+      ]
+    },
+    {
+      "id": "tools_bgm",
+      "rel": "tools/bgm",
+      "kind": "overlay",
+      "bytes": 38514682,
+      "zip_bytes": 38517356,
+      "sha256": "81b37a1a5e174a370c959db610dc3c2b718efaabe505ffffe5a30fb46d3e11ad",
+      "files": 21,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/tools_bgm.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/tools_bgm.zip"
+      ]
+    },
+    {
+      "id": "app_assets_fonts",
+      "rel": "app/assets/fonts",
+      "kind": "overlay",
+      "bytes": 21404416,
+      "zip_bytes": 16503224,
+      "sha256": "6f5f93a48b1e685ce1595f67b59a33c62d654fbfbe23b7db2c31489272f2db11",
+      "files": 4,
+      "mirrors": [
+        "https://www.jidixh.com/components/2026.11.26.1/app_assets_fonts.zip",
+        "https://github.com/qingmang57-prog/rensheng-life-restart/releases/download/components-2026.11.26.1/app_assets_fonts.zip"
+      ]
+    }
+  ],
+  "pip_steps": [
+    {
+      "venv": "app/.runtime/ai-env",
+      "packages": [
+        "torch==2.8.0+cpu",
+        "torchaudio==2.8.0+cpu"
+      ],
+      "indexes": [
+        "https://mirrors.aliyun.com/pytorch-wheels/cpu/",
+        "https://download.pytorch.org/whl/cpu/"
+      ],
+      "why": "torch 超 Release 单文件限制不进包；Windows wheel 即 CPU 版，国内镜像补"
+    }
+  ]
+}

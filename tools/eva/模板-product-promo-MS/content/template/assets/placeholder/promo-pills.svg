@@ -1,0 +1,9 @@
+<!-- 示例资产：中性标签胶囊占位，可整文件替换（模板场景实际使用内联胶囊样式，此文件为素材备用件） -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 56" width="420" height="56">
+  <rect x="0" y="8" width="130" height="40" rx="20" fill="#59B98A"/>
+  <text x="65" y="33" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#0a0a0f" text-anchor="middle">example.com</text>
+  <rect x="145" y="8" width="130" height="40" rx="20" fill="#3D8FE8"/>
+  <text x="210" y="33" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#0a0a0f" text-anchor="middle">Design</text>
+  <rect x="290" y="8" width="130" height="40" rx="20" fill="#E8A33D"/>
+  <text x="355" y="33" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#0a0a0f" text-anchor="middle">Ship</text>
+</svg>

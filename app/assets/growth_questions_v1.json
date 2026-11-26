@@ -1,0 +1,13 @@
+{
+ "version": "v1",
+ "source": "cloud-only",
+ "total": 0,
+ "policy": {
+  "onboarding": "sensitive为false且level不是L3才可进默认首轮",
+  "skip": "跳过进入待补池，可之后补答",
+  "empty": "没有/不知道是信息，不生成碎片",
+  "probe": "最多一层，仅使用题库probe"
+ },
+ "questions": [],
+ "note": "题库正文是云端核心资产（method_assets: growth.questions），本文件只留骨架；运行时由 asset_store 读取，未登录/离线超 72h 时不可用。"
+}

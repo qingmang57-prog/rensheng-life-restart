@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:'Anton'; src:url('assets/Anton-Regular.ttf'); }
+@font-face { font-family:'NotoSC'; src:url('assets/NotoSansSC.ttf'); font-weight:100 900; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:100%; height:100%; overflow:hidden; background:#000; }
+:root { --bg:#07080C; --ink:#E8ECF4; --accent:#F5B83D; --pop:#3D7BFF; --dim:#3A4152; }
+#world { position:absolute; inset:0; }
+.sc { position:absolute; inset:0; display:none; overflow:hidden; }
+.e { position:absolute; }
+.layer { position:absolute; inset:0; pointer-events:none; }
+#fxb,#fxc,#fxt { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+#fxb { z-index:5; } #fxc { z-index:40; } #fxt { z-index:80; }
+#fade { position:absolute; inset:0; background:#000; opacity:0; z-index:90; pointer-events:none; }
+.cam { position:relative; overflow:hidden; background:#101216; border:2px solid rgba(233,236,244,.25); border-radius:18px; box-shadow:0 18px 40px rgba(0,0,0,.5); }
+.cam.round { border-radius:50%; border-width:3px; }
+.cam img { width:100%; height:100%; object-fit:cover; display:block; }
+.cam .lab { position:absolute; left:0; right:0; bottom:0; padding:8px 14px; font:500 20px 'Anton'; letter-spacing:2px; color:rgba(233,236,244,.85); background:linear-gradient(transparent, rgba(0,0,0,.55)); }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<canvas id="fxb"></canvas><canvas id="fxc"></canvas><canvas id="fxt"></canvas>
+<div id="fade"></div>
+<script src="runtime/dom.js"></script>
+<script src="config.js"></script>
+<script src="user-input.js"></script>
+<script src="runtime/theme.js"></script>
+<script src="runtime/user-runtime.js"></script>
+<script src="runtime/beats.js"></script>
+<script src="runtime/textfit.js"></script>
+<script src="runtime/captions.js"></script>
+<script src="runtime/opening.js"></script>
+<script src="runtime/fx.js"></script>
+<script src="runtime/renderAt.js"></script>
+<script src="layouts.js"></script>
+<script src="scenes/keyword.js"></script>
+<script src="scenes/controls.js"></script>
+<script src="family-overrides.js"></script>
+<script>
+/* bootstrap 内联前置：CONFIG 已由 prepare 生成；此处仅做装配与就绪信号 */
+window.CONSUMER_READY = (async () => {
+  FX.fxInit(document);
+  try {
+    const r = await fetch('beats.json');
+    if (r.ok) window.KINETIC_INPUT.beatsData = await r.json();
+  } catch (e) { /* 无节拍数据则 beatPulse 恒 0，不阻断 */ }
+  const segs = window.USER_INPUT.segments || [];
+  for (const seg of segs) { if (typeof buildScene === 'function') buildScene(seg); }
+  window.initCaptions();
+  window.initOpening && window.initOpening();
+  await document.fonts.ready;
+  await Promise.all((CONFIG.fontChecks || []).map(f => document.fonts.load(f, '字ABC0123')));
+  await window.imgWait();
+  document.title = 'done';
+})();
+</script>
+</body>
+</html>

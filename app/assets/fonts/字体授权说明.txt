@@ -1,0 +1,9 @@
+本目录字体仅随本产品打包分发，用于本地字幕烧录（libass fontsdir）。
+- HarmonyOS_Sans_SC_Bold.ttf —— HarmonyOS Sans SC Bold，华为免费商用授权
+- NotoSansSC-Bold.otf —— Noto Sans SC Bold（思源黑体），SIL Open Font License 1.1
+- SourceHanSerifSC-Heavy.ttf —— 思源宋体 Heavy，SIL Open Font License 1.1
+- SmileySans-Oblique.otf —— 得意黑 v2.0.1（atelier-anchor/smiley-sans），SIL Open Font License 1.1
+
+OFL 1.1 许可证原文见各字体官方仓库：https://github.com/googlefonts/noto-cjk 、
+https://github.com/adobe-fonts/source-han-serif 、https://github.com/atelier-anchor/smiley-sans
+默认字幕字体为系统微软雅黑，不在此目录内。

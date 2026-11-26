@@ -1,0 +1,638 @@
+{
+ "profile": "dreamweaver.kit-catalog/1",
+ "version": "0.1.0",
+ "families": {
+  "type-drama": {
+   "label": "字场",
+   "theme": "type-drama",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  },
+  "deep-stage": {
+   "label": "深场",
+   "theme": "deep-stage",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  },
+  "tech-ring": {
+   "label": "光环科技",
+   "theme": "tech-ring",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  },
+  "night-ledger": {
+   "label": "深夜账本",
+   "theme": "night-ledger",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  },
+  "modern-editorial": {
+   "label": "现代图文",
+   "theme": "modern-editorial",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  },
+  "vibrant-poster": {
+   "label": "活力海报",
+   "theme": "vibrant-poster",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  },
+  "doodle-buddy": {
+   "label": "涂鸦伙伴",
+   "theme": "doodle-buddy",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  },
+  "paper-break": {
+   "label": "纸间破框",
+   "theme": "paper-break",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  },
+  "pixel-ocean": {
+   "label": "像素海洋",
+   "theme": "pixel-ocean",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  },
+  "study-pack": {
+   "label": "学习包装·夜航",
+   "theme": "study-pack",
+   "controls": [
+    "keyword",
+    "list",
+    "compare",
+    "steps",
+    "quote",
+    "chapter",
+    "intro",
+    "outro",
+    "cta",
+    "myth",
+    "tip"
+   ]
+  }
+ },
+ "themes": {
+  "type-drama": {
+   "label": "字场",
+   "colors": {
+    "bg": "#0C0C0E",
+    "ink": "#F2F2F0",
+    "accent": "#2B52FF",
+    "pop": "#E8FF3C",
+    "dim": "#6B6B70"
+   }
+  },
+  "deep-stage": {
+   "label": "深场",
+   "colors": {
+    "bg": "#0B0D12",
+    "ink": "#F5F6F8",
+    "accent": "#2B5CFF",
+    "pop": "#FF6B6B",
+    "dim": "#9BA3B0"
+   }
+  },
+  "tech-ring": {
+   "label": "光环科技",
+   "colors": {
+    "bg": "#07080C",
+    "ink": "#E8ECF4",
+    "accent": "#F5B83D",
+    "accent2": "#3D7BFF",
+    "dim": "#3A4152"
+   }
+  },
+  "night-ledger": {
+   "label": "深夜账本",
+   "colors": {
+    "bg": "#131110",
+    "ink": "#F2EDE3",
+    "accent": "#E8A94E",
+    "accent2": "#D2523E",
+    "pop": "#FF6B4A",
+    "dim": "#6E6257"
+   }
+  },
+  "night-ledger-warm": {
+   "label": "深夜账本·情感挡（深夜酒馆）",
+   "colors": {
+    "bg": "#1A1310",
+    "ink": "#F5EEE2",
+    "accent": "#EBB25F",
+    "accent2": "#C9764F",
+    "pop": "#E8836B",
+    "dim": "#847463"
+   }
+  },
+  "modern-editorial": {
+   "label": "现代图文",
+   "colors": {
+    "bg": "#f2f1ec",
+    "ink": "#141414",
+    "accent": "#2b52ff",
+    "pop": "#dfe4ff",
+    "dim": "#8a8880"
+   }
+  },
+  "vibrant-poster": {
+   "label": "活力海报",
+   "colors": {
+    "bg": "#ffe600",
+    "ink": "#141414",
+    "accent": "#e8351f",
+    "pop": "#2414e8",
+    "dim": "#8a8880"
+   }
+  },
+  "doodle-buddy": {
+   "label": "涂鸦伙伴",
+   "colors": {
+    "bg": "#FFF6E9",
+    "ink": "#2A2723",
+    "accent": "#2B5CFF",
+    "pop": "#FFC93C",
+    "dim": "#8a7f6a"
+   }
+  },
+  "paper-break": {
+   "label": "纸间破框",
+   "colors": {
+    "bg": "#FAF7F0",
+    "ink": "#23201A",
+    "accent": "#4A9BFF",
+    "pop": "#FFE94A",
+    "dim": "#9a8f76"
+   }
+  },
+  "pixel-ocean": {
+   "label": "像素海洋",
+   "colors": {
+    "bg": "#0A0E2C",
+    "ink": "#F5F7FF",
+    "accent": "#1E5EFF",
+    "pop": "#FFD94A",
+    "dim": "#3A4585"
+   }
+  },
+  "study-pack": {
+   "label": "学习包装·夜航",
+   "colors": {
+    "bg": "#16233F",
+    "ink": "#F5F7FA",
+    "accent": "#FFD166",
+    "pop": "#FF8C42",
+    "dim": "#8A97B5"
+   }
+  }
+ },
+ "controls": {
+  "keyword": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "kicker": {
+     "pattern": "^[*]*(?:[^*][*]*){0,32}$",
+     "x-maxVisibleCharacters": 32
+    },
+    "word": {
+     "pattern": "^[*]*(?:[^*][*]*){0,10}$",
+     "x-maxVisibleCharacters": 10
+    },
+    "sub": {
+     "maxItems": 3
+    }
+   }
+  },
+  "list": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "title": {
+     "pattern": "^[*]*(?:[^*][*]*){0,18}$",
+     "x-maxVisibleCharacters": 18
+    },
+    "items": {
+     "maxItems": 6
+    }
+   }
+  },
+  "compare": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "left": {},
+    "right": {},
+    "verdict": {
+     "pattern": "^[*]*(?:[^*][*]*){0,16}$",
+     "x-maxVisibleCharacters": 16
+    },
+    "winner": {
+     "enum": [
+      "left",
+      "right",
+      "none"
+     ]
+    }
+   }
+  },
+  "steps": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "title": {
+     "pattern": "^[*]*(?:[^*][*]*){0,18}$",
+     "x-maxVisibleCharacters": 18
+    },
+    "steps": {
+     "maxItems": 5
+    }
+   }
+  },
+  "quote": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "text": {
+     "pattern": "^[*]*(?:[^*][*]*){0,60}$",
+     "x-maxVisibleCharacters": 60
+    },
+    "who": {
+     "pattern": "^[*]*(?:[^*][*]*){0,24}$",
+     "x-maxVisibleCharacters": 24
+    }
+   }
+  },
+  "chapter": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "no": {
+     "pattern": "^[*]*(?:[^*][*]*){0,4}$",
+     "x-maxVisibleCharacters": 4
+    },
+    "name": {
+     "pattern": "^[*]*(?:[^*][*]*){0,14}$",
+     "x-maxVisibleCharacters": 14
+    },
+    "sub": {
+     "pattern": "^[*]*(?:[^*][*]*){0,30}$",
+     "x-maxVisibleCharacters": 30
+    }
+   }
+  },
+  "intro": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "title": {
+     "pattern": "^[*]*(?:[^*][*]*){0,14}$",
+     "x-maxVisibleCharacters": 14
+    },
+    "subtitle": {
+     "pattern": "^[*]*(?:[^*][*]*){0,28}$",
+     "x-maxVisibleCharacters": 28
+    },
+    "episode": {
+     "pattern": "^[*]*(?:[^*][*]*){0,12}$",
+     "x-maxVisibleCharacters": 12
+    }
+   }
+  },
+  "outro": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "thanks": {
+     "pattern": "^[*]*(?:[^*][*]*){0,10}$",
+     "x-maxVisibleCharacters": 10
+    },
+    "sub": {
+     "pattern": "^[*]*(?:[^*][*]*){0,24}$",
+     "x-maxVisibleCharacters": 24
+    },
+    "items": {
+     "maxItems": 3
+    },
+    "avatar": {},
+    "name": {
+     "pattern": "^[*]*(?:[^*][*]*){0,12}$",
+     "x-maxVisibleCharacters": 12
+    },
+    "follow": {
+     "pattern": "^[*]*(?:[^*][*]*){0,6}$",
+     "x-maxVisibleCharacters": 6
+    }
+   }
+  },
+  "cta": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "kicker": {
+     "pattern": "^[*]*(?:[^*][*]*){0,20}$",
+     "x-maxVisibleCharacters": 20
+    },
+    "text": {
+     "pattern": "^[*]*(?:[^*][*]*){0,10}$",
+     "x-maxVisibleCharacters": 10
+    },
+    "sub": {
+     "pattern": "^[*]*(?:[^*][*]*){0,24}$",
+     "x-maxVisibleCharacters": 24
+    },
+    "icon": {
+     "enum": [
+      "check",
+      "x",
+      "plus",
+      "minus",
+      "alert",
+      "info",
+      "question",
+      "star",
+      "heart",
+      "like",
+      "fire",
+      "bolt",
+      "target",
+      "trophy",
+      "medal",
+      "crown",
+      "gift",
+      "rocket",
+      "sparkle",
+      "user",
+      "users",
+      "chat",
+      "mail",
+      "phone",
+      "bell",
+      "share",
+      "send",
+      "eye",
+      "mic",
+      "play",
+      "pause",
+      "video",
+      "camera",
+      "image",
+      "music",
+      "code",
+      "terminal",
+      "cpu",
+      "cloud",
+      "database",
+      "lock",
+      "key",
+      "shield",
+      "gear",
+      "tool",
+      "search",
+      "link",
+      "file",
+      "folder",
+      "calendar",
+      "clock",
+      "pin",
+      "globe",
+      "home",
+      "book",
+      "idea",
+      "brain",
+      "chart",
+      "bars",
+      "pie",
+      "trend",
+      "down",
+      "money",
+      "cart",
+      "tag",
+      "card",
+      "box",
+      "truck",
+      "building",
+      "flag",
+      "layers",
+      "grid",
+      "cycle",
+      "arrow",
+      "up",
+      "filter",
+      "speed",
+      "sun",
+      "moon",
+      "leaf",
+      "coffee",
+      "smile"
+     ]
+    },
+    "dir": {
+     "enum": [
+      "down",
+      "up",
+      "left",
+      "right"
+     ]
+    }
+   }
+  },
+  "myth": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "kicker": {
+     "pattern": "^[*]*(?:[^*][*]*){0,28}$",
+     "x-maxVisibleCharacters": 28
+    },
+    "myth": {
+     "pattern": "^[*]*(?:[^*][*]*){0,30}$",
+     "x-maxVisibleCharacters": 30
+    },
+    "fact": {
+     "pattern": "^[*]*(?:[^*][*]*){0,36}$",
+     "x-maxVisibleCharacters": 36
+    },
+    "mythLabel": {
+     "pattern": "^[*]*(?:[^*][*]*){0,6}$",
+     "x-maxVisibleCharacters": 6
+    },
+    "factLabel": {
+     "pattern": "^[*]*(?:[^*][*]*){0,6}$",
+     "x-maxVisibleCharacters": 6
+    }
+   }
+  },
+  "tip": {
+   "required": [
+    "control",
+    "t0",
+    "t1",
+    "props"
+   ],
+   "props": {
+    "kicker": {
+     "pattern": "^[*]*(?:[^*][*]*){0,28}$",
+     "x-maxVisibleCharacters": 28
+    },
+    "kind": {
+     "enum": [
+      "tip",
+      "warn",
+      "info",
+      "ok"
+     ]
+    },
+    "title": {
+     "pattern": "^[*]*(?:[^*][*]*){0,12}$",
+     "x-maxVisibleCharacters": 12
+    },
+    "text": {
+     "pattern": "^[*]*(?:[^*][*]*){0,44}$",
+     "x-maxVisibleCharacters": 44
+    }
+   }
+  }
+ }
+}

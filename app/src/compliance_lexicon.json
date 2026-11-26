@@ -1,0 +1,12 @@
+{
+ "version": "2026.11.03-r1",
+ "updated_at": "2026-11-03",
+ "description": "合规词库正文是云端核心资产（method_assets: compliance.lexicon），本文件只留骨架。",
+ "sources": {},
+ "exclusion_policy": {
+  "purpose": "控制误杀：日常口语、顺序表达、客观数量、引用、否定、非广告语境不判 block。",
+  "basis": "《广告绝对化用语执法指南》第五、六、八条；平台规则按语境判断。",
+  "output": "被排除的命中会写进 excluded 字段，方便人工复核，不是静默丢弃。"
+ },
+ "entries": []
+}

@@ -1,0 +1,5 @@
+{
+  "duration": 20,
+  "fps": 30,
+  "note": "演示参数：duration 与页内 HF_PROMO_CONFIG 默认一致；改 duration 会整体重排三段场景窗口（s1 0-1.5 / canvas 1.5-14 / outro 14-20 按比例不缩放内部节拍，仅挪窗口）。"
+}

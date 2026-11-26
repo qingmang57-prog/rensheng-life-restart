@@ -1,0 +1,7 @@
+{
+  "name": "决策树流程图",
+  "caption": "16:9 · 白板便利贴决策树 · 光标纠错动画 · 10 秒定长",
+  "width": 1920,
+  "height": 1080,
+  "note": "HyperFrames decision-tree 视觉核心（Apache-2.0，源 heygen-com/hyperframes registry/examples/decision-tree）；节点文本经 data-variable-values 注入（7 节点+2 边标签）；定长 10s@30fps，暂不接口播时长。由人生重启系统智能包装入口调用。"
+}

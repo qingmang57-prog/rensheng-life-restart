@@ -1,0 +1,146 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[
+    {"id":"headline","type":"string","label":"标题（衬线）","default":"Monthly Revenue vs. Conversion Rate"},
+    {"id":"subtitle","type":"string","label":"副标题","default":"Jan–Jun 2024, in thousands"},
+    {"id":"key_revenue","type":"string","label":"图例·柱（左）","default":"Revenue"},
+    {"id":"key_conversion","type":"string","label":"图例·线（右）","default":"Conversion Rate"},
+    {"id":"source","type":"string","label":"来源行","default":"Source: Internal analytics"},
+    {"id":"months","type":"string","label":"横轴标签，逗号分隔","default":"Jan,Feb,Mar,Apr,May,Jun"},
+    {"id":"revenue","type":"string","label":"柱数据（左轴），逗号分隔","default":"8,12,15,11,18,22"},
+    {"id":"conversion","type":"string","label":"线数据（右轴%），逗号分隔","default":"2.1,2.8,3.2,2.9,3.8,4.2"},
+    {"id":"max_revenue","type":"string","label":"左轴满刻度","default":"25"},
+    {"id":"max_conversion","type":"string","label":"右轴满刻度","default":"5"},
+    {"id":"bar_prefix","type":"string","label":"柱标前缀","default":"$"},
+    {"id":"bar_suffix","type":"string","label":"柱标后缀","default":"K"},
+    {"id":"line_suffix","type":"string","label":"线标后缀","default":"%"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>NYT Graph</title>
+    <!-- 施工D t11 适配：上游 index.html:7 的 gsap CDN 改为本包 vendored 副本 3.14.2（禁运行时 CDN） -->
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* 施工D t11 适配：字体 @font-face 声明移至 compositions/nyt-chart.html（上游即在该文件引字体，
+         且 lint 以组合为单位核验）；此处仅保留全局样式。 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background-color: #faf9f6;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="15"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="nyt-chart-comp"
+        data-composition-id="nyt-chart"
+        data-composition-src="compositions/nyt-chart.html"
+        data-start="0"
+        data-duration="15"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+        data-variable-values='{
+          "headline": "Monthly Revenue vs. Conversion Rate",
+          "subtitle": "Jan–Jun 2024, in thousands",
+          "key_revenue": "Revenue",
+          "key_conversion": "Conversion Rate",
+          "source": "Source: Internal analytics",
+          "months": "Jan,Feb,Mar,Apr,May,Jun",
+          "revenue": "8,12,15,11,18,22",
+          "conversion": "2.1,2.8,3.2,2.9,3.8,4.2",
+          "max_revenue": "25",
+          "max_conversion": "5",
+          "bar_prefix": "$",
+          "bar_suffix": "K",
+          "line_suffix": "%"
+        }'
+      ></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+
+      // === 施工D t11 双端离线垫片（上游无此块，HyperFrames 原生运行时不走此路径；结构同 t7 打样） ===
+      // 变量解析链：声明默认 ← 挂载点 data-variable-values ← window.USER_PARAMS（帧泵注入），
+      // 结果回写挂载点，组合内单源读取。
+      const MOUNT_DEFAULTS = {
+        headline: "Monthly Revenue vs. Conversion Rate",
+        subtitle: "Jan–Jun 2024, in thousands",
+        key_revenue: "Revenue",
+        key_conversion: "Conversion Rate",
+        source: "Source: Internal analytics",
+        months: "Jan,Feb,Mar,Apr,May,Jun",
+        revenue: "8,12,15,11,18,22",
+        conversion: "2.1,2.8,3.2,2.9,3.8,4.2",
+        max_revenue: "25",
+        max_conversion: "5",
+        bar_prefix: "$",
+        bar_suffix: "K",
+        line_suffix: "%",
+      };
+      function __hfResolveVars() {
+        const mount = document.getElementById("nyt-chart-comp");
+        if (!mount) return;
+        let attrs = {};
+        try {
+          attrs = JSON.parse(mount.getAttribute("data-variable-values") || "{}") || {};
+        } catch (e) {
+          attrs = {};
+        }
+        const up = (window.USER_PARAMS && (window.USER_PARAMS.vars || window.USER_PARAMS)) || {};
+        const merged = Object.assign({}, MOUNT_DEFAULTS, attrs, up);
+        mount.setAttribute("data-variable-values", JSON.stringify(merged));
+      }
+
+      // 组合挂载：fetch 模板 → importNode 进挂载点（脚本节点插入即执行，与运行时同构）。
+      async function __hfMountCompositions() {
+        const mounts = document.querySelectorAll("[data-composition-src]");
+        for (const m of mounts) {
+          const src = m.getAttribute("data-composition-src");
+          const res = await fetch(src);
+          if (!res.ok) throw new Error("composition fetch failed: " + src);
+          const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+          const tpl = doc.querySelector("template");
+          if (!tpl) throw new Error("no <template> in composition: " + src);
+          m.appendChild(document.importNode(tpl.content, true));
+        }
+      }
+
+      // renderAt(t)：按帧 seek 全部已注册时间轴（suppressEvents=false 保 onUpdate 计数动画随播放头触发）。
+      window.renderAt = async function (t) {
+        const tls = window.__timelines || {};
+        for (const id of Object.keys(tls)) {
+          if (tls[id] && typeof tls[id].seek === "function") tls[id].seek(t, false);
+        }
+      };
+
+      window.CONSUMER_READY = (async () => {
+        __hfResolveVars();
+        await __hfMountCompositions();
+        await window.renderAt(0);
+      })();
+    </script>
+  </body>
+</html>

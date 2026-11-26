@@ -1,0 +1,7 @@
+{
+  "version": "2026-11-04",
+  "note": "口吻基准稿槽位。把本人（用户）的 3–5 篇原稿放进 app/voice_samples/，再在 files 里写文件名；生成时会作为 personal.style_samples 送进提示词，用来对齐口吻。没有列出的文件不会被读取；本配置为空时不使用任何基准稿，也不得自行编写。",
+  "files": [],
+  "max_chars_per_sample": 1200,
+  "total_chars": 2400
+}

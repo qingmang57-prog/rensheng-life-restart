@@ -1,0 +1,53 @@
+'use strict';
+function releaseTabs(){const review=new URLSearchParams(location.hash.split('?')[1]||'').get('view')==='review';return '<nav class="factory-sections factory-navigation" aria-label="发布与复盘导航"><a class="factory-section '+(!review?'active':'')+'" href="#/feedback"><span aria-hidden="true">↗</span><strong>发布作品</strong></a><a class="factory-section '+(review?'active':'')+'" href="#/feedback?view=review"><span aria-hidden="true">◍</span><strong>数据复盘</strong></a></nav>';}
+function releaseReceipts(r){return '<section class="panel space"><div class="row spread"><h2>已登记的发布 <span class="small muted">'+(r?.receipts?.length||0)+'</span></h2></div>'+(r?.receipts?.length?r.receipts.map(x=>'<div class="rule space"><div class="row spread"><strong>'+esc(r.platforms.find(p=>p.id===x.platform)?.name||x.platform)+'</strong><span class="pill">本人回填 · 未核验</span></div><p class="small muted">登记于 '+stamp(x.registered_at)+'，未自动核验平台归属与发布时间。</p><a class="link small" href="'+esc(x.source_url)+'" target="_blank" rel="noopener noreferrer">查看作品 ↗</a></div>').join(''):'<p class="small muted">在平台完成发布后，回填链接，方便后续复盘。</p>')+'</section>';}
+function renderReleaseHub(f,boot){const r=f.release,projects=boot.projects||[],cloud=boot.capabilities.edition==='private_cloud_trial';return '<div class="eyebrow">PUBLISH & REVIEW</div><h1>发布与复盘</h1><p class="lead">整理发布资料，发到平台，再把反馈带回来。</p>'+releaseTabs()+
+ '<p class="small muted space">已在抖音等平台发过作品，想登记链接、看真实反馈？<a class="link" href="#/feedback?view=review">去「数据复盘」登记本人已发布作品 →</a> 工作台不代发，只登记并采集公开数据；未取得的数据标“—”，不估算。</p>'+
+ '<section class="panel"><label class="field"><span>选择要发布的作品</span><select name="feedback-project" aria-label="发布作品" '+(projects.length?'':'disabled')+'>'+projects.map(p=>'<option value="'+esc(p.id)+'" '+(f.projectId===p.id?'selected':'')+'>'+esc(p.title)+'</option>').join('')+'</select></label>'+
+ (!projects.length?'<p class="small muted">先在开始创作写好一条内容。</p><a class="button-link" href="#/create">去开始创作 →</a>':f.releaseError?notice('发布资料读取失败：'+f.releaseError):!r?.script_ready?'<p class="small muted">当前文稿还没有定稿，先确认版本，再整理发布资料。</p><a class="button-link primary" href="'+purl(f.projectId,'script')+'">去确认文稿 →</a>':'<div class="release-layout"><div><span class="factory-section-label">01 准备发布资料</span><h2>'+esc(r.selected_title)+'</h2><p class="release-caption">'+esc(r.caption||'当前没有发布简介，可回到定稿资料补充。')+'</p><p class="small muted">'+esc(r.tags.map(t=>'#'+String(t).replace(/^#/, '')).join(' '))+'</p><div class="actions"><button class="primary" data-action="release-copy">复制标题与文案</button><button data-action="release-download">下载文稿资料</button>'+(r.video_ready?(r.artifact_id?'<button data-action="release-share-video">一键存相册</button><a class="button-link" href="'+media('/api/artifacts/'+encodeURIComponent(r.artifact_id)+'?download=1')+'">下载已审成片</a>':'')+(r.cover_id?'<button data-action="release-share-cover">存封面到相册</button>':'')+(r.export_zip_url?'<a class="button-link" href="'+media(r.export_zip_url)+'">下载四件套 ZIP →</a>':'')+(r.artifact_id?'<button data-action="release-open-jianying">打开剪映</button><button data-action="release-jianying-pack">导出剪映素材包</button><button data-action="release-jianying-project">导出可编辑工程</button>':''):'')+'</div>'+(r.video_ready?'':'<div class="rule space"><span class="factory-section-label">导出区已锁定</span><p class="small muted">'+esc(r.blocked_reason||'成片还没审阅，先点「确认审阅通过」再导出。')+'</p><p class="small muted">文案可以照常复制；成片、封面、四件套 ZIP 与剪映素材包要等审阅通过后才开放。</p><div class="actions"><button class="primary" data-action="release-review">确认审阅通过</button></div></div>')+'<p class="small muted space">'+esc(r.delivery_note||'')+'</p><p class="small muted">'+(!window.isSecureContext?'当前为 HTTP 访问，系统分享不可用，请先用「下载」；正式上 HTTPS 后可一键存相册。':(!navigator.share?'当前浏览器不支持系统分享，请先用「下载」。':'点「一键存相册」后，在系统菜单里选「存储视频 / 存储图片」。'))+'</p><a class="link small space" href="'+purl(f.projectId,'pack')+'">修改标题与发布文案 →</a></div><div class="release-platform"><span class="factory-section-label">02 去平台发布</span><label class="field"><span>发布平台</span><select id="release-platform">'+r.platforms.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('')+'</select></label><a id="release-creator-link" class="button-link primary" href="'+esc(r.platforms[0].creator_url)+'" target="_blank" rel="noopener noreferrer">打开平台创作后台 ↗</a><p class="small muted space">在平台登录、上传素材并确认发布。此入口不会自动代发。</p>'+(!r.artifact_id?'<p class="small muted">'+(cloud?'本轮网页试用提供文稿资料，视频请在平台自行上传。':'当前没有已审成片；发布视频前请先完成剪辑与审阅。')+'</p>':'')+(!cloud?'<a class="link small" href="#/matrix">已接入执行器？进入多平台发布 →</a>':'')+'</div></div>')+'</section>'+
+ (r?.script_ready?'<section class="panel space"><span class="factory-section-label">03 发布后回填</span><h2>把发布记录留在这里</h2><form id="release-register-form"><input type="hidden" name="project_id" value="'+esc(r.project_id)+'"><input type="hidden" name="script_version_id" value="'+esc(r.script_version_id)+'"><div class="release-receipt-fields"><label class="field"><span>实际发布的平台</span><select name="platform">'+r.platforms.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('')+'</select></label><label class="field"><span>发布后的作品链接</span><input name="url" type="url" maxlength="2048" required placeholder="https://…"></label></div><label class="check"><input type="checkbox" name="confirmed" required>这是本人已经发布的作品</label><div class="row spread space"><span class="small muted">本人回填，不代表平台已核验。</span><button class="primary" type="submit">保存发布记录</button></div></form></section>':'')+releaseReceipts(r)+'<div class="factory-footer-links"><a class="link small" href="#/feedback?view=review">查看数据与评论复盘 →</a></div>';}
+async function shareArtifact(res,label,text){
+  if(!res||!res.url){toast('当前没有可保存的'+label+'。');return;}
+  var fallback=function(){var a=document.createElement('a');a.href=media(res.download_url||res.url);a.download='';a.click();};
+  if(!window.isSecureContext||!navigator.share||!navigator.canShare){toast('当前为 HTTP 或浏览器不支持系统分享，已尝试下载；手机上请等正式上 HTTPS 后再一键存相册。');fallback();return;}
+  try{
+    var resp=await fetch(media(res.url),{credentials:'same-origin'});
+    if(!resp.ok)throw Error('HTTP '+resp.status);
+    var blob=await resp.blob(),name=(label==='封面'?'cover.jpg':'video.mp4');
+    var file=new File([blob],name,{type:blob.type||(label==='封面'?'image/jpeg':'video/mp4')});
+    if(!navigator.canShare({files:[file]}))throw Error('此浏览器不支持分享该类文件');
+    await navigator.share({files:[file],title:String(text||'交付资料').slice(0,80),text:String(text||'').slice(0,500)});
+    toast(label+'已交给系统分享，在菜单里选「存储视频/存储图片」即可。');
+  }catch(e){
+    if(e&&e.name==='AbortError'){toast('已取消分享。');return;}
+    toast('系统分享不可用（'+((e&&e.message)||'未知原因')+'），已转为下载；手机上请等正式上 HTTPS。');fallback();
+  }
+}
+async function releaseAction(el){const r=state.feedback.release;if(el.dataset.action==='release-review'){if(!r?.review_url)throw Error('当前没有可审阅的成片，先完成净剪或包装出片。');await api(r.review_url.replace(/^\/api/,''),'POST',{});toast('已审阅通过，现在可以导出四件套了。');await route();return;}if(!r?.script_ready)throw Error('请先确认文稿并读取发布资料。');if(!r?.video_ready&&['release-share-video','release-share-cover','release-open-jianying','release-jianying-pack','release-jianying-project'].includes(el.dataset.action))throw Error('成片还没审阅，先点「确认审阅通过」，再导出成片与剪映素材包。');const tags=r.tags.map(t=>'#'+String(t).replace(/^#/, '')).join(' '),caption=[r.selected_title,r.caption,tags].filter(Boolean).join('\n\n');if(el.dataset.action==='release-copy'){await copyWithFeedback(caption,'标题、简介与话题已复制。');return;}if(el.dataset.action==='release-download'){const blob=new Blob([caption+'\n\n—— 当前定稿 ——\n\n'+r.text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=String(currentBrand()).replace(/[\\/:*?"<>|]/g,'_').slice(0,30)+'-'+(r.selected_title||'发布资料').replace(/[\\/:*?"<>|]/g,'_').slice(0,70)+'_发布资料.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);return;}if(el.dataset.action==='release-share-video'){await shareArtifact(r.video,'成片',r.share_text);return;}if(el.dataset.action==='release-share-cover'){await shareArtifact(r.cover,'封面',r.selected_title);return;}
+if(el.dataset.action==='release-open-jianying'){
+  const st=await api('/clip/jianying');
+  if(!st.installed){
+    modal('没找到剪映',`<p class="field-explain">这台电脑上没检测到剪映。装好后再点一次，就能一键打开。</p><a class="button-link primary" href="${esc(st.download_url||'https://www.capcut.cn/')}" target="_blank" rel="noopener noreferrer">去剪映官网下载 ↗</a>`);
+    return;
+  }
+  const launched=await api('/clip/jianying/open','POST',{});
+  toast(launched.ok?(launched.message||'剪映已打开。'):(launched.message||'剪映没打开，请手动启动。'));
+  return;
+}
+if(el.dataset.action==='release-jianying-pack'){
+  const pack=await api('/clip/pack','POST',{project_id:r.project_id});
+  const items=(pack.files||[]).map(f=>'<li>'+esc(f.name)+' · '+Math.max(1,Math.round(f.size/1024))+' KB</li>').join('');
+  const warns=(pack.warnings||[]).map(w=>'<p class="small muted">'+esc(w)+'</p>').join('');
+  modal('剪映素材包已生成',`<p class="small muted">文件都在本机，文件夹：<br>${esc(pack.dir)}</p><ul class="small">${items}</ul>${warns}<div class="row space"><a class="button-link primary" href="${media('/api/clip/pack?project_id='+encodeURIComponent(pack.project_id)+'&download=1')}">下载素材包 ZIP</a><button type="button" id="clip-pack-close">知道了</button></div><p class="small muted space">用法见包内「使用说明.txt」：成片拖进剪映、字幕导入 字幕.srt、封面发布时再上传。</p>`);
+  const closeBtn=document.getElementById('clip-pack-close');if(closeBtn)closeBtn.addEventListener('click',()=>$('#modal').close());
+  return;
+}
+if(el.dataset.action==='release-jianying-project'){
+  const proj=await api('/clip/edit-project','POST',{project_id:r.project_id});
+  const items=(proj.files||[]).map(f=>'<li>'+esc(f.name)+' · '+Math.max(1,Math.round(f.size/1024))+' KB</li>').join('');
+  const warns=(proj.warnings||[]).map(w=>'<p class="small muted">'+esc(w)+'</p>').join('');
+  modal('可编辑工程已生成',`<p class="small muted">已按成片分段拆成 ${esc(String(proj.clips))} 个片段，还原 ${esc(String(proj.texts))} 条字幕，素材已复制进草稿目录：<br>${esc(proj.draft_dir)}</p><ul class="small">${items}</ul>${warns}<div class="row space"><a class="button-link primary" href="${media('/api/clip/edit-project?project_id='+encodeURIComponent(proj.project_id)+'&download=1')}">下载工程 ZIP</a><button type="button" id="clip-project-close">知道了</button></div><p class="small muted space">导入步骤见包内「导入说明.txt」。如果这版剪映只认加密草稿，就用「导出剪映素材包」。</p>`);
+  const closeBtn=document.getElementById('clip-project-close');if(closeBtn)closeBtn.addEventListener('click',()=>$('#modal').close());
+  return;
+}}
+document.addEventListener('change',event=>{if(event.target.id!=='release-platform')return;const p=state.feedback.release?.platforms.find(p=>p.id===event.target.value),a=document.getElementById('release-creator-link');if(p&&a)a.href=p.creator_url;});

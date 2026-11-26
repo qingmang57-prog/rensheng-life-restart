@@ -1,0 +1,8 @@
+<!-- 示例资产：中性占位徽记，可整文件替换成自己的品牌资产（不随上游商标，禁止上传我方资产到云端仓库） -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 240" width="160" height="240">
+  <rect x="10" y="30" width="64" height="64" rx="14" fill="#E8A33D"/>
+  <circle cx="118" cy="62" r="32" fill="#3D8FE8"/>
+  <rect x="10" y="118" width="64" height="64" rx="32" fill="#59B98A"/>
+  <path d="M 118 118 L 150 150 L 118 182 L 86 150 Z" fill="#D26B5C"/>
+  <path d="M 10 236 L 74 236 L 42 196 Z" fill="#8A6FD1"/>
+</svg>
